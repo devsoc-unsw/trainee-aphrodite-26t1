@@ -1,0 +1,86 @@
+.miniPlayerContainer {
+  margin: 0 12px 24px 12px;
+  background-color: #282828;
+  border-radius: 20px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.sidebarCollapsed .miniPlayerContainer {
+  display: none;
+}
+.miniPlayerInner {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.miniPlayerArt {
+  width: 56px;
+  height: 56px;
+  background-color: #a0a0a0;
+  border-radius: 8px;
+  flex-shrink: 0;
+  margin-right: 12px;
+}
+.miniPlayerContent {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+.miniPlayerText {
+  margin-bottom: 6px;
+}
+.playerTitle {
+  font-size: 13px;
+  font-weight: 700;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
+}
+.playerArtist {
+  font-size: 11px;
+  color: #a0a0a0;
+  margin: 2px 0 0;
+}
+.miniPlayerControls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.controlIcon {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+.iconButton {
+  border: none;
+  background: none;
+  color: #fff;
+}
+.playIcon {
+  width: 20px;
+  height: 20px;
+  padding: 2px;
+  fill: currentColor;
+  color: #535353;
+  background-color: #fff;
+  border-radius: 50%;
+}
+.rateButton {
+  font-family: "Inter", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  background-color: #555555;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 20px;
+  cursor: pointer;
+}
+.rateButton:hover {
+  background-color: #666;
+}
