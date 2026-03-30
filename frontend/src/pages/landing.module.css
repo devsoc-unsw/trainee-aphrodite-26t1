@@ -1,0 +1,191 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.main {
+  display: flex;
+  min-height: 100vh;
+  position: relative;
+  background-color: black;
+}
+
+.banner {
+  min-width: 35%;
+  object-fit: cover;
+  z-index:1;
+}
+
+.dashboard {
+  position:absolute;
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  width: 25%;
+  z-index: 2;
+  align-items: flex-start;
+}
+
+.title {
+
+  padding-left: 45px;
+  color: white;
+  font-family: 'Nunito', sans-serif;
+  font-size: clamp(4vw, 6vw, 8vw);
+  font-weight: 600;
+}
+
+.description {
+  padding-left: 50px;
+  top: 160px;
+  color: white;
+  font-family: 'Nunito', sans-serif;
+  font-size: clamp(1vw, 1vw, 3vw);
+  font-weight: 300;
+  padding-bottom: 10vh
+}
+
+.login {
+  display: flex;
+  flex-direction: column;
+  padding-left: 50px;
+  height: auto;
+  gap: 20px;
+}
+
+.loginButton {
+  background-color: white;
+  width: 20vw;
+  height: 8vh;
+  display: flex;
+  align-items: center;
+  font-family: 'Nunito', sans-serif;
+  font-size: clamp(1vw, 1vw, 3vw);
+  font-weight: 700;
+  border-radius: 100px;
+  transition: transform 0.2s ease;
+}
+
+.emailButton {
+  height: 8vh;
+  width: 94%;
+  background-color: white;
+  font-family: 'Nunito', sans-serif;
+  font-size: clamp(1vw, 1vw, 3vw);
+  font-weight: 700;
+  border-radius: 100px;
+  outline: none;
+  border: none;
+  padding-left: 30px;
+}
+
+.loginButton:hover {
+  transform: scale(1.05);
+}
+
+.enterButton {
+  height: 4vh;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #FFBABB;
+  border-radius: 100px;
+  transition: background-color 0.2s ease;
+}
+
+.enterButton:hover {
+  background-color: #ff8d8f;
+
+}
+
+.logo {
+  padding-right: 30px;
+  height: 100%;
+  border-radius: 100px;
+}
+
+.google {
+  padding-right: 30px;
+  height: 80%;
+  border-radius: 100px;
+  padding-left: 8px;
+}
+
+.logintext {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  color: white;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Nunito', sans-serif;
+  font-size: clamp(1vw, 1vw, 3vw);
+  font-weight: 700;
+}
+
+.emailContainer {
+  max-width: 20vw;
+  height: 20vh;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.carousel {
+  position: absolute;
+  z-index: 0;
+  top: 15%;
+  width: 100%;
+  display: flex;
+  overflow-x: auto;
+}
+
+.carousel::-webkit-scrollbar {
+  display: none;
+}
+
+.group {
+  display: flex;
+  gap: 2em;
+  animation: spin 15s infinite linear;
+  padding-right: 2em;
+}
+
+.card {
+  flex: 0 0 7em;
+  height: 10em;
+  width: 8em;
+  padding: 1em;
+  background: #1E1E1E;
+  font-size: 3rem;
+  border-radius: 0.5em;
+  text-align: center;
+  align-content: center;
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes spin {
+  from {translate: 0;}
+  to {translate: -100%;}
+}
+
+.card_img {
+  object-fit: cover;
+  object-position: center top;
+  height: 200px;
+  width: 340px;
+  border-radius: 4px;
+  padding-bottom: 50px;
+}
+.card_text {
+  color: #FD2629;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 600;
+  font-size: 0.7em;
+}
