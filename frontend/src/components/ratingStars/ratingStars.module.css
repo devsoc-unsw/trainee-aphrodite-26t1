@@ -1,0 +1,14 @@
+.ratingStars {
+  display: flex;
+  gap: 4px;
+}
+.starActive {
+  color: #1ED760;
+  width: 18px;
+  height: 18px;
+}
+.star {
+  color: #797873;
+  width: 18px;
+  height: 18px;
+}
