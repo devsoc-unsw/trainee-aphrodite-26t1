@@ -53,3 +53,7 @@
   overflow-x: auto;
   padding-bottom: 16px;
 }
+
+.songLink {
+  text-decoration: none;
+}

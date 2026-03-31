@@ -1,0 +1,102 @@
+.container {
+  display: flex;
+  height: 100vh;
+  background-color: #121212;
+  color: #ffffff;
+  font-family: "Inter", sans-serif;
+  overflow: hidden;
+}
+.main {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  padding: 32px 10vw;
+  overflow-y: auto;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+.header {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.headerImg {
+  width: 150px;
+  height: 150px;
+  border-radius: 25px;
+}
+
+.headerInfo {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  flex-grow: 1;
+  gap: 2px;
+}
+
+.songTitle {
+  font-size: 2.4rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.subText {
+  font-size: 0.9rem;
+  color: #aaaaaa;
+  margin: 0;
+}
+
+.headerBar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 0.75rem;
+  gap: 1rem;
+  flex-wrap: wrap; 
+}
+
+.buttons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.actions {
+  display: flex;
+  gap: 1rem 4rem;
+  flex-wrap: wrap;
+}
+
+.reviewBody {
+  background-color:#1E1E1E;
+  padding: 20px;
+  border-radius: 25px;
+  margin-top: 20px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  margin-top: 12px;
+  justify-content: space-between;
+}
+.sectionTitle {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 4px 0;
+}
+
+hr {
+  width: 100%;
+  background-color: #fff;
+}
+
+.reviews {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
