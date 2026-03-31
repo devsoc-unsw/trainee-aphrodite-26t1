@@ -1,0 +1,59 @@
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background-color:#1E1E1E;
+  width:100%;
+  padding:20px;
+  border-radius: 20px;
+  margin-top: 20px;
+}
+
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.profilePicture {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.headerInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.username {
+  font-size: 0.9rem;
+  font-weight: 500;
+  margin: 0;
+  color: #ffffff;
+}
+
+.timestat {
+  font-size: 0.8rem;
+  color: #aaaaaa;
+  margin: 0;
+}
+
+.commentBody {
+  font-size:12px;
+}
+
+.interactions {
+  display:flex;
+  flex-direction:row;
+  align-items: end;
+  gap:30px;
+}
+
+.stat {
+  font-size: 0.85rem;
+  color: #aaaaaa;
+}

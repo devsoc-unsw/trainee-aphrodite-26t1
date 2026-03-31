@@ -1,6 +1,8 @@
 
 import { Sidebar } from "../components/sidebar/sidebar";
 import { RatingStars } from "../components/ratingStars/ratingStars";
+import { Comment } from "../components/comment/comment";
+
 import styles from "./review.module.css"
 
 const ReviewPage = () => {
@@ -45,7 +47,30 @@ const ReviewPage = () => {
               A heartfelt ballad about falling in love at the DevSoc Training Program. Listen along as code becomes a love language for Andy and Zitian at UNSW.
             </div>
           </section>
+
+          {/* Comments */}
+          <section>
+            <h1>Comments</h1>
+            <hr className="border-t border-gray-200" />
+          {/* Input box - placeholder for now*/}
+
+          <div className={styles.comment}>
+            <img src="/samplepfp.jpg" className={styles.profilePicture} alt="Profile picture" />
+            <input
+              type="text"
+              className={styles.commentInput}
+              placeholder="Add a comment"
+            />
+          </div>
+          <button className={styles.commentButton}>Comment</button>
+          <Comment />
+          <Comment />
+          <Comment />
+          <Comment />
+          </section>
         </div>
+
+
         
 
       </main>
