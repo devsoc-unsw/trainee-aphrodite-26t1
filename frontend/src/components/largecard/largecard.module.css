@@ -3,6 +3,7 @@
   border-radius: 16px;
   padding: 20px;
   width: 200px;
+  height: 240px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
@@ -24,4 +25,7 @@
   font-weight: 600;
   text-align: center;
   color: #fff;
+}
+.cardArtist {
+  color: #a0a0a0;
 }

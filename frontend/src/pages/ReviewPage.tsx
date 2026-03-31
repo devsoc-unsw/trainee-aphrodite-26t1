@@ -2,8 +2,11 @@
 import { Sidebar } from "../components/sidebar/sidebar";
 import { RatingStars } from "../components/ratingStars/ratingStars";
 import styles from "./review.module.css"
+import { useState } from "react";
+import { ActionBar } from "../components/actionbar/ActionBar";
 
 const ReviewPage = () => {
+  const [rating, setRating] = useState(3);
   return (
     <div className={styles.container}>
       <Sidebar accountName="account name" />
@@ -30,10 +33,8 @@ const ReviewPage = () => {
                 <div className={styles.headerBar}>
                   <img src="/samplepfp.jpg" className={styles.profilePicture} alt="Profile picture" />
                   <p className={styles.username}>Username (Reviewer)</p>
-                  <RatingStars />
-                  <span className={styles.stat}>♡ 12</span>
-                  <span className={styles.stat}>💬 12</span>
-                  <span className={styles.stat}>↗</span>
+                  <RatingStars rating={rating} setRating={setRating} interactable={true} />
+                  <ActionBar likes={69} comments={67}/>
                 </div>
               </div>
             </div>

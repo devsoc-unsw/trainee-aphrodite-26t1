@@ -4,6 +4,7 @@ import type { Track } from "../spotify.types";
 import { Sidebar } from "../components/sidebar/sidebar";
 import { LargeCard } from "../components/largecard/largecard";
 import { SongTab } from "../components/songtab/songtab";
+import { Link } from "react-router";
 
 
 export default function Home() {
@@ -37,7 +38,10 @@ export default function Home() {
           <h2 className={styles.sectionTitle}>Recommended Songs</h2>
           <div className={styles.recommendedGrid}>
             {topSongs.length > 0 ? topSongs.map((track, i) => (
-              <LargeCard key={track.id || i} title={track.name} imageUrl={track.album?.images?.[0]?.url} artist={track.artists[0].name} />
+              <Link to={"/songs/" + track.id} className={styles.songLink}>
+                <LargeCard key={track.id || i} title={track.name} imageUrl={track.album?.images?.[0]?.url} artist={track.artists[0].name} />
+              </Link>
+              
             )) : [1, 2, 3, 4, 5].map((i) => (
               <LargeCard key={i} title="Loading..." />
             ))}

@@ -1,8 +1,32 @@
 import { Router } from "express"
 import { getAccessToken, searchTrackItems } from "../lib/spotify.js";
-import { PlaylistResponse } from "../spotify.types.js";
+import { PlaylistResponse, Track } from "../spotify.types.js";
 
 const router: Router = Router();
+
+// this should fetch from db in the future
+router.get('/songs/:songId', async (req, res) => {
+  try {
+    const token = await getAccessToken();
+    const id = req.params.songId;
+    const response = await fetch(`https://api.spotify.com/v1/tracks/${id}`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch song: ${response.statusText}`);
+    }
+
+    const data: Track = await response.json();
+    res.json(data);
+  }
+  catch (err) {
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    res.status(500).json({ error: message });
+  }
+});
 
 // for now just getting some random ass playlist just so we can test frontend data fetching.
 // in the future this will just be a db call

@@ -1,0 +1,46 @@
+.container {
+  display: flex;
+  align-items: center;
+  background-color: #383838;
+  border-radius: 40px;
+  padding: 12px 24px 12px 12px;
+  cursor: pointer;
+  gap: 10px;
+  justify-content: space-between;
+}
+.container:hover {
+  background-color: #444;
+}
+.profile {
+  width: 50px;
+  height: 50px;
+  background-color: #a0a0a0;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-right: 20px;
+}
+.info {
+  display: flex;
+  align-items: center;
+}
+.title {
+  font-size: 15px;
+  font-weight: 700;
+  margin: 0 0 4px 0;
+}
+.artist {
+  font-size: 13px;
+  color: #a0a0a0;
+  margin: 0;
+}
+.description {
+  font-size: 13px;
+  color: #a0a0a0;
+  font-style: italic;
+}
+
+@media (max-width: 800px) {
+  .description {
+    display: none;
+  }
+}

@@ -2,6 +2,7 @@ import { Route, Routes } from 'react-router'
 import Home from './pages/Home'
 import LandingPage from'./pages/LandingPage.tsx'
 import { ReviewPage } from './pages/ReviewPage.tsx'
+import SongPage from './pages/SongPage.tsx'
 
 export default function App() {
   return (
@@ -10,6 +11,7 @@ export default function App() {
         <Route index element={<Home />} />
         <Route path="/landing" element={<LandingPage />}/>
         <Route path="/review" element={<ReviewPage />}/>
+        <Route path="/songs/:songId" element={<SongPage />} />
       </Routes>
     </>
   )
