@@ -8,7 +8,7 @@ export interface SidebarTab {
   to: string,
 }
 const tabs: SidebarTab[] = [
-  { label: "Home", to: "/" },
+  { label: "Home", to: "/home" },
   { label: "Friends", to: "/friends" },
   { label: "Explore", to: "/explore" },
   { label: "Jam", to: "/jam" },
