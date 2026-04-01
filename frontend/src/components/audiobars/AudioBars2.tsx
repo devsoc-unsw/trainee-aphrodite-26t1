@@ -1,11 +1,11 @@
-import styles from './audiobars.module.css'
+import styles from './audiobars2.module.css'
 
-const bars = Array.from({ length: 40 }, () => ({
+const bars = Array.from({ length: 60 }, () => ({
   width: Math.random() * 375 + 25,
   duration: Math.random() * 5 + 4.5,
 }));
 
-export default function AudioBars() {
+export default function AudioBars2() {
   return (
     <div className={styles.audiobars}>
       {bars.map((bar, i) => (
