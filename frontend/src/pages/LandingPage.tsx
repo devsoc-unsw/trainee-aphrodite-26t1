@@ -10,7 +10,7 @@ export default function LandingPage() {
   return (
     
     <div className={styles.main}>
-      <div className={clicked ? styles.disappear : ''}>
+      <div className={clicked ? styles.disappear : styles.visible}>
         <AudioBars></AudioBars>
         <img src="banner.svg" className={`${styles.banner} ${clicked ? styles.expand : ''}`}></img>
         <div className={styles.dashboard}>
@@ -79,7 +79,6 @@ export default function LandingPage() {
           </div>
         </div>
       </div>
-      <img src="banner.svg" className={`${styles.banner} ${clicked ? styles.expand : ''}`}></img>
       <div className={`${styles.loginPage} ${clicked ? '' : styles.hide}`}>
         <AudioBars2></AudioBars2>
         <div className={styles.loginDashboard}>
@@ -89,7 +88,14 @@ export default function LandingPage() {
           <input type="text"className={styles.loginBubble}></input>
           <div className={styles.loginText}>Password</div>
           <input type="password" className={styles.loginBubble}></input>
-          <button className={styles.loginEnter}>Enter</button>
+          <div className={styles.loginButtons}>
+            <button className={styles.backButton} onClick={() => setClicked(false)} >
+              <img src="arrow.svg" className={styles.backImg}></img>
+              Back
+            </button>
+            <button className={styles.loginEnter}>Enter</button>
+          </div>
+          
           <a className={styles.loginExtras}>Forgot password?</a>
           <a className={styles.loginExtras}>Create an account.</a>
         </div>

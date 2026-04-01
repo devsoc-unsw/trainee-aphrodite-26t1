@@ -10,11 +10,18 @@ html, body {
   min-height: 100vh;
   position: relative;
   background-color: black;
+
 }
 
 .disappear {
   opacity: 0;
-  transition: opacity ease 1000ms;
+  transition: opacity ease 750ms;
+  transition-delay: 0.5s;
+}
+
+.visible {
+  opacity: 1;
+  transition: opacity ease 3000ms;
 }
 
 
@@ -25,11 +32,11 @@ html, body {
   min-width: 35%;
   object-fit: cover;
   z-index:1;
+  transition: min-width 1s ease;
 }
 
 .banner.expand {
   min-width: 140vw;
-  transition: min-width 1s ease;
 }
 
 .dashboard {
@@ -216,11 +223,12 @@ html, body {
   opacity: 1;
   border-radius: 20px;
   z-index: 3;
-  transition: opacity 1.5s ease;
-  transition-delay: 0.7s;
+  transition: opacity 1.6s ease;
+  transition-delay: 0.8s;
 }
 
 .loginPage.hide {
+  transition-delay: 0s;
   opacity: 0;
 }
 
@@ -277,8 +285,6 @@ html, body {
 .loginEnter {
   height: 6vh;
   width: 10vw;
-  margin-bottom: 25px;
-  margin-top: 5px;
   border-radius: 50px;
   background-color: white;
   outline: none;
@@ -316,4 +322,40 @@ html, body {
 
 .loginExtras:hover::after {
   width: 100%;
+}
+
+.backButton {
+  height: 6vh;
+  width: 10vw;
+  border-radius: 50px;
+  border: none;
+  outline: none;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 25px;
+  color: rgb(0, 0, 0);
+  font-family: 'Nunito', sans-serif;
+  font-size: clamp(1vw, 1vw, 1vw);
+  font-weight: 700;
+  gap: 10px;
+  transition: transform ease 300ms;
+}
+
+.backButton:hover {
+  transform: scale(1.05);
+}
+
+.backImg {
+  rotate: 180deg;
+}
+
+.loginButtons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90%;
+  flex-direction: row;
+  gap: 20%;
+  padding-bottom: 25px;
 }
