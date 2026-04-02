@@ -4,9 +4,32 @@ import AudioBars2 from "../components/audiobars/AudioBars2.tsx"
 import { useState } from "react"
 
 
+
+
 /* When clicking on the email page make the red zoom out and fill th entire page */
 export default function LandingPage() {
   const [clicked, setClicked] = useState(false)
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+
+  const handleLogin = () => {
+
+    const emailValid = /\S+@\S+\.\S+/.test(email);
+    if (!emailValid) {
+      setError("Please enter a valid email");
+      return;
+    }
+    setClicked(true)
+
+    if (password.length < 8 && clicked) {
+      setError("Password needs to be at least 8 characters long");
+      return;
+    }
+
+    setError("");
+  };
+
   return (
     
     <div className={styles.main}>
@@ -27,10 +50,11 @@ export default function LandingPage() {
             </a>
             <div className={styles.logintext}>OR</div>
             <div className={styles.emailContainer}>
-              <input type="text" placeholder="Enter your email" className={styles.emailButton} />
-              <button onClick={() => setClicked(true)} className={styles.enterButton}>
+              <input type="text" placeholder="Enter your email" onChange={(e) => setEmail(e.target.value)} className={styles.emailButton} />
+              <button onClick={() => handleLogin()} className={styles.enterButton}>
                 <img src="arrow.svg"></img>
               </button>
+              <div className={error ? styles.errorMessage : ''}>{error}</div>
             </div>
           </div>
         </div>
@@ -85,15 +109,16 @@ export default function LandingPage() {
           <div className={styles.loginTitle}>startune</div>
           <div className={styles.loginSubtitle}>Login</div>
           <div className={styles.loginText}>Email</div>
-          <input type="text"className={styles.loginBubble}></input>
+          <input type="text" defaultValue={email} onChange={(e) => setEmail(e.target.value)} className={styles.loginBubble}></input>
           <div className={styles.loginText}>Password</div>
-          <input type="password" className={styles.loginBubble}></input>
+          <input type="password" onChange={(p) => setPassword(p.target.value)} className={styles.loginBubble}></input>
+          <div className={error ? styles.loginErrorMessage : ''}>{error}</div>
           <div className={styles.loginButtons}>
-            <button className={styles.backButton} onClick={() => setClicked(false)} >
+            <button className={styles.backButton} onClick={() => {setClicked(false); setError("")}} >
               <img src="arrow.svg" className={styles.backImg}></img>
               Back
             </button>
-            <button className={styles.loginEnter}>Enter</button>
+            <button className={styles.loginEnter} onClick={() => handleLogin()}>Enter</button>
           </div>
           
           <a className={styles.loginExtras}>Forgot password?</a>
