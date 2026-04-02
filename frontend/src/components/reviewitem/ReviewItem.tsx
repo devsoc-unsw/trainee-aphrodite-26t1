@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { RatingStars } from "../ratingStars/ratingStars";
 import styles from "./reviewitem.module.css";
 
@@ -5,12 +6,13 @@ interface ReviewItemInfo {
   name: string,
   artist: string,
   rating: number,
+  to: string,
   description?: string
 }
 
-export function ReviewItem({ name, artist, rating, description }: ReviewItemInfo) {
+export function ReviewItem({ name, to, artist, rating, description }: ReviewItemInfo) {
   return (
-    <div className={styles.container}>
+    <Link to={to} className={styles.container}>
       <div className={styles.info}>
         <div className={styles.profile}></div>
         <div>
@@ -20,7 +22,9 @@ export function ReviewItem({ name, artist, rating, description }: ReviewItemInfo
         
       </div>
       {description ? <div className={styles.description}>{description}</div> : null}
-      <RatingStars rating={rating} />
-    </div>
+      <div>
+        <RatingStars rating={rating} />
+      </div>
+    </Link>
   )
 }
