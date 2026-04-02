@@ -85,7 +85,7 @@ export default function SongPage() {
           </div>
           <hr />
           <div className={styles.reviews}>
-            {new Array(15).fill((<ReviewItem name="username" artist="thing" rating={3} description="“At DevSoc, there are good programmers… and then there’s Andy…”" />))}
+          {new Array(15).fill(0).map((_, i) => (<ReviewItem key={i}to="/reviews/testid" name="username" artist="thing" rating={3} description="“At DevSoc, there are good programmers… and then there’s Andy…”" />))}
           </div>
         </main>
       </div>

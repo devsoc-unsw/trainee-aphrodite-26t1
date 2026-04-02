@@ -6,7 +6,10 @@
   padding: 12px 24px 12px 12px;
   cursor: pointer;
   gap: 10px;
-  justify-content: space-between;
+  justify-content: center;
+  flex-wrap: wrap;
+  color: white;
+  text-decoration: none;
 }
 .container:hover {
   background-color: #444;
@@ -22,6 +25,7 @@
 .info {
   display: flex;
   align-items: center;
+  flex-grow: 1;
 }
 .title {
   font-size: 15px;
@@ -37,6 +41,7 @@
   font-size: 13px;
   color: #a0a0a0;
   font-style: italic;
+  flex-grow: 1;
 }
 
 @media (max-width: 800px) {
