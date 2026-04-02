@@ -1,0 +1,36 @@
+.audiobars {
+  position: absolute;
+  z-index: -1;
+  opacity: 1;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: row;
+  gap: 25px;
+  left: -150%;
+  bottom: -50%;
+  align-items: flex-end;
+  pointer-events: none;
+}
+
+.bar {
+  height: var(--w);
+  background-color: rgb(221, 132, 132);
+  width: 10px;
+  animation: bounce var(--duration) ease-in-out infinite;
+  animation-delay: 1s;
+  border-radius: 20px 20px 0px 0px;
+}
+
+
+@keyframes bounce {
+  0%, 100% {
+    transform: scaleY(0.4);
+    transform-origin: bottom;
+    opacity: 0.1;
+  }
+  50% {
+    transform: scaleY(1);
+    transform-origin: bottom;
+    opacity: 0.7;
+  }
+}

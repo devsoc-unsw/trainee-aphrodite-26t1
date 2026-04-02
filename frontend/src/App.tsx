@@ -8,8 +8,8 @@ export default function App() {
   return (
     <>
       <Routes>
-        <Route index element={<Home />} />
-        <Route path="/landing" element={<LandingPage />}/>
+        <Route path="/" element={<LandingPage />}/>
+        <Route path="/home" element={<Home />} />
         <Route path="/review" element={<ReviewPage />}/>
         <Route path="/songs/:songId" element={<SongPage />} />
       </Routes>
