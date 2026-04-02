@@ -359,3 +359,38 @@ html, body {
   gap: 20%;
   padding-bottom: 25px;
 }
+
+.errorMessage {
+  color: rgb(255, 255, 255);
+  font-family: 'Nunito', sans-serif;
+  font-size: clamp(1vw, 1vw, 1vw);
+  font-weight: 700;
+  animation: popBounce 0.5s ease;
+}
+
+.loginErrorMessage {
+  color: rgb(255, 255, 255);
+  font-family: 'Nunito', sans-serif;
+  font-size: clamp(1vw, 1vw, 1vw);
+  font-weight: 700;
+  animation: popBounce 0.5s ease;
+  padding-bottom: 20px;
+
+}
+
+@keyframes popBounce {
+  0% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  80% {
+    transform: scale(0.95);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
