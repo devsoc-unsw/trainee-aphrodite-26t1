@@ -3,6 +3,8 @@ import cors from "cors";
 import 'dotenv/config'
 import rateLimit from "express-rate-limit";
 import router from "./routes/index.routes.js";
+import usersRouter from "./routes/users.routes.js";
+
 
 const app = express();
 const PORT = process.env.PORT ? process.env.PORT : 3000;
@@ -20,6 +22,7 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/api', router);
+app.use("/api/users", usersRouter);
 
 app.get("/", (req, res) => {
   res.json({ message: "Startune backend is running" });
