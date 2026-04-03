@@ -17,6 +17,7 @@ html, body {
   opacity: 0;
   transition: opacity ease 750ms;
   transition-delay: 0.5s;
+  pointer-events: none;
 }
 
 .visible {
@@ -228,6 +229,7 @@ html, body {
 }
 
 .loginPage.hide {
+  pointer-events: none;
   transition-delay: 0s;
   opacity: 0;
 }
@@ -307,6 +309,8 @@ html, body {
   padding-bottom: 10px;
   position: relative;
   cursor: pointer;
+  border: none;
+  background: none;
 }
 
 .loginExtras::after {
@@ -376,6 +380,10 @@ html, body {
   animation: popBounce 0.5s ease;
   padding-bottom: 20px;
 
+}
+
+.createPage {
+  transition-delay: 0.85s;
 }
 
 @keyframes popBounce {

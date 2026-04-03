@@ -11,7 +11,9 @@ export default function LandingPage() {
   const [clicked, setClicked] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [passwordConfirm, setConfirmPassword] = useState("")
   const [error, setError] = useState("")
+  const [createClicked, setCreate] = useState(false)
 
   const handleLogin = () => {
 
@@ -24,6 +26,11 @@ export default function LandingPage() {
 
     if (password.length < 8 && clicked) {
       setError("Password needs to be at least 8 characters long");
+      return;
+    }
+
+    if (password != passwordConfirm && clicked && createClicked) {
+      setError("Passwords do not match");
       return;
     }
 
@@ -103,7 +110,7 @@ export default function LandingPage() {
           </div>
         </div>
       </div>
-      <div className={`${styles.loginPage} ${clicked ? '' : styles.hide}`}>
+      <div className={`${styles.loginPage} ${ (clicked && !createClicked) ? '' : styles.hide}`}>
         <AudioBars2></AudioBars2>
         <div className={styles.loginDashboard}>
           <div className={styles.loginTitle}>startune</div>
@@ -122,7 +129,28 @@ export default function LandingPage() {
           </div>
           
           <a className={styles.loginExtras}>Forgot password?</a>
-          <a className={styles.loginExtras}>Create an account.</a>
+          <button className={styles.loginExtras} onClick={() => setCreate(true)}>Create an account.</button>
+        </div>
+      </div>
+      <div className={`${styles.loginPage} ${ createClicked ? styles.createPage : styles.hide}`}>
+        <AudioBars2></AudioBars2>
+        <div className={styles.loginDashboard}>
+          <div className={styles.loginTitle}>startune</div>
+          <div className={styles.loginSubtitle}>Login</div>
+          <div className={styles.loginText}>Email</div>
+          <input type="text" defaultValue={email} onChange={(e) => setEmail(e.target.value)} className={styles.loginBubble}></input>
+          <div className={styles.loginText}>Password</div>
+          <input type="password" onChange={(p) => setPassword(p.target.value)} className={styles.loginBubble}></input>
+          <div className={styles.loginText}>Confirm Password</div>
+          <input type="password" onChange={(p) => setConfirmPassword(p.target.value)} className={styles.loginBubble}></input>
+          <div className={error ? styles.loginErrorMessage : ''}>{error}</div>
+          <div className={styles.loginButtons}>
+            <button className={styles.backButton} onClick={() => {setCreate(false); setError("")}} >
+              <img src="arrow.svg" className={styles.backImg}></img>
+              Back
+            </button>
+            <button className={styles.loginEnter} onClick={() => handleLogin()}>Enter</button>
+          </div>
         </div>
       </div>
     </div>
