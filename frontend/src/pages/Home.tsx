@@ -3,14 +3,19 @@ import styles from "./home.module.css"
 import type { Track } from "../spotify.types";
 import { Sidebar } from "../components/sidebar/sidebar";
 import { LargeCard } from "../components/largecard/largecard";
-import { SongTab } from "../components/songtab/songtab";
-import { Link } from "react-router";
+import { SongItem } from "../components/songitem/songitem";
+import { Link, useNavigate } from "react-router";
+import SearchBar from "../components/searchbar/Searchbar";
 
 
 export default function Home() {
   const [topSongs, setTopSongs] = useState<Track[]>([]);
+  const navigate = useNavigate();
+  const onSubmit = (query: string) => {
+    if (!query) return;
+    navigate("/search?" + new URLSearchParams({ q: query }).toString());
+  }
 
-  // should run only the first time it renders
   useEffect(() => {
     fetch("http://localhost:3000/api/recommended")
       .then(res => res.json())
@@ -24,26 +29,18 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <Sidebar accountName="account name" />
-
       <main className={styles.main}>
-        <div className={styles.searchContainer}>
-          <input
-            type="text"
-            className={styles.searchInput}
-            placeholder="Search for a song..."
-          />
-        </div>
-
+        <SearchBar placeholder="Search for a song or user..." onSubmit={onSubmit} />
         <section>
           <h2 className={styles.sectionTitle}>Recommended Songs</h2>
           <div className={styles.recommendedGrid}>
             {topSongs.length > 0 ? topSongs.map((track, i) => (
-              <Link to={"/songs/" + track.id} className={styles.songLink}>
-                <LargeCard key={track.id || i} title={track.name} imageUrl={track.album?.images?.[0]?.url} artist={track.artists[0].name} />
+              <Link key={track.id || i} to={"/songs/" + track.id} className={styles.songLink}>
+                <LargeCard title={track.name} imageUrl={track.album?.images?.[0]?.url} imageType="square" artist={track.artists[0].name} />
               </Link>
               
-            )) : [1, 2, 3, 4, 5].map((i) => (
-              <LargeCard key={i} title="Loading..." />
+            )) : Array(10).fill(0).map((_, i) => (
+              <LargeCard imageType="square" key={i} title="Loading..." />
             ))}
           </div>
         </section>
@@ -51,9 +48,11 @@ export default function Home() {
         <section>
           <h2 className={styles.sectionTitle}>Recent Ratings</h2>
           <div className={styles.ratingsList}>
-            {[1, 2].map(() => (
-              <SongTab name="Song Name" artist="Artist" rating={5} />
-            ))}
+            {topSongs.length > 0 ? Array(5).fill(0).map((_, i) => (
+              <Link key={i} to={"/songs/" + topSongs[i + 23].id} className={styles.songLink}>
+                <SongItem name={topSongs[i + 23].name} artist={topSongs[i + 23].artists[0].name} imageUrl={topSongs[i + 23].album?.images?.[0]?.url} rating={5} />
+              </Link>
+            )) : Array(5).fill(0).map((_, i) => (<SongItem key={i} name="Loading..." artist="" rating={5}/>))}
           </div>
         </section>
       </main>
