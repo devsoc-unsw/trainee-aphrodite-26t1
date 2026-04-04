@@ -23,8 +23,8 @@ export function Sidebar({ accountName }: { accountName: string }) {
         <div className={styles.accountName}>{accountName}</div>
       </div>
       <nav className={styles.nav}>
-        {tabs.map(tab =>
-          <NavLink to={tab.to} className={props => `${styles.navItem} ${props.isActive ? styles.active : ""}`} end>
+        {tabs.map((tab, i) =>
+          <NavLink key={i} to={tab.to} className={props => `${styles.navItem} ${props.isActive ? styles.active : ""}`} end>
             <div className={styles.navIcon}></div>
             <span className={styles.navLabel}>{tab.label}</span>
           </NavLink>

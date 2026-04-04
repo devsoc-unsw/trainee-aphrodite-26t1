@@ -1,47 +1,40 @@
-
-.ratingRow {
+.container {
   display: flex;
   align-items: center;
   background-color: #383838;
-  border-radius: 40px;
-  padding: 12px 24px 12px 12px;
+  border-radius: 22px;
+  padding: 12px;
+  padding-right: 24px;
   cursor: pointer;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  color: white;
+  text-decoration: none;
 }
-.ratingRow:hover {
+.container:hover {
   background-color: #444;
 }
-.ratingArt {
+.image {
   width: 50px;
   height: 50px;
   background-color: #a0a0a0;
-  border-radius: 50%;
+  border-radius: 10px;
   flex-shrink: 0;
   margin-right: 20px;
 }
-.ratingInfo {
+.info {
+  display: flex;
+  align-items: center;
   flex-grow: 1;
 }
-.ratingTitle {
+.title {
   font-size: 15px;
   font-weight: 700;
   margin: 0 0 4px 0;
 }
-.ratingArtist {
+.artist {
   font-size: 13px;
   color: #a0a0a0;
   margin: 0;
-}
-.ratingStars {
-  display: flex;
-  gap: 4px;
-}
-.starActive {
-  color: #1ED760;
-  width: 18px;
-  height: 18px;
-}
-.star {
-  color: #797873;
-  width: 18px;
-  height: 18px;
 }
