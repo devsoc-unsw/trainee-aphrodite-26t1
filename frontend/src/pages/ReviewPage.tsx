@@ -1,11 +1,13 @@
 
 import { Sidebar } from "../components/sidebar/sidebar";
 import { RatingStars } from "../components/ratingStars/ratingStars";
+import { ProfilePicture } from "../components/ProfilePicture/ProfilePicture";
 import { Comment } from "../components/comment/comment";
 
 import styles from "./review.module.css"
 import { useState } from "react";
 import { ActionBar } from "../components/actionbar/ActionBar";
+import { Button } from "../components/button/Button";
 
 const ReviewPage = () => {
   const [rating, setRating] = useState(3);
@@ -33,10 +35,10 @@ const ReviewPage = () => {
                 <p className={styles.subText}>Artist</p>
                 <p className={styles.subText}>Genre</p>
                 <div className={styles.headerBar}>
-                  <img src="/samplepfp.jpg" className={styles.profilePicture} alt="Profile picture" />
+                  <ProfilePicture src="/samplepfp.jpg" />
                   <p className={styles.username}>Username (Reviewer)</p>
-                  <RatingStars rating={rating} setRating={setRating} interactable={true} />
-                  <ActionBar likes={69} comments={67}/>
+                  <RatingStars rating={rating} setRating={setRating} interactable={false} />
+                  <ActionBar likes={69} comments={67} />
                 </div>
               </div>
             </div>
@@ -53,26 +55,27 @@ const ReviewPage = () => {
           <section>
             <h1>Comments</h1>
             <hr className="border-t border-gray-200" />
-          {/* Input box - placeholder for now*/}
+            {/* Input box - placeholder for now*/}
 
-          <div className={styles.comment}>
-            <img src="/samplepfp.jpg" className={styles.profilePicture} alt="Profile picture" />
-            <input
-              type="text"
-              className={styles.commentInput}
-              placeholder="Add a comment"
-            />
-          </div>
-          <button className={styles.commentButton}>Comment</button>
-          <Comment />
-          <Comment />
-          <Comment />
-          <Comment />
+            <div className={styles.comment}>
+              <ProfilePicture src="/samplepfp.jpg" />
+              <input
+                type="text"
+                className={styles.commentInput}
+                placeholder="Add a comment"
+              />
+            </div>
+            <Button>Comment</Button>
+            {/* <button className={styles.commentButton}>Comment</button> */}
+            <Comment />
+            <Comment />
+            <Comment />
+            <Comment />
           </section>
         </div>
 
 
-        
+
 
       </main>
     </div>
