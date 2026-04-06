@@ -80,6 +80,7 @@ html, body {
 
 .loginButton {
   background-color: white;
+  color: black;
   width: 20vw;
   height: 8vh;
   display: flex;
@@ -102,6 +103,7 @@ html, body {
   outline: none;
   border: none;
   padding-left: 30px;
+  color: black;
 }
 
 .loginButton:hover {
@@ -290,6 +292,7 @@ html, body {
   font-size: clamp(1vw, 1vw, 1vw);
   padding-left: 15px;
   font-weight: 600;
+  color: black;
 }
 
 .loginEnter {
@@ -304,6 +307,7 @@ html, body {
   padding-left: 15px;
   font-weight: 700;
   transition: transform ease 300ms;
+  color: black;
 }
 
 .loginEnter:hover {
@@ -351,6 +355,7 @@ html, body {
   font-size: clamp(1vw, 1vw, 1vw);
   font-weight: 700;
   gap: 10px;
+  background-color: white;
   transition: transform ease 300ms;
 }
 

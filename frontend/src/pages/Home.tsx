@@ -5,7 +5,7 @@ import { Sidebar } from "../components/sidebar/sidebar";
 import { LargeCard } from "../components/largecard/largecard";
 import { SongItem } from "../components/songitem/songitem";
 import { Link, useNavigate } from "react-router";
-import SearchBar from "../components/searchbar/Searchbar";
+import SearchBar from "../components/searchbar/SearchBar";
 
 
 export default function Home() {
