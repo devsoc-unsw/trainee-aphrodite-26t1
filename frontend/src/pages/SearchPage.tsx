@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import SearchBar from "../components/searchbar/Searchbar";
+import SearchBar from "../components/searchbar/SearchBar";
 import { Sidebar } from "../components/sidebar/sidebar";
 import { SongItem } from "../components/songitem/songitem";
 import styles from "./search.module.css"

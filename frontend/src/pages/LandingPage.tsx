@@ -74,7 +74,7 @@ export default function LandingPage() {
         return;
       }
 
-      const data = await createAccount( username, email, password);
+      const data = await createAccount( username, email, createPassword);
       if (data.message) {
 
         setError(data.message);

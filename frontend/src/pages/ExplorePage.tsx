@@ -1,6 +1,6 @@
 import { Sidebar } from "../components/sidebar/sidebar";
 import styles from "./explore.module.css"
-import SearchBar from "../components/searchbar/Searchbar";
+import SearchBar from "../components/searchbar/SearchBar";
 import { SongItem } from "../components/songitem/songitem";
 import { useNavigate } from "react-router";
 

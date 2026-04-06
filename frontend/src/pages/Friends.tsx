@@ -2,7 +2,7 @@ import { useState } from "react";
 import { LargeCard } from "../components/largecard/largecard";
 import { Sidebar } from "../components/sidebar/sidebar";
 import styles from "./friends.module.css"
-import SearchBar from "../components/searchbar/Searchbar";
+import SearchBar from "../components/searchbar/SearchBar";
 import { Link } from "react-router";
 
 interface DisplayUser {
