@@ -256,7 +256,15 @@ html, body {
   font-family: 'Nunito', sans-serif;
   font-size: clamp(2vw, 2vw, 5vw);
   font-weight: 500;
-  padding-bottom: 50px;
+  padding-bottom: 30px;
+}
+
+.createSubtitle {
+  color: white;
+  font-family: 'Nunito', sans-serif;
+  font-size: clamp(2vw, 2vw, 5vw);
+  font-weight: 500;
+  padding-bottom: 10px;
 }
 
 .loginText {

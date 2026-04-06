@@ -2,38 +2,101 @@ import styles from "./landing.module.css"
 import AudioBars from "../components/audiobars/AudioBars.tsx"
 import AudioBars2 from "../components/audiobars/AudioBars2.tsx"
 import { useState } from "react"
-
+import { createAccount, login } from "../api/users.ts"
+import { useNavigate } from "react-router-dom";
 
 
 
 /* When clicking on the email page make the red zoom out and fill th entire page */
 export default function LandingPage() {
+  const navigate = useNavigate();
   const [clicked, setClicked] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [createPassword, setCreatePassword] = useState("")
   const [passwordConfirm, setConfirmPassword] = useState("")
   const [error, setError] = useState("")
   const [createClicked, setCreate] = useState(false)
+  const [username, setUsername ] = useState("")
 
-  const handleLogin = () => {
+  const refresh = () => {
+    setUsername("")
+    setPassword("")
+    setError("")
+  }
+
+  const handleLogin = async () => {
 
     const emailValid = /\S+@\S+\.\S+/.test(email);
     if (!emailValid) {
       setError("Please enter a valid email");
       return;
     }
-    setClicked(true)
-
-    if (password.length < 8 && clicked) {
-      setError("Password needs to be at least 8 characters long");
+    if (!clicked) {
+      setClicked(true)
       return;
     }
+    if (!createClicked) {
+      if (email.length == 0 && clicked) {
+        setError("Please enter an email");
+        return;
+      }
 
-    if (password != passwordConfirm && clicked && createClicked) {
-      setError("Passwords do not match");
-      return;
+      if (password.length == 0 && clicked) {
+        setError("Please enter a password");
+        return;
+      }
+
+      if (password.length < 8 && clicked) {
+        setError("Password needs to be at least 8 characters long");
+        return;
+      }
+    } 
+    if (createClicked) {
+
+      if (createPassword.length == 0 && clicked) {
+        setError("Please enter a password");
+        return;
+      }
+
+      if (createPassword.length < 8 && clicked) {
+        setError("Password needs to be at least 8 characters long");
+        return;
+      }
+
+      if (username.length == 0) {
+        setError("Please enter a username");
+        return;
+      }
+
+      if (createPassword != passwordConfirm && clicked) {
+        setError("Passwords do not match");
+        return;
+      }
+
+      const data = await createAccount( username, email, password);
+      if (data.message) {
+
+        setError(data.message);
+        return;
+      } else {
+
+        localStorage.setItem("token", data.token);
+        navigate("/home");
+      }
+
+    } else {
+      const data = await login(email, password);
+      console.log()
+      if (data.message) {
+        setError(data.message);
+        return;
+      } else {
+
+        localStorage.setItem("token", data.token);
+        navigate("/home");
+      }
     }
-
     setError("");
   };
 
@@ -129,18 +192,20 @@ export default function LandingPage() {
           </div>
           
           <a className={styles.loginExtras}>Forgot password?</a>
-          <button className={styles.loginExtras} onClick={() => setCreate(true)}>Create an account.</button>
+          <button className={styles.loginExtras} onClick={() => {setCreate(true); refresh()}}>Create an account.</button>
         </div>
       </div>
       <div className={`${styles.loginPage} ${ createClicked ? styles.createPage : styles.hide}`}>
         <AudioBars2></AudioBars2>
         <div className={styles.loginDashboard}>
           <div className={styles.loginTitle}>startune</div>
-          <div className={styles.loginSubtitle}>Login</div>
+          <div className={styles.createSubtitle}>Create an Account</div>
           <div className={styles.loginText}>Email</div>
           <input type="text" defaultValue={email} onChange={(e) => setEmail(e.target.value)} className={styles.loginBubble}></input>
+           <div className={styles.loginText}>Username</div>
+          <input type="text" onChange={(e) => setUsername(e.target.value)} className={styles.loginBubble}></input>
           <div className={styles.loginText}>Password</div>
-          <input type="password" onChange={(p) => setPassword(p.target.value)} className={styles.loginBubble}></input>
+          <input type="password" onChange={(p) => setCreatePassword(p.target.value)} className={styles.loginBubble}></input>
           <div className={styles.loginText}>Confirm Password</div>
           <input type="password" onChange={(p) => setConfirmPassword(p.target.value)} className={styles.loginBubble}></input>
           <div className={error ? styles.loginErrorMessage : ''}>{error}</div>
