@@ -1,6 +1,6 @@
 import styles from './audiobars2.module.css'
 
-const bars = Array.from({ length: 60 }, () => ({
+const bars = Array.from({ length: 80 }, () => ({
   width: Math.random() * 375 + 25,
   duration: Math.random() * 5 + 4.5,
 }));
