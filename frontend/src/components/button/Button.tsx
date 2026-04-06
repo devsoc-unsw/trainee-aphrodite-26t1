@@ -1,8 +1,8 @@
 import styles from "./button.module.css"
 
-export function Button({ children, onClick }: { children: React.ReactNode, onClick?: React.MouseEventHandler<HTMLButtonElement> }) {
+export function Button({ children, onClick, active }: { children: React.ReactNode, onClick?: React.MouseEventHandler<HTMLButtonElement>, active?: boolean }) {
   return (
-    <button onClick={onClick ? onClick : undefined} className={styles.button}>{children}</button>
+    <button onClick={onClick ? onClick : undefined} className={`${styles.button} ${active ? styles.active : null}`}>{children}</button>
   )
 }
 export function LinkButton({ children, href, newTab }: { children: React.ReactNode, href: string, newTab?: boolean }) {
