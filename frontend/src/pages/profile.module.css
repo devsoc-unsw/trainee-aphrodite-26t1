@@ -21,9 +21,8 @@
   gap: 2rem;
   flex-wrap: wrap;
   justify-content: center;
-  background-color: rgb(44, 35, 73);
   padding: 32px 10vw;
-  background-image: cover;
+  background-size: cover;
   background-repeat: no-repeat;
   background-position: center;
 }
@@ -34,15 +33,28 @@
   flex-wrap: wrap;
   justify-content: center;
 }
-.profileRow > div {
-  flex-grow: 1;
-}
-.headerImg {
+.avatarWrapper {
+  position: relative;
   width: 150px;
   height: 150px;
+}
+.avatarImg {
+  width: 100%;
+  height: 100%;
   border-radius: 50%;
 }
-
+.avatarBadge {
+  background-color: #b2ff5b;
+  position: absolute;
+  bottom: 4px;
+  right: 4px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+.grow > div {
+  flex-grow: 1;
+}
 .headerInfo {
   display: flex;
   flex-direction: column;
@@ -117,11 +129,43 @@ hr {
 .body {
   display: flex;
   flex-direction: column;
-  padding: 0 10vw;
+  gap: 1.5rem;
+  padding: 2rem 10vw;
   margin-top: 2vh;
 }
 .reviews {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+.cards {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+}
+.cardImage {
+  width: 15vw;
+  height: 15vw;
+  min-width: 250px;
+  min-height: 250px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 12px;
+  color: white;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

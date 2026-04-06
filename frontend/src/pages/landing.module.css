@@ -80,6 +80,7 @@ html, body {
 
 .loginButton {
   background-color: white;
+  color: black;
   width: 20vw;
   height: 8vh;
   display: flex;
@@ -95,6 +96,7 @@ html, body {
   height: 8vh;
   width: 17.5vw;
   background-color: white;
+  color: black;
   font-family: 'Nunito', sans-serif;
   font-size: clamp(1vw, 1vw, 3vw);
   font-weight: 700;
@@ -284,6 +286,7 @@ html, body {
   margin-top: 5px;
   border-radius: 50px;
   background-color: white;
+  color: black;
   outline: none;
   border: none;
   font-family: 'Nunito', sans-serif;
@@ -297,6 +300,7 @@ html, body {
   width: 10vw;
   border-radius: 50px;
   background-color: white;
+  color: rgb(0, 0, 0);
   outline: none;
   border: none;
   font-family: 'Nunito', sans-serif;
@@ -346,6 +350,7 @@ html, body {
   justify-content: flex-start;
   align-items: center;
   padding-left: 25px;
+  background-color: white;
   color: rgb(0, 0, 0);
   font-family: 'Nunito', sans-serif;
   font-size: clamp(1vw, 1vw, 1vw);

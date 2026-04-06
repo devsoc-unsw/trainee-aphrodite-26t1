@@ -3,7 +3,7 @@ import AudioBars from "../components/audiobars/AudioBars.tsx"
 import AudioBars2 from "../components/audiobars/AudioBars2.tsx"
 import { useState } from "react"
 import { createAccount, login } from "../api/users.ts"
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 
 
 
