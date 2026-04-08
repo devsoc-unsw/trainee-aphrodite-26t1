@@ -110,7 +110,7 @@ export default function LandingPage() {
               <img src='spotify.svg' className={styles.logo}></img>
               Continue with Spotify
             </a>
-            <a className={styles.loginButton}>
+            <a className={styles.loginButton} href="http://localhost:3000/api/users/auth/google">
               <img src='google.svg' className={styles.google}></img>
               Continue with Google
             </a>
