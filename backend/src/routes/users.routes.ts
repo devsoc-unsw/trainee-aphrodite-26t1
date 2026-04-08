@@ -48,9 +48,9 @@ router.post("/", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   try {
-
     const db = await connectDB();
-    const { username, email, password } = req.body
+
+    const { email, password } = req.body
 
     const user = await db.collection("users").findOne({ email })
     if (!user) {

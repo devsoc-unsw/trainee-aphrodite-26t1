@@ -5,7 +5,6 @@ import rateLimit from "express-rate-limit";
 import router from "./routes/index.routes.js";
 import usersRouter from "./routes/users.routes.js";
 
-
 const app = express();
 const PORT = process.env.PORT ? process.env.PORT : 3000;
 
