@@ -47,10 +47,6 @@ export default function LandingPage() {
         return;
       }
 
-      if (password.length < 8 && clicked) {
-        setError("Password needs to be at least 8 characters long");
-        return;
-      }
     } 
     if (createClicked) {
 

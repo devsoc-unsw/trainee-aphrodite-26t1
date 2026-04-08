@@ -12,6 +12,7 @@ let db: Db;
 
 export async function connectDB(): Promise<Db> {
   if (!db) {
+    console.log("connecting")
     await client.connect();
     db = client.db("startune");
     console.log("Database connected");
