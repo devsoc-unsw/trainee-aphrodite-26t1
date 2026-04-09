@@ -9,6 +9,15 @@ import SearchBar from "../components/searchbar/SearchBar";
 
 
 export default function Home() {
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+    if (token) {
+      localStorage.setItem("token", token);
+      navigate("/home", { replace: true });
+    }
+  }, []);
+
   const [topSongs, setTopSongs] = useState<Track[]>([]);
   const navigate = useNavigate();
   const onSubmit = (query: string) => {

@@ -90,6 +90,7 @@ html, body {
   font-weight: 700;
   border-radius: 100px;
   transition: transform 0.2s ease;
+  text-decoration: none;
 }
 
 .emailButton {
