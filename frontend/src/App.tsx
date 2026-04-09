@@ -7,19 +7,22 @@ import FriendsPage from './pages/Friends.tsx'
 import Profile from './pages/Profile.tsx'
 import ExplorePage from './pages/ExplorePage.tsx'
 import SearchPage from './pages/SearchPage.tsx'
+import GoogleCallback from './pages/GoogleCallback.tsx'
+import ProtectedRoute from "./components/protected/ProtectedRoute.tsx";
 
 export default function App() {
   return (
     <>
       <Routes>
         <Route path="/" element={<LandingPage />}/>
-        <Route path="/home" element={<Home />} />
-        <Route path="/friends" element={<FriendsPage />} />
-        <Route path="/explore" element={<ExplorePage />} />
-        <Route path="/search" element={<SearchPage />} />
-        <Route path="/users/:username" element={<Profile />} />
-        <Route path="/reviews/:reviewId" element={<ReviewPage />}/>
-        <Route path="/songs/:songId" element={<SongPage />} />
+        <Route path="/callback" element={<GoogleCallback />} />
+        <Route path="/home" element={<ProtectedRoute><Home /></ProtectedRoute>} />
+        <Route path="/friends" element={<ProtectedRoute><FriendsPage /></ProtectedRoute>} />
+        <Route path="/explore" element={<ProtectedRoute><ExplorePage /></ProtectedRoute>} />
+        <Route path="/search" element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />
+        <Route path="/users/:username" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
+        <Route path="/reviews/:reviewId" element={<ProtectedRoute><ReviewPage /></ProtectedRoute>}/>
+        <Route path="/songs/:songId" element={<ProtectedRoute><SongPage /></ProtectedRoute>} />
       </Routes>
     </>
   )

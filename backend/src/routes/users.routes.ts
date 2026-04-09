@@ -2,10 +2,11 @@ import { Router } from "express";
 import { connectDB } from "../database/connect.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { authorise } from "../middleware/auth.js";
 
 const router: Router = Router();
 
-router.get("/", async (req, res) => {
+router.get("/", authorise, async (req, res) => {
   try {
     const db = await connectDB();
     const users = await db.collection("users").find().toArray();
@@ -71,7 +72,7 @@ router.post("/login", async (req, res) => {
     res.status(500).json({ message: "Failed to login", error: String(error) })
   }
 })
-router.get("/test", (req, res) => res.send("router works"));
+
 router.get("/auth/google", async (req, res) => {
   try {
     const client_id = process.env.GOOGLE_CLIENT_ID; 
@@ -102,25 +103,41 @@ router.get("/auth/google/callback", async( req, res ) => {
   });
   
   const tokens = await tokenRes.json();
+  console.log("tokens:", tokens);
 
   // Get user info
   const userRes = await fetch("https://www.googleapis.com/oauth2/v3/userinfo", {
     headers: { Authorization: `Bearer ${tokens.access_token}` },
   });
+
   const googleUser = await userRes.json();
+
+  if (!googleUser) {
+    res.status(500).send("Error - Google Auth");
+    res.redirect("http://localhost:5173")
+  }
 
   const db = await connectDB();
   let user = await db.collection("users").findOne({ email: googleUser.email })
-  let newUser = false;
+
+  let username = googleUser.name
+  let usernameTaken = await db.collection("users").findOne({ username })
+  let i = 1
+
+  while(usernameTaken) {
+    username = googleUser.name + i
+    usernameTaken = await db.collection("users").findOne({ username })
+    i++;
+  }
 
   if (!user) {
+    console.log(googleUser)
     const result = await db.collection("users").insertOne({
       username: googleUser.name,
       email: googleUser.email,
       googleId: googleUser.sub,
     });
-    user = { _id: result.insertedId, email: googleUser.email };
-    newUser = true;
+    user = { _id: result.insertedId, email: googleUser.email }
   }
 
   const token = jwt.sign(
@@ -129,13 +146,8 @@ router.get("/auth/google/callback", async( req, res ) => {
     { expiresIn: "5d" }
   );
 
-  if (newUser) {
-    /*res.redirect() REDIRECT TO ENTER USERNAME PAGE WITH TOKEN. USERNAME PAGE WILL SIMPLY EDIT THE USER's USERNAME*/
-  } else {
-    /*res.redirect() REDIRECT TO HOMEPAGE WITH TOKEN*/
-  }
+  res.redirect(`http://localhost:5173/callback?token=${token}`);
 
 })
-
 
 export default router;
