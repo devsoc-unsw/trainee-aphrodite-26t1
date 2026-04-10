@@ -1,25 +1,14 @@
 import { Router } from "express"
-import { getAccessToken, searchTrackItems } from "../lib/spotify.js";
-import { PlaylistResponse, Track } from "../spotify.types.js";
+import { getAccessToken, getTrack, searchTracks } from "../lib/spotify.js";
+import * as Spotify from "../types/spotify.types.js";
+import { getSong, searchSong } from "../services/songs.services.js";
 
 const router: Router = Router();
 
 // this should fetch from db in the future
 router.get('/songs/:songId', async (req, res) => {
   try {
-    const token = await getAccessToken();
-    const id = req.params.songId;
-    const response = await fetch(`https://api.spotify.com/v1/tracks/${id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to fetch song: ${response.statusText}`);
-    }
-
-    const data: Track = await response.json();
+    const data = await getSong(req.params.songId);
     res.json(data);
   }
   catch (err) {
@@ -44,8 +33,8 @@ router.get('/recommended', async (req, res) => {
       throw new Error(`Failed to fetch playlist: ${response.statusText}`);
     }
 
-    const data: PlaylistResponse = await response.json();
-    res.json({ tracks: data.tracks.items.map(item => item.track) });
+    const data: Spotify.Playlist = await response.json();
+    res.json({ tracks: data.items.items.map(playlistTrack => playlistTrack.item) });
   }
   catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';
@@ -63,11 +52,8 @@ router.get('/search', async (req, res) => {
   }
 
   try {
-    const token = await getAccessToken();
-    const tracks = await searchTrackItems(token, {
-      q: query.trim(),
-    });
-    res.json({ tracks });
+    const songs = await searchSong(query.trim());
+    res.json({ tracks: songs });
   }
   catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';

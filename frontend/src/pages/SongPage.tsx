@@ -8,15 +8,17 @@ import { ActionBar } from "../components/actionbar/ActionBar";
 
 import styles from "./song.module.css"
 import { ReviewItem } from "../components/reviewitem/ReviewItem";
-import type { Track } from "../spotify.types";
+import type { Song } from "../../../backend/src/types/api.types";
 
 
 export default function SongPage() {
   const params = useParams();
   const songId = params.songId;
-  const [rating, setRating] = useState(4);
-  const [likes, setLikes] = useState(67);
+  const [rating, setRating] = useState(0);
+  const [averageRating, setAverageRating] = useState(0);
+  const [likes, setLikes] = useState(0);
   const [liked, setLiked] = useState(false);
+  const [commentNo, setCommentNo] = useState(0);
   const [songName, setSongName] = useState("Song Name");
   const [artistName, setArtistName] = useState("Artist");
   const [img, setImg] = useState("/spotify.svg");
@@ -24,11 +26,15 @@ export default function SongPage() {
   useEffect(() => {
     fetch("http://localhost:3000/api/songs/" + songId)
       .then(res => res.json())
-      .then((track: Track) => {
+      .then((track: Song) => {
         if (track) {
           setSongName(track.name);
           setArtistName(track.artists[0].name);
           setImg(track.album.images[0].url);
+          setLikes(track.likeCount);
+          setCommentNo(track.reviewCount);
+          setRating(Math.round(track.averageRating));
+          setAverageRating(track.averageRating);
         }
       })
       .catch(console.error);
@@ -67,8 +73,11 @@ export default function SongPage() {
                 <LinkButton href={"https://open.spotify.com/track/" + songId} newTab>Listen on Spotify</LinkButton>
                 </div>
                 <div className={styles.actions}>
-                  <RatingStars rating={rating} setRating={setRating} interactable={true} />
-                  <ActionBar likes={likes} comments={67} liked={liked} onLike={like} />
+                  <div className={styles.ratings}>
+                    {averageRating.toFixed(1)}
+                    <RatingStars rating={rating} setRating={setRating} interactable={false} />
+                  </div>
+                  <ActionBar likes={likes} comments={commentNo} liked={liked} onLike={like} />
                 </div>
               </div>
             </div>

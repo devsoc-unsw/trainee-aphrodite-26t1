@@ -6,7 +6,7 @@ import styles from "./search.module.css"
 import { LargeCard } from "../components/largecard/largecard";
 import { Link, useSearchParams } from "react-router";
 import { Button } from "../components/button/Button";
-import type { Track } from "../spotify.types";
+import type { Song } from "../../../backend/src/types/api.types";
 
 type SearchType = "all" | "users" | "songs";
 function isSearchType(type: string | null): type is SearchType {
@@ -23,7 +23,7 @@ export default function SearchPage() {
   const queryParam = searchParams.get("q");
   const typeParam = searchParams.get("type");
 
-  const [songResults, setSongResults] = useState<Track[]>([]);
+  const [songResults, setSongResults] = useState<Song[]>([]);
   const [userResults, setUserResults] = useState<DisplayUser[]>([]);
   const [type, setType] = useState<SearchType>(isSearchType(typeParam) ? (typeParam || "all") : "all");
 
@@ -40,7 +40,7 @@ export default function SearchPage() {
     if (type !== "users") {
       fetch("http://localhost:3000/api/search/?q=" + query)
         .then(res => res.json())
-        .then((data: {tracks: Track[]}) => {
+        .then((data: {tracks: Song[]}) => {
           if (data?.tracks?.length > 0) {
             setSongResults(data.tracks);
           }

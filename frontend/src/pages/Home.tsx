@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import styles from "./home.module.css"
-import type { Track } from "../spotify.types";
+import type { Song } from "../../../backend/src/types/api.types";
 import { Sidebar } from "../components/sidebar/sidebar";
 import { LargeCard } from "../components/largecard/largecard";
 import { SongItem } from "../components/songitem/songitem";
@@ -9,7 +9,7 @@ import SearchBar from "../components/searchbar/SearchBar";
 
 
 export default function Home() {
-  const [topSongs, setTopSongs] = useState<Track[]>([]);
+  const [topSongs, setTopSongs] = useState<Song[]>([]);
   const navigate = useNavigate();
   const onSubmit = (query: string) => {
     if (!query) return;
@@ -19,7 +19,7 @@ export default function Home() {
   useEffect(() => {
     fetch("http://localhost:3000/api/recommended")
       .then(res => res.json())
-      .then((data: { tracks: Track[] }) => {
+      .then((data: { tracks: Song[] }) => {
         if (data.tracks) {
           setTopSongs(data.tracks);
         }
