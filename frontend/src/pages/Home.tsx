@@ -10,7 +10,6 @@ import SearchBar from "../components/searchbar/SearchBar";
 
 export default function Home() {
   const [topSongs, setTopSongs] = useState<Song[]>([]);
-  const [topSongs, setTopSongs] = useState<Track[]>([]);
   
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
