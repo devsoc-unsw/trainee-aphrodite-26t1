@@ -70,7 +70,13 @@
   gap: 1rem 4rem;
   flex-wrap: wrap;
 }
-
+.ratings {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  font-weight: 600;
+  font-size: 18px;
+}
 .reviewBody {
   background-color:#1E1E1E;
   padding: 20px;
