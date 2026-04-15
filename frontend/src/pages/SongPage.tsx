@@ -87,16 +87,40 @@ export default function SongPage() {
           <div className={styles.reviewBody}>
             A heartfelt ballad about falling in love at the DevSoc Training Program. Listen along as code becomes a love language for Andy and Zitian at UNSW.
           </div>
+
+          {/* Popular Reviews Section */}
           <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Reviews</h2>
+            <h2 className={styles.sectionTitle}>Popular Reviews</h2>
             <div className={styles.buttons}>
-              <Button>Top</Button>
-              <Button>New</Button>
+              <Button>View More</Button>
             </div>
           </div>
           <hr />
           <div className={styles.reviews}>
-          {new Array(15).fill(0).map((_, i) => (<ReviewItem key={i}to="/reviews/testid" name="username" artist="thing" rating={3} description="“At DevSoc, there are good programmers… and then there’s Andy…”" />))}
+          {new Array(3).fill(0).map((_, i) => (<ReviewItem key={i} name="username" artist="thing" rating={3} description="At DevSoc, there are good programmers… and then there’s Andy. Allegedly a “super genius,” he writes code so fast even his bugs have bugs—and somehow still pass tests. Between speedrunning assignments, arguing about tabs vs spaces like it’s a moral philosophy debate, and carrying group projects harder than recursion carries bad code, Andy has accidentally built a following. Not because he’s trying to—he’s just trying to submit before the deadline closes—but somehow every late-night coding session turns into chaos, competition, and a suspicious number of people wanting “help” that lasts way longer than it should. In a world of infinite edge cases, Andy is about to discover that the hardest thing to debug… isn’t code." />))}
+          </div>
+
+          {/* Recent Reviews section */}
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Recent Reviews</h2>
+            <div className={styles.buttons}>
+              <Button>View More</Button>
+            </div>
+          </div>
+          <hr />
+          <div className={styles.reviews}>
+          {new Array(3).fill(0).map((_, i) => (<ReviewItem key={i} name="username" artist="thing" rating={3} description="At DevSoc, there are good programmers… and then there’s Andy. Allegedly a “super genius,” he writes code so fast even his bugs have bugs—and somehow still pass tests. Between speedrunning assignments, arguing about tabs vs spaces like it’s a moral philosophy debate, and carrying group projects harder than recursion carries bad code, Andy has accidentally built a following. Not because he’s trying to—he’s just trying to submit before the deadline closes—but somehow every late-night coding session turns into chaos, competition, and a suspicious number of people wanting “help” that lasts way longer than it should. In a world of infinite edge cases, Andy is about to discover that the hardest thing to debug… isn’t code." />))}
+          </div>
+
+          {/* User's review */}
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>Your Review</h2>
+            <div className={styles.buttons}>
+            </div>
+          </div>
+          <hr />
+          <div className={styles.reviews}>
+          <ReviewItem name="username" artist="thing" rating={3} description="At DevSoc, there are good programmers… and then there’s Andy. Allegedly a “super genius,” he writes code so fast even his bugs have bugs—and somehow still pass tests. Between speedrunning assignments, arguing about tabs vs spaces like it’s a moral philosophy debate, and carrying group projects harder than recursion carries bad code, Andy has accidentally built a following. Not because he’s trying to—he’s just trying to submit before the deadline closes—but somehow every late-night coding session turns into chaos, competition, and a suspicious number of people wanting “help” that lasts way longer than it should. In a world of infinite edge cases, Andy is about to discover that the hardest thing to debug… isn’t code." />
           </div>
         </main>
 
