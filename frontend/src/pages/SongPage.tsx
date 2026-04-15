@@ -9,6 +9,7 @@ import { ActionBar } from "../components/actionbar/ActionBar";
 import styles from "./song.module.css"
 import { ReviewItem } from "../components/reviewitem/ReviewItem";
 import type { Song } from "../../../backend/src/types/api.types";
+import { ReviewModal } from "../components/reviewModal/reviewModal";
 
 
 export default function SongPage() {
@@ -22,6 +23,7 @@ export default function SongPage() {
   const [songName, setSongName] = useState("Song Name");
   const [artistName, setArtistName] = useState("Artist");
   const [img, setImg] = useState("/spotify.svg");
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
 
   useEffect(() => {
     fetch("http://localhost:3000/api/songs/" + songId)
@@ -45,7 +47,7 @@ export default function SongPage() {
   useEffect(() => {
     // post liked state to backend
   }, [liked]);
-  
+
   const like = () => {
     if (liked) {
       setLikes(likes - 1);
@@ -69,7 +71,7 @@ export default function SongPage() {
               <p className={styles.subText}>Genre</p>
               <div className={styles.headerBar}>
                 <div className={styles.buttons}>
-                  <Button>+ Write a review</Button>
+                  <Button onClick={() => setReviewModalOpen(true)}>+ Write a review</Button>
                 <LinkButton href={"https://open.spotify.com/track/" + songId} newTab>Listen on Spotify</LinkButton>
                 </div>
                 <div className={styles.actions}>
@@ -97,6 +99,12 @@ export default function SongPage() {
           {new Array(15).fill(0).map((_, i) => (<ReviewItem key={i}to="/reviews/testid" name="username" artist="thing" rating={3} description="“At DevSoc, there are good programmers… and then there’s Andy…”" />))}
           </div>
         </main>
+
+        {reviewModalOpen && (
+          <ReviewModal
+            onClose={() => setReviewModalOpen(false)}
+          />
+        )}
       </div>
   );
 }
