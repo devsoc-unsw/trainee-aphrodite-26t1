@@ -1,0 +1,17 @@
+.heart {
+  width: 24px;
+  height: 24px;
+  color: #797873;
+;
+  cursor: default;
+  transition: color 0.15s, transform 0.15s;
+}
+
+.heartActive {
+  width: 24px;
+  height: 24px;
+  color: #e74c3c;
+  cursor: pointer;
+  transform: scale(1.15);
+  transition: color 0.15s, transform 0.15s;
+}
