@@ -1,30 +1,57 @@
-import { Link } from "react-router";
+import { useState } from "react";
 import { RatingStars } from "../ratingStars/ratingStars";
 import styles from "./reviewitem.module.css";
+import { LikeHeart } from "../likeHeart/likeHeart";
 
 interface ReviewItemInfo {
   name: string,
   artist: string,
   rating: number,
-  to: string,
   description?: string
 }
 
-export function ReviewItem({ name, to, artist, rating, description }: ReviewItemInfo) {
+const CHAR_LIMIT = 200;
+
+export function ReviewItem({ name, rating, description }: ReviewItemInfo) {
+  const [expanded, setExpanded] = useState(false);
+  const [liked, setLiked] = useState(false);
+
+  const isLong = description && description.length > CHAR_LIMIT;
+  const displayText = isLong && !expanded
+    ? description.slice(0, CHAR_LIMIT) + "…"
+    : description;
+
   return (
-    <Link to={to} className={styles.container}>
+    <div className={styles.container}>
       <div className={styles.info}>
         <div className={styles.profile}></div>
-        <div>
-          <div className={styles.title}>{name}</div>
-          <div className={styles.artist}>{artist}</div>
+        <div className={styles.body}>
+          <div className={styles.commentHeader}>
+            <div className={styles.title}>Review by {name}</div>
+            <RatingStars rating={rating} size={14} />
           </div>
-        
+          {description ? <div className={styles.description}>
+            {displayText}
+            {isLong && (
+              <button
+                className={styles.seeMoreBtn}
+                onClick={() => setExpanded(prev => !prev)}
+              >
+                {expanded ? "See less" : "See more"}
+              </button>
+            )}
+          </div> : null}
+          <div className={styles.interactions}>
+            <LikeHeart liked={liked} setLiked={setLiked} interactable={true}/>
+            <div className={styles.likeText}>Like Review</div>
+            <div className={styles.likeText}>67 Likes</div>
+
+          </div>
+        </div>
+
       </div>
-      {description ? <div className={styles.description}>{description}</div> : null}
-      <div>
-        <RatingStars rating={rating} />
-      </div>
-    </Link>
+      <hr className={styles.divider} />
+    </div>
+
   )
 }

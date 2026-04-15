@@ -4,12 +4,8 @@
 }
 .starActive {
   color: #1ED760;
-  width: 28px;
-  height: 28px;
 }
 .star {
   color: #797873;
-  width: 28px;
-  height: 28px;
   transition-duration: 0.2s;
 }
