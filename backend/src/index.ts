@@ -1,9 +1,9 @@
 import express, { Router } from "express";
 import cors from "cors";
 import 'dotenv/config'
-import rateLimit from "express-rate-limit";
-import router from "./routes/index.routes.js";
-import usersRouter from "./routes/users.routes.js";
+import { closeDatabaseConnection, connectToDatabase } from "./lib/connect.js";
+import authRoutes from "./routes/auth.routes.js";
+import indexRoutes from "./routes/index.routes.js";
 
 const app = express();
 const PORT = process.env.PORT ? process.env.PORT : 3000;
@@ -17,17 +17,37 @@ const PORT = process.env.PORT ? process.env.PORT : 3000;
 //   // store: ... , // Redis, Memcached, etc. See below.
 // })
 // app.use(limiter);
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use('/api', router);
-app.use("/api/users", usersRouter);
 
-app.get("/", (req, res) => {
-  res.json({ message: "Startune backend is running" });
+async function startServer() {
+  try {
+    await connectToDatabase();
+
+    app.use(cors());
+    app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+
+    app.use((req, res, next) => {
+      console.log("➡️ REQUEST:", req.method, req.url);
+      next();
+    });
+    app.use("/api/users", authRoutes);
+    app.use("/api", indexRoutes);
+
+    app.listen(PORT, () => {
+      console.log(`Startune server listening on http://localhost:${PORT}`);
+    });
+
+  } catch (error) {
+    console.error("Error starting the server:", error);
+    process.exit(1);
+  }
+}
+
+startServer();
+
+// closing the server
+process.on("SIGINT", async () => {
+  console.log("Shutting down server.");
+  await closeDatabaseConnection();
+  process.exit();
 });
-
-app.listen(PORT, () => {
-  console.log(`Server listening on http://localhost:${PORT}`);
-});
-

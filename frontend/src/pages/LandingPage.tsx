@@ -2,7 +2,7 @@ import styles from "./landing.module.css"
 import AudioBars from "../components/audiobars/AudioBars.tsx"
 import AudioBars2 from "../components/audiobars/AudioBars2.tsx"
 import { useState } from "react"
-import { createAccount, login } from "../api/users.ts"
+import { register, login } from "../api/users.ts"
 import { useNavigate } from "react-router";
 
 
@@ -24,80 +24,69 @@ export default function LandingPage() {
     setPassword("")
     setError("")
   }
-
-  const handleLogin = async () => {
+  const handleEmailSubmit = async () => {
+    console.log("called email submit")
 
     const emailValid = /\S+@\S+\.\S+/.test(email);
     if (!emailValid) {
       setError("Please enter a valid email");
       return;
     }
-    if (!clicked) {
-      setClicked(true)
+    setClicked(true);
+    setError("");
+  }
+
+  const handleLogin = async () => {
+    if (!email) {
+      setError("Please enter an email")
       return;
     }
-    if (!createClicked) {
-      if (email.length == 0 && clicked) {
-        setError("Please enter an email");
-        return;
-      }
 
-      if (password.length == 0 && clicked) {
-        setError("Please enter a password");
-        return;
-      }
-
-    } 
-    if (createClicked) {
-
-      if (createPassword.length == 0 && clicked) {
-        setError("Please enter a password");
-        return;
-      }
-
-      if (createPassword.length < 8 && clicked) {
-        setError("Password needs to be at least 8 characters long");
-        return;
-      }
-
-      if (username.length == 0) {
-        setError("Please enter a username");
-        return;
-      }
-
-      if (createPassword != passwordConfirm && clicked) {
-        setError("Passwords do not match");
-        return;
-      }
-
-      const data = await createAccount( username, email, createPassword);
-      if (data.message) {
-
-        setError(data.message);
-        return;
-      } else {
-
-        localStorage.setItem("token", data.token);
-        navigate("/home");
-      }
-
-    } else {
-      const data = await login(email, password);
-      console.log()
-      if (data.message) {
-        setError(data.message);
-        return;
-      } else {
-
-        localStorage.setItem("token", data.token);
-        navigate("/home");
-      }
+    if (!password) {
+      setError("Please enter a password");
+      return;
     }
-    setError("");
-  };
+
+    const data = await login(email, password);
+    if (data.message) {
+      setError(data.message);
+      return;
+    }
+    localStorage.setItem("token", data.token);
+    navigate("/home");
+  }
+
+  const handleRegister = async() => {
+    console.log("Calling handleRegister in frontend")
+
+    if (!username) {
+      setError("Please enter a username");
+      return;
+    }
+
+    if (!createPassword) {
+      setError("Please enter a password");
+      return;
+    }
+    if (createPassword.length < 8) {
+      setError("Password needs to be at least 8 characters");
+      return;
+    }
+
+    if (createPassword !== passwordConfirm) {
+      setError("Passwords do not match");
+      return;
+    }
+    const data = await register(username, email, createPassword);
+    if (data.message) {
+      setError(data.message);
+      return;
+    }
+    localStorage.setItem("token", data.token);
+    navigate("/home");
+  }
 
   return (
-    
     <div className={styles.main}>
       <div className={clicked ? styles.disappear : styles.visible}>
         <AudioBars></AudioBars>
@@ -117,7 +106,7 @@ export default function LandingPage() {
             <div className={styles.logintext}>OR</div>
             <div className={styles.emailContainer}>
               <input type="text" placeholder="Enter your email" onChange={(e) => setEmail(e.target.value)} className={styles.emailButton} />
-              <button onClick={() => handleLogin()} className={styles.enterButton}>
+              <button onClick={() => handleEmailSubmit()} className={styles.enterButton}>
                 <img src="arrow.svg"></img>
               </button>
               <div className={error ? styles.errorMessage : ''}>{error}</div>
@@ -210,7 +199,7 @@ export default function LandingPage() {
               <img src="arrow.svg" className={styles.backImg}></img>
               Back
             </button>
-            <button className={styles.loginEnter} onClick={() => handleLogin()}>Enter</button>
+            <button className={styles.loginEnter} onClick={() => handleRegister()}>Enter</button>
           </div>
         </div>
       </div>
