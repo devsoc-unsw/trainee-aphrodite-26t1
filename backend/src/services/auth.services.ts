@@ -87,7 +87,7 @@ export async function authRegister(name: Name, email: Email, password: Password)
 
   // Sign JWT with the MongoDB _id
   const token = jwt.sign(
-    { userId: result.insertedId, email },
+    { id: result.insertedId, email },
     JWT_KEY,
     { expiresIn: "7d" }
   );
@@ -113,7 +113,7 @@ export async function authLogin(email: Email, password: Password) {
   }
 
   const token = jwt.sign(
-    { userId: user._id, email },
+    { id: user._id, email },
     JWT_KEY,
     { expiresIn: "7d" }
   );

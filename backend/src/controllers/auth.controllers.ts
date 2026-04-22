@@ -4,12 +4,9 @@ import * as authService from "../services/auth.services.js";
 export async function register(req: Request, res: Response) {
   try {
     const { username, email, password } = req.body;
-    console.log("Register request:", { username, email, password });
     const auth = await authService.authRegister(username, email, password);
-    console.log("✅ Register success:", auth);
     res.json(auth);
   } catch (err: any) {
-    console.log("❌ Register error:", err.message);
     res.status(400).json({ message: err.message });
   }
 }
@@ -17,10 +14,7 @@ export async function register(req: Request, res: Response) {
 export async function login(req: Request, res: Response) {
   try {
     const { email, password } = req.body;
-    console.log("email: ", email);
-    console.log("password: ", password);
     const auth = await authService.authLogin(email, password);
-    console.log("auth: ", auth);
     res.json(auth);
   } catch (err: any) {
     res.status(400).json({ message: err.message });
