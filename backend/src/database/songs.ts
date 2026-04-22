@@ -1,11 +1,9 @@
 import { WithId } from "mongodb";
 import { Song } from "../types/api.types.js";
-import { connectDB } from "./connect.js";
+import { songsCollection } from "../lib/connect.js";
 
 export async function fetchSongById(id: string) {
-  const db = await connectDB();
-  const songs = db.collection<Song>("songs");
-  const song = await songs.findOne({ id });
+  const song = await songsCollection.findOne({ id });
   return song;
 }
 
@@ -15,21 +13,17 @@ export async function fetchSongById(id: string) {
  * @returns Array of database documents for songs
  */
 export async function fetchSongsByIds(ids: string[]) {
-  const db = await connectDB();
-  const songs = db.collection<Song>("songs");
-  const found = await songs.find({ id: { $in: ids } }).toArray();
+  const found = await songsCollection.find({ id: { $in: ids } }).toArray();
   return found;
 }
 
 /**
  * Inserts or updates a song in the database (before musicbrainz enrichment)
- * @param song 
+ * @param song
  */
 export async function upsertSong(song: Song) {
-  const db = await connectDB();
-  const songs = db.collection<Song>("songs");
   const { createdAt, averageRating, reviewCount, likeCount, tags, ...data } = song;
-  await songs.updateOne(
+  await songsCollection.updateOne(
     { id: song.id },
     {
       $setOnInsert: {
@@ -51,9 +45,7 @@ export async function upsertSong(song: Song) {
  * @param data Partial data to update
  */
 export async function updateSong(id: string, data: Partial<Song>) {
-  const db = await connectDB();
-  const songs = db.collection<Song>("songs");
-  await songs.updateOne(
+  await songsCollection.updateOne(
     { id },
     { $set: data }
   );
