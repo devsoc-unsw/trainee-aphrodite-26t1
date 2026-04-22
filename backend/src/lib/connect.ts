@@ -23,7 +23,7 @@ export async function connectToDatabase() {
     client = new MongoClient(uri);
     await client.connect();
 
-    db = client.db();
+    db = client.db("startune");
     console.log(`Successfully connected to database: ${db.databaseName}`);
 
     // Initialise collections

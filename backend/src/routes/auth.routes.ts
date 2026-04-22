@@ -8,7 +8,6 @@ const router = express.Router();
 router.get("/", authMiddleware, authController.getUsers);
 
 // Registers and logs in a new user and returns a token
-//router.post("/auth/register", authController.register);
 router.post("/auth/register", authController.register);
 
 // Logs in an existing user and returns a token

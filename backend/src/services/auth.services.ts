@@ -2,11 +2,10 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { usersCollection } from "../lib/connect.js";
 import { ErrorMap } from "../constants/errors.js";
-import type { Name, Email, Password } from "../constants/types.js";
 
 const JWT_KEY = process.env.JWT_KEY!;
 
-function isValidUsername(name: Name): string | boolean {
+function isValidUsername(name: string): string | boolean {
   if (name.length > 100) {
     return ErrorMap["NAME_TOO_LONG"];
   }
@@ -19,7 +18,7 @@ function isValidUsername(name: Name): string | boolean {
 }
 
 async function isValidEmail(
-  email: Email,
+  email: string,
   isRegister?: boolean
 ): Promise<string | boolean> {
   if (email.length > 50) return ErrorMap["EMAIL_TOO_LONG"];
@@ -38,7 +37,7 @@ async function isValidEmail(
   return true;
 }
 
-function isValidPassword(password: Password): string | boolean {
+function isValidPassword(password: string): string | boolean {
   if (password.length < 6) {
     return ErrorMap["PASSWORD_LENGTH"];
   }
@@ -57,21 +56,16 @@ function isValidPassword(password: Password): string | boolean {
   return true;
 }
 
-export async function authRegister(name: Name, email: Email, password: Password) {
-    // Validate name
-  if (isValidUsername(name) !== true) {
-    throw new Error(isValidUsername(name) as string);
-  }
+export async function authRegister(name: string, email: string, password: string) {
 
-  // Validate email
-  if ((await isValidEmail(email, true)) !== true) {
-    throw new Error((await isValidEmail(email, true)) as string);
-  }
+  const nameCheck = isValidUsername(name);
+if (nameCheck !== true) throw new Error(nameCheck as string);
 
-  // Validate password
-  if (isValidPassword(password) !== true) {
-    throw new Error(isValidPassword(password) as string);
-  }
+const emailCheck = await isValidEmail(email, true);
+if (emailCheck !== true) throw new Error(emailCheck as string);
+
+const passwordCheck = isValidPassword(password);
+if (passwordCheck !== true) throw new Error(passwordCheck as string);
 
   // Hash the password
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -99,7 +93,7 @@ export async function authRegister(name: Name, email: Email, password: Password)
 /**
  * Logs in an existing user and returns a session
  */
-export async function authLogin(email: Email, password: Password) {
+export async function authLogin(email: string, password: string) {
   // Get user from MongoDB
   const user = await usersCollection.findOne({ email });
 
@@ -180,4 +174,6 @@ export async function handleGoogleCallback(code: string) {
     JWT_KEY,
     { expiresIn: "5d" }
   );
+
+  return { token };
 }
