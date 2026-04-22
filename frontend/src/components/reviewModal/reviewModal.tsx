@@ -2,20 +2,22 @@ import { useState } from "react";
 import { RatingStars } from "../ratingStars/ratingStars";
 import styles from "./reviewModal.module.css";
 import { LikeHeart } from "../likeHeart/likeHeart";
+import type { Track } from "../../spotify.types";
 
 interface ReviewModalProps {
-//   songId: string;
-//   songName: string;
+  song: Track;
   onClose: () => void;
-//   onSubmitted: () => void;
 }
 
 
-export function ReviewModal({onClose} : ReviewModalProps) {
+export function ReviewModal({ song, onClose } : ReviewModalProps) {
     const [reviewRating, setReviewRating] = useState(0);
     const [reviewText, setReviewText] = useState("");
-    const [img, setImg] = useState("/spotify.svg");
     const [liked, setLiked] = useState(false);
+
+    const albumArt = song.album.images[0]?.url ?? "/spotify.svg";
+    const artistNames = song.artists.map(a => a.name).join(", ");
+
 
     const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
         if (e.target === e.currentTarget) onClose();
@@ -29,9 +31,11 @@ export function ReviewModal({onClose} : ReviewModalProps) {
           <button className={styles.closeBtn} onClick={onClose} aria-label="Close">✕</button>
         </div>
         <div className={styles.modalBody}>
-          <img src={img} className={styles.songImg} alt="Spotify" />
+          <img src={albumArt} className={styles.songImg} alt="Spotify" />
           <div>
-            <h1>Song Name</h1>
+            <h1>{song.name}</h1>
+            <p>{artistNames}</p>
+            <p>{song.album.name} · {song.album.release_date.slice(0, 4)}</p>
             <textarea
               className={styles.textarea}
               placeholder="Add a review..."

@@ -4,6 +4,7 @@ import { authMiddleware } from "../middleware/middleware.js";
 
 
 const router = express.Router();
+console.log("✅ auth.routes loaded");
 
 router.get("/", authMiddleware, authController.getUsers);
 

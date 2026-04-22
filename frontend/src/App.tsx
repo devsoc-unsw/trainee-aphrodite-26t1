@@ -21,7 +21,7 @@ export default function App() {
         <Route path="/explore" element={<ProtectedRoute><ExplorePage /></ProtectedRoute>} />
         <Route path="/search" element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />
         <Route path="/users/:username" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-        <Route path="/reviews/:reviewId" element={<ProtectedRoute><ReviewPage /></ProtectedRoute>}/>
+        <Route path="/review" element={<ProtectedRoute><ReviewPage /></ProtectedRoute>}/>
         <Route path="/songs/:songId" element={<ProtectedRoute><SongPage /></ProtectedRoute>} />
       </Routes>
     </>

@@ -1,21 +1,9 @@
 import { Router } from "express"
 import { getAccessToken, getTrack, searchTracks } from "../lib/spotify.js";
 import * as Spotify from "../types/spotify.types.js";
-import { getSong, searchSong } from "../services/songs.services.js";
+import { searchSong } from "../services/songs.services.js";
 
 const router: Router = Router();
-
-// this should fetch from db in the future
-router.get('/songs/:songId', async (req, res) => {
-  try {
-    const data = await getSong(req.params.songId);
-    res.json(data);
-  }
-  catch (err) {
-    const message = err instanceof Error ? err.message : 'Unknown error';
-    res.status(500).json({ error: message });
-  }
-});
 
 // for now just getting some random ass playlist just so we can test frontend data fetching.
 // in the future this will just be a db call

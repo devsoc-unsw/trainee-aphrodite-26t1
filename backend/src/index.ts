@@ -3,7 +3,9 @@ import cors from "cors";
 import 'dotenv/config'
 import { closeDatabaseConnection, connectToDatabase } from "./lib/connect.js";
 import authRoutes from "./routes/auth.routes.js";
+import songsRoutes from "./routes/songs.routes.js";
 import indexRoutes from "./routes/index.routes.js";
+
 
 const app = express();
 const PORT = process.env.PORT ? process.env.PORT : 3000;
@@ -20,7 +22,10 @@ const PORT = process.env.PORT ? process.env.PORT : 3000;
 
 async function startServer() {
   try {
+    console.log("attempting to connect to db");
     await connectToDatabase();
+    console.log("connected to db");
+    
 
     app.use(cors());
     app.use(express.json());
@@ -31,6 +36,7 @@ async function startServer() {
       next();
     });
     app.use("/api/users", authRoutes);
+    app.use("/api", songsRoutes);
     app.use("/api", indexRoutes);
 
     app.listen(PORT, () => {
