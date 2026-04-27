@@ -1,4 +1,4 @@
-import { MongoClient, Collection, Db } from "mongodb";
+import { MongoClient, Collection, Db, ObjectId } from "mongodb";
 
 const uri = process.env.MONGO_URI;
 
@@ -9,8 +9,21 @@ if (!uri) {
 let client: MongoClient;
 let db: Db;
 
+export interface User {
+  _id?: ObjectId;
+  username: string;
+  email: string;
+  googleId?: string;
+  password?: string;
+  friends: string[];
+  requests: { senderId: string, date: Date }[];
+}
+
+
 // Collections
-export let usersCollection: Collection;
+export let usersCollection: Collection<User>;
+
+//TODO: Define interface for songs 
 export let songsCollection: Collection;
 
 export async function connectToDatabase() {

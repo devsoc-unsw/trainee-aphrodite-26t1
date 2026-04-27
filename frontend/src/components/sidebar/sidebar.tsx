@@ -12,6 +12,7 @@ const tabs: SidebarTab[] = [
   { label: "Friends", to: "/friends" },
   { label: "Explore", to: "/explore" },
   { label: "Jam", to: "/jam" },
+  { label: "Notifications", to: "/notif" },
 ]
 
 export function Sidebar({ accountName }: { accountName: string }) {

@@ -4,6 +4,7 @@ import { Sidebar } from "../components/sidebar/sidebar";
 import styles from "./friends.module.css"
 import SearchBar from "../components/searchbar/SearchBar";
 import { Link } from "react-router";
+import { findUsers } from "../api/users.ts"
 
 interface DisplayUser {
   displayName: string,
@@ -12,12 +13,13 @@ interface DisplayUser {
 
 export default function FriendsPage() {
   const [searchResults, setSearchResults] = useState<DisplayUser[]>([]);
-  const onSubmit = (query: string) => {
+  const onSubmit = async (query: string) => {
     if (!query) {
       setSearchResults([]);
       return;
     }
-    setSearchResults(Array(4).fill({ displayName: query, username: "@username"}));
+    const data = await findUsers(query)
+    setSearchResults(data)
   }
 
   return (

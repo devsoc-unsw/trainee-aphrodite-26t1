@@ -74,7 +74,9 @@ if (passwordCheck !== true) throw new Error(passwordCheck as string);
   const user = {
     username: name,
     email: email,
-    password: hashedPassword,
+    password: hashedPassword,  
+    friends: [],
+    requests: [],
   };
 
   const result = await usersCollection.insertOne(user);
@@ -99,6 +101,9 @@ export async function authLogin(email: string, password: string) {
 
   if (!user) {
     throw new Error(`${ErrorMap["EMAIL_DOES_NOT_EXIST"]}`);
+  }
+  if (!user.password) {
+    throw new Error("This user does not use password login (Google User) ");
   }
 
   const passwordMatch = await bcrypt.compare(password, user.password);
@@ -165,8 +170,17 @@ export async function handleGoogleCallback(code: string) {
       username: username,
       email: googleUser.email,
       googleId: googleUser.sub,
+      friends: [],
+      requests: [],
     });
-    user = { _id: result.insertedId, email: googleUser.email }
+    user = {
+      _id: result.insertedId,
+      username,
+      email: googleUser.email,
+      googleId: googleUser.sub,
+      friends: [],
+      requests: [],
+    };
   }
 
   const token = jwt.sign(
