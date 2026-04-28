@@ -50,7 +50,7 @@ export async function googleAuthCallback(req: Request, res: Response) {
   try {
     const code = req.query.code as string;
 
-    const token = await authService.handleGoogleCallback(code);
+    const { token } = await authService.handleGoogleCallback(code);
 
     res.redirect(`http://localhost:5173/callback?token=${token}`);
   } catch (err) {
