@@ -6,16 +6,11 @@ import styles from "./search.module.css"
 import { LargeCard } from "../components/largecard/largecard";
 import { Link, useSearchParams } from "react-router";
 import { Button } from "../components/button/Button";
-import type { Song } from "../../../backend/src/types/api.types";
+import type { DisplayUser, Song } from "../../../backend/src/types/api.types";
 
 type SearchType = "all" | "users" | "songs";
 function isSearchType(type: string | null): type is SearchType {
   return (type === "all" || type === "users" || type === "songs");
-}
-
-interface DisplayUser {
-  displayName: string,
-  username: string
 }
 
 export default function SearchPage() {
