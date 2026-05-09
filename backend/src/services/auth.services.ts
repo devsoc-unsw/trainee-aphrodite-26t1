@@ -2,6 +2,8 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { usersCollection } from "../lib/connect.js";
 import { ErrorMap } from "../constants/errors.js";
+import { WithId } from "mongodb";
+import { User } from "../types/api.types.js";
 
 const JWT_KEY = process.env.JWT_KEY!;
 
@@ -101,7 +103,7 @@ export async function authLogin(email: string, password: string) {
     throw new Error(`${ErrorMap["EMAIL_DOES_NOT_EXIST"]}`);
   }
 
-  const passwordMatch = await bcrypt.compare(password, user.password);
+  const passwordMatch = user.password != undefined && await bcrypt.compare(password, user.password);
   if (!passwordMatch) {
     throw new Error(ErrorMap["PASSWORD_INCORRECT"]);
   }
@@ -166,7 +168,7 @@ export async function handleGoogleCallback(code: string) {
       email: googleUser.email,
       googleId: googleUser.sub,
     });
-    user = { _id: result.insertedId, email: googleUser.email }
+    user = { _id: result.insertedId, username: username, email: googleUser.email }
   }
 
   const token = jwt.sign(

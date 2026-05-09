@@ -8,7 +8,7 @@ import { ActionBar } from "../components/actionbar/ActionBar";
 
 import styles from "./song.module.css"
 import { ReviewItem } from "../components/reviewitem/ReviewItem";
-import type { Song } from "../../../backend/src/types/api.types";
+import type { DisplayReview, Song } from "../../../backend/src/types/api.types";
 import { ReviewModal } from "../components/reviewModal/reviewModal";
 
 
@@ -24,22 +24,50 @@ export default function SongPage() {
   const [artistName, setArtistName] = useState("Artist");
   const [img, setImg] = useState("/spotify.svg");
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [recentReviews, setRecentReviews] = useState<DisplayReview[]>([]);
+  const [popularReviews, setPopularReviews] = useState<DisplayReview[]>([]);
+  const [myReview, setMyReview] = useState<DisplayReview | null>(null);
+  const [error, setError] = useState("");
 
   useEffect(() => {
     fetch("http://localhost:3000/api/songs/" + songId)
       .then(res => res.json())
-      .then((track: Song) => {
-        if (track) {
-          setSongName(track.name);
-          setArtistName(track.artists[0].name);
-          setImg(track.album.images[0].url);
-          setLikes(track.likeCount);
-          setCommentNo(track.reviewCount);
-          setRating(Math.round(track.averageRating));
-          setAverageRating(track.averageRating);
+      .then((song: Song) => {
+        if (song) {
+          setSongName(song.name);
+          setArtistName(song.artists[0].name);
+          setImg(song.album.images[0].url);
+          setLikes(song.likeCount);
+          setCommentNo(song.reviewCount);
+          setRating(Math.round(song.averageRating));
+          setAverageRating(song.averageRating);
         }
       })
       .catch(console.error);
+    fetch("http://localhost:3000/api/reviews/" + songId + "?sort=popular&limit=3")
+      .then(res => res.json())
+      .then((reviews: DisplayReview[]) => {
+        setPopularReviews(reviews);
+      })
+      .catch(console.error);
+    fetch("http://localhost:3000/api/reviews/" + songId + "?sort=recent&limit=3")
+      .then(res => res.json())
+      .then((reviews: DisplayReview[]) => {
+        setRecentReviews(reviews);
+      })
+      .catch(console.error);
+    
+    const token = localStorage.getItem("token");
+    if (token) {
+      fetch("http://localhost:3000/api/reviews/" + songId + "/me", {
+        headers: { "Authorization": `Bearer ${token}` }
+      })
+        .then(res => res.json())
+        .then((review) => {
+          if (review && !review.error) setMyReview(review);
+        })
+        .catch(console.error);
+    }
   }, [songId]);
   useEffect(() => {
     // post new rating to backend
@@ -59,76 +87,180 @@ export default function SongPage() {
     }
   }
 
+  const submitReview = (text: string, rating: number) => {
+    setError("");
+    if (!text || text.trim() === "") {
+      setError("Review text may not be empty");
+      return;
+    }
+    if (!rating || rating === 0) {
+      setError("Rating may not be 0");
+      return;
+    }
+
+    fetch("http://localhost:3000/api/reviews/" + songId, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ text, rating })
+    })
+      .then(res => res.json().then(data => ({ res, data })))
+      .then(({ res, data }) => {
+        if (!res.ok) {
+          throw new Error(data.error || "Failed to submit review");
+        }
+        if (data.error) {
+          throw new Error(data.error);
+        }
+        console.log("Success:", data);
+        setReviewModalOpen(false);
+        fetch("http://localhost:3000/api/reviews/" + songId + "?sort=popular&limit=3")
+          .then(res => res.json())
+          .then(setPopularReviews)
+          .catch(console.error);
+        fetch("http://localhost:3000/api/reviews/" + songId + "?sort=recent&limit=3")
+          .then(res => res.json())
+          .then(setRecentReviews)
+          .catch(console.error);
+        fetch("http://localhost:3000/api/songs/" + songId)
+          .then(res => res.json())
+          .then((track: Song) => {
+            if (track) {
+              setCommentNo(track.reviewCount);
+              setRating(Math.round(track.averageRating));
+              setAverageRating(track.averageRating);
+            }
+          })
+          .catch(console.error);
+        fetch("http://localhost:3000/api/reviews/" + songId + "/me", {
+          headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
+        })
+          .then(res => res.json())
+          .then((review) => {
+            if (review && !review.error) setMyReview(review);
+          })
+          .catch(console.error);
+      })
+      .catch((err) => {
+        console.error(err);
+        setError(err.message);
+      });
+  }
+
+  const deleteMyReview = () => {
+    fetch("http://localhost:3000/api/reviews/" + songId, {
+      method: "DELETE",
+      headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
+    })
+      .then(res => {
+        if (res.ok) {
+          setMyReview(null);
+          fetch("http://localhost:3000/api/reviews/" + songId + "?sort=popular&limit=3")
+            .then(res => res.json()).then(setPopularReviews).catch(console.error);
+          fetch("http://localhost:3000/api/reviews/" + songId + "?sort=recent&limit=3")
+            .then(res => res.json()).then(setRecentReviews).catch(console.error);
+          fetch("http://localhost:3000/api/songs/" + songId)
+            .then(res => res.json())
+            .then((track: Song) => {
+              if (track) {
+                setCommentNo(track.reviewCount);
+                setRating(Math.round(track.averageRating));
+                setAverageRating(track.averageRating);
+              }
+            }).catch(console.error);
+        }
+      })
+      .catch(console.error);
+  }
+
   return (
     <div className={styles.container}>
       <Sidebar accountName="account name" />
-        <main className={styles.main}>
-          <div className={styles.header}>
-            <img src={img} className={styles.headerImg} alt="Spotify" />
-            <div className={styles.headerInfo}>
+      <main className={styles.main}>
+        <div className={styles.header}>
+          <img src={img} className={styles.headerImg} alt="Spotify" />
+          <div className={styles.headerInfo}>
             <h1 className={styles.songTitle}>{songName}</h1>
             <p className={styles.subText}>{artistName}</p>
-              <p className={styles.subText}>Genre</p>
-              <div className={styles.headerBar}>
-                <div className={styles.buttons}>
-                  <Button onClick={() => setReviewModalOpen(true)}>+ Write a review</Button>
+            <p className={styles.subText}>Genre</p>
+            <div className={styles.headerBar}>
+              <div className={styles.buttons}>
+                <Button onClick={() => setReviewModalOpen(true)}>+ Write a review</Button>
                 <LinkButton href={"https://open.spotify.com/track/" + songId} newTab>Listen on Spotify</LinkButton>
+              </div>
+              <div className={styles.actions}>
+                <div className={styles.ratings}>
+                  {averageRating.toFixed(1)}
+                  <RatingStars rating={rating} setRating={setRating} interactable={false} />
                 </div>
-                <div className={styles.actions}>
-                  <div className={styles.ratings}>
-                    {averageRating.toFixed(1)}
-                    <RatingStars rating={rating} setRating={setRating} interactable={false} />
-                  </div>
-                  <ActionBar likes={likes} comments={commentNo} liked={liked} onLike={like} />
-                </div>
+                <ActionBar likes={likes} comments={commentNo} liked={liked} onLike={like} />
               </div>
             </div>
           </div>
-          <div className={styles.reviewBody}>
-            A heartfelt ballad about falling in love at the DevSoc Training Program. Listen along as code becomes a love language for Andy and Zitian at UNSW.
-          </div>
+        </div>
+        <div className={styles.reviewBody}>
+          A heartfelt ballad about falling in love at the DevSoc Training Program. Listen along as code becomes a love language for Andy and Zitian at UNSW.
+        </div>
 
-          {/* Popular Reviews Section */}
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Popular Reviews</h2>
-            <div className={styles.buttons}>
-              <Button>View More</Button>
+        <div className={styles.sectionHeader} style={{ display: popularReviews.length === 0 && recentReviews.length === 0 ? "initial" : "none" }}>
+          <h2 className={styles.sectionTitle}>No Reviews Yet!</h2>
+        </div>
+        {/* Popular Reviews Section */}
+        <div className={styles.sectionHeader} style={{display: popularReviews?.length > 0 ? "flex" : "none"}}>
+          <h2 className={styles.sectionTitle}>Popular Reviews</h2>
+          <div className={styles.buttons}>
+            <Button>View More</Button>
+          </div>
+        </div>
+        <hr style={{ display: popularReviews?.length > 0 ? "initial" : "none" }} />
+        <div className={styles.reviews} style={{ display: popularReviews?.length > 0 ? "flex" : "none" }}>
+          {
+            popularReviews.map((review, i) => <ReviewItem key={i} review={review} />)
+          }
+        </div>
+
+        {/* Recent Reviews section */}
+        <div className={styles.sectionHeader} style={{ display: recentReviews?.length > 0 ? "flex" : "none" }}>
+          <h2 className={styles.sectionTitle}>Recent Reviews</h2>
+          <div className={styles.buttons}>
+            <Button>View More</Button>
+          </div>
+        </div>
+        <hr style={{ display: recentReviews?.length > 0 ? "initial" : "none" }} />
+        <div className={styles.reviews} style={{ display: recentReviews?.length > 0 ? "initial" : "none" }}>
+          {
+            recentReviews && recentReviews.map((review, i) => <ReviewItem key={i} review={review} />)
+          }
+        </div>
+
+        {/* User's review */}
+        {myReview && (
+          <>
+            <div className={styles.sectionHeader}>
+              <h2 className={styles.sectionTitle}>Your Review</h2>
+              <div className={styles.buttons}>
+              </div>
             </div>
-          </div>
-          <hr />
-          <div className={styles.reviews}>
-          {new Array(3).fill(0).map((_, i) => (<ReviewItem key={i} name="username" artist="thing" rating={3} description="At DevSoc, there are good programmers… and then there’s Andy. Allegedly a “super genius,” he writes code so fast even his bugs have bugs—and somehow still pass tests. Between speedrunning assignments, arguing about tabs vs spaces like it’s a moral philosophy debate, and carrying group projects harder than recursion carries bad code, Andy has accidentally built a following. Not because he’s trying to—he’s just trying to submit before the deadline closes—but somehow every late-night coding session turns into chaos, competition, and a suspicious number of people wanting “help” that lasts way longer than it should. In a world of infinite edge cases, Andy is about to discover that the hardest thing to debug… isn’t code." />))}
-          </div>
-
-          {/* Recent Reviews section */}
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Recent Reviews</h2>
-            <div className={styles.buttons}>
-              <Button>View More</Button>
+            <hr />
+            <div className={styles.reviews}>
+              <ReviewItem review={myReview} onDelete={deleteMyReview} />
             </div>
-          </div>
-          <hr />
-          <div className={styles.reviews}>
-          {new Array(3).fill(0).map((_, i) => (<ReviewItem key={i} name="username" artist="thing" rating={3} description="At DevSoc, there are good programmers… and then there’s Andy. Allegedly a “super genius,” he writes code so fast even his bugs have bugs—and somehow still pass tests. Between speedrunning assignments, arguing about tabs vs spaces like it’s a moral philosophy debate, and carrying group projects harder than recursion carries bad code, Andy has accidentally built a following. Not because he’s trying to—he’s just trying to submit before the deadline closes—but somehow every late-night coding session turns into chaos, competition, and a suspicious number of people wanting “help” that lasts way longer than it should. In a world of infinite edge cases, Andy is about to discover that the hardest thing to debug… isn’t code." />))}
-          </div>
-
-          {/* User's review */}
-          <div className={styles.sectionHeader}>
-            <h2 className={styles.sectionTitle}>Your Review</h2>
-            <div className={styles.buttons}>
-            </div>
-          </div>
-          <hr />
-          <div className={styles.reviews}>
-          <ReviewItem name="username" artist="thing" rating={3} description="At DevSoc, there are good programmers… and then there’s Andy. Allegedly a “super genius,” he writes code so fast even his bugs have bugs—and somehow still pass tests. Between speedrunning assignments, arguing about tabs vs spaces like it’s a moral philosophy debate, and carrying group projects harder than recursion carries bad code, Andy has accidentally built a following. Not because he’s trying to—he’s just trying to submit before the deadline closes—but somehow every late-night coding session turns into chaos, competition, and a suspicious number of people wanting “help” that lasts way longer than it should. In a world of infinite edge cases, Andy is about to discover that the hardest thing to debug… isn’t code." />
-          </div>
-        </main>
-
-        {reviewModalOpen && (
-          <ReviewModal
-            onClose={() => setReviewModalOpen(false)}
-          />
+          </>
         )}
-      </div>
+      </main>
+
+      {reviewModalOpen && (
+        <ReviewModal
+          songName={songName}
+          artistName={artistName}
+          img={img}
+          onClose={() => setReviewModalOpen(false)}
+          onSubmit={submitReview}
+          error={error}
+        />
+      )}
+    </div>
   );
 }
