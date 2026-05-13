@@ -29,7 +29,7 @@ export function ReviewModal({ songName, artistName, img, onClose, onSubmit, erro
           <button className={styles.closeBtn} onClick={onClose} aria-label="Close">✕</button>
         </div>
         <div className={styles.modalBody}>
-          <img src={img} className={styles.songImg} alt="Spotify" />
+          <img src={albumArt} className={styles.songImg} alt="Spotify" />
           <div>
             <h1 className={styles.modalName}>{songName}</h1>
             <p className={styles.artistName}>{artistName}</p>
