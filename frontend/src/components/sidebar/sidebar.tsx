@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./sidebar.module.css";
 import { NavLink } from "react-router";
-
+import { getNotifications } from "../../api/users";
 export interface SidebarTab {
   label: string,
   to: string,
@@ -14,8 +14,29 @@ const tabs: SidebarTab[] = [
   { label: "Review", to: "/review" },
 ]
 
+interface userNotification {
+    type: string;
+    senderId: string;
+    date: Date;
+}
+
 export function Sidebar({ accountName }: { accountName: string }) {
   const [isSidebarExpanded, setIsSidebarExpanded] = useState(true);
+  const [notifications, setNotifications] = useState<userNotification[]>([])
+
+  useEffect(() => {
+          async function fetchNotifications() {
+              const data = await getNotifications();
+              setNotifications(prev => {
+              if (JSON.stringify(prev) === JSON.stringify(data)) return prev;
+                  return data;
+              });
+          }
+          fetchNotifications();
+          const interval = setInterval(fetchNotifications, 5000);
+          return () => clearInterval(interval);
+      }, []);
+
   return (
     <div className={`${styles.sidebar} ${isSidebarExpanded ? styles.sidebarExpanded : styles.sidebarCollapsed}`}>
       <div className={styles.sidebarHeader}>
@@ -25,7 +46,7 @@ export function Sidebar({ accountName }: { accountName: string }) {
       <nav className={styles.nav}>
         {tabs.map((tab, i) =>
           <NavLink key={i} to={tab.to} className={props => `${styles.navItem} ${props.isActive ? styles.active : ""}`} end>
-            <div className={styles.navIcon}></div>
+            <div className={`${styles.navIcon} ${(notifications.length !== 0 && tab.label === "Notifications") ? styles.notif : ''}`}>{(notifications.length !== 0 && tab.label === "Notifications") ? notifications.length : null}</div>
             <span className={styles.navLabel}>{tab.label}</span>
           </NavLink>
         )}
