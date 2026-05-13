@@ -13,9 +13,19 @@ function similarityScore(a: string, b: string): number {
 
 }
 
-export async function findUsers( username: string ) {
+export async function findUsers( username: string, self: string  ) {
+    const self_user = await usersCollection.findOne({
+        _id: new ObjectId(self)
+    })
+    if (!self_user) {
+        throw new Error("Current user not found")
+    }
+    const self_username = self_user.username
     const users = await usersCollection.find({
-        username: { $regex: username, $options: "i" }
+        $and: [
+            { username: { $regex: username, $options: "i" }} ,
+            { username: { $ne: self_username} }
+        ]
     })
     .limit(8)
     .toArray();
@@ -26,6 +36,23 @@ export async function findUsers( username: string ) {
     return users;
 }
     
+
+export async function getFriends( self: string  ) {
+    const self_user = await usersCollection.findOne({
+        _id: new ObjectId(self)
+    })
+    if (!self_user) {
+        throw new Error("Current user not found")
+    }
+    const friends = await Promise.all(
+        self_user.friends.map((friend: string) => 
+            usersCollection.findOne({ _id: new ObjectId(friend) })
+        )
+    );
+
+    return friends.filter(Boolean);
+}
+
 export async function friendReq( recipient: string, senderId: string, isAdding: boolean) {
     const update = isAdding
     ? { $push: { requests: { senderId: senderId, date: new Date() } } }

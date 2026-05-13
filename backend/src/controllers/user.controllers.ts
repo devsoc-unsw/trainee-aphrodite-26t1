@@ -5,7 +5,30 @@ import { verifyToken } from "../lib/jwt.js"
 export async function findUsers(req: Request, res: Response) {
   try {
     const { username } = req.body;
-    const users = await userService.findUsers(username);
+    const token = req.headers.authorization?.split(" ")[1];
+
+    if (!token) {
+        return res.status(401).json({ message: "No token provided" });
+    }
+    const decoded = verifyToken(token);
+    const self = decoded.id
+    const users = await userService.findUsers(username, self);
+    res.json(users);
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+}
+
+export async function getFriends(req: Request, res: Response) {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+
+    if (!token) {
+        return res.status(401).json({ message: "No token provided" });
+    }
+    const decoded = verifyToken(token);
+    const self = decoded.id
+    const users = await userService.getFriends(self);
     res.json(users);
   } catch (err: any) {
     res.status(400).json({ message: err.message });

@@ -1,11 +1,30 @@
 const BASE_URL = "http://localhost:3000/api/users";
 
 export async function findUsers(username: string) {
+  const token = localStorage.getItem("token");
   console.log("Getting users with name: ", username)
   const res = await fetch(`${BASE_URL}/findUsers`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
     body: JSON.stringify({ username })
+  });
+  console.log(res);
+  return res.json();
+}
+
+export async function getFriends() {
+  const token = localStorage.getItem("token");
+  console.log("Getting friends")
+  const res = await fetch(`${BASE_URL}/getFriends`, {
+    method: "POST",
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    },
+    body: JSON.stringify({})
   });
   console.log(res);
   return res.json();
