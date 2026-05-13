@@ -1,29 +1,27 @@
 import { useState } from "react";
 import { RatingStars } from "../ratingStars/ratingStars";
 import styles from "./reviewModal.module.css";
-import { LikeHeart } from "../likeHeart/likeHeart";
-import type { Track } from "../../spotify.types";
+import { Button } from "../button/Button";
 
 interface ReviewModalProps {
-  song: Track;
+  songName: string;
+  artistName: string;
+  img: string;
   onClose: () => void;
+  error?: string;
+  onSubmit: (text: string, rating: number) => void;
 }
 
 
-export function ReviewModal({ song, onClose } : ReviewModalProps) {
-    const [reviewRating, setReviewRating] = useState(0);
-    const [reviewText, setReviewText] = useState("");
-    const [liked, setLiked] = useState(false);
+export function ReviewModal({ songName, artistName, img, onClose, onSubmit, error }: ReviewModalProps) {
+  const [reviewRating, setReviewRating] = useState(0);
+  const [reviewText, setReviewText] = useState("");
 
-    const albumArt = song.album.images[0]?.url ?? "/spotify.svg";
-    const artistNames = song.artists.map(a => a.name).join(", ");
+  const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (e.target === e.currentTarget) onClose();
+  };
 
-
-    const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        if (e.target === e.currentTarget) onClose();
-    };
-
-    return (
+  return (
     <div className={styles.backdrop} onClick={handleBackdropClick}>
       <div className={styles.modal}>
         <div className={styles.modalHeader}>
@@ -33,9 +31,8 @@ export function ReviewModal({ song, onClose } : ReviewModalProps) {
         <div className={styles.modalBody}>
           <img src={albumArt} className={styles.songImg} alt="Spotify" />
           <div>
-            <h1>{song.name}</h1>
-            <p>{artistNames}</p>
-            <p>{song.album.name} · {song.album.release_date.slice(0, 4)}</p>
+            <h1 className={styles.modalName}>{songName}</h1>
+            <p className={styles.artistName}>{artistName}</p>
             <textarea
               className={styles.textarea}
               placeholder="Add a review..."
@@ -48,19 +45,19 @@ export function ReviewModal({ song, onClose } : ReviewModalProps) {
                 <span className={styles.label}>Rating</span>
                 <RatingStars rating={reviewRating} setRating={setReviewRating} interactable={true} />
               </div>
-              <div className={styles.like}>
-                <span className={styles.label}>Like</span>
-                <LikeHeart liked ={liked} setLiked={setLiked} interactable/>
-              </div>
             </div>
-
           </div>
         </div>
 
         <div className={styles.modalFooter}>
-          <button className={styles.cancelBtn} onClick={onClose} >Cancel</button>
-          <button className={styles.submitBtn}> Submit Review</button>
+          <Button onClick={onClose} buttonStyle="outline">Cancel</Button>
+          <Button onClick={() => onSubmit(reviewText, reviewRating)} buttonStyle="accent">Submit Review</Button>
         </div>
+        <span className={styles.error} style={
+          (error && error !== "") ?
+          { display: "initial"} :
+          {display: "none"}
+        }>{error}</span>
       </div>
     </div>
   );

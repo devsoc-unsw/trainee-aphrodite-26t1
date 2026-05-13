@@ -4,11 +4,8 @@ import { Sidebar } from "../components/sidebar/sidebar";
 import styles from "./friends.module.css"
 import SearchBar from "../components/searchbar/SearchBar";
 import { Link } from "react-router";
+import type { DisplayUser } from "../../../backend/src/types/api.types";
 
-interface DisplayUser {
-  displayName: string,
-  username: string
-}
 
 export default function FriendsPage() {
   const [searchResults, setSearchResults] = useState<DisplayUser[]>([]);

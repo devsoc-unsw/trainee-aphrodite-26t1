@@ -1,10 +1,9 @@
-import express from "express";
+import express, { Router } from "express";
 import * as authController from "../controllers/auth.controllers.js"
 import { authMiddleware } from "../middleware/middleware.js";
 
 
-const router = express.Router();
-console.log("✅ auth.routes loaded");
+const router: Router = express.Router();
 
 router.get("/", authMiddleware, authController.getUsers);
 
