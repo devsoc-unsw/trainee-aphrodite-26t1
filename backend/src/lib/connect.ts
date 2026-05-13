@@ -1,4 +1,4 @@
-import { MongoClient, Collection, Db } from "mongodb";
+import { MongoClient, Collection, Db, ObjectId } from "mongodb";
 import { Review, Song, User } from "../types/api.types.js";
 
 const uri = process.env.MONGO_URI;

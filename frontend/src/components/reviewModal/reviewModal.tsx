@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { RatingStars } from "../ratingStars/ratingStars";
 import styles from "./reviewModal.module.css";
+import type { Track } from "../../spotify.types";
 import { Button } from "../button/Button";
 
 interface ReviewModalProps {
@@ -16,7 +17,6 @@ interface ReviewModalProps {
 export function ReviewModal({ songName, artistName, img, onClose, onSubmit, error }: ReviewModalProps) {
   const [reviewRating, setReviewRating] = useState(0);
   const [reviewText, setReviewText] = useState("");
-
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (e.target === e.currentTarget) onClose();
   };
@@ -29,8 +29,9 @@ export function ReviewModal({ songName, artistName, img, onClose, onSubmit, erro
           <button className={styles.closeBtn} onClick={onClose} aria-label="Close">✕</button>
         </div>
         <div className={styles.modalBody}>
-          <img src={albumArt} className={styles.songImg} alt="Spotify" />
+          <img src={img} className={styles.songImg} alt="Spotify" />
           <div>
+            <h1>Song Name</h1>
             <h1 className={styles.modalName}>{songName}</h1>
             <p className={styles.artistName}>{artistName}</p>
             <textarea

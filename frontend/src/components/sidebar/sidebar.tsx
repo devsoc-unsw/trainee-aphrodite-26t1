@@ -10,6 +10,7 @@ const tabs: SidebarTab[] = [
   { label: "Home", to: "/home" },
   { label: "Friends", to: "/friends" },
   { label: "Explore", to: "/explore" },
+  { label: "Notifications", to: "/notif" },
   { label: "Review", to: "/review" },
 ]
 

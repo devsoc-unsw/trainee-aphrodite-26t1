@@ -34,6 +34,8 @@ export interface User {
   googleId?: string;
   password?: string;
   username: string;
+  friends: string[];
+  requests: { senderId: string; date: Date }[];
 }
 
 export interface DisplayUser {
@@ -58,6 +60,7 @@ export interface Review {
 }
 
 export interface DisplayReview {
+  to: string;
   songId: string;
   rating: number;
   body: string;

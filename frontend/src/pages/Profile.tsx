@@ -5,6 +5,8 @@ import { Sidebar } from "../components/sidebar/sidebar"
 import styles from "./profile.module.css"
 import { ReviewItem } from "../components/reviewitem/ReviewItem";
 import { Link } from "react-router";
+import { useParams } from "react-router-dom";
+import { handleFriendReq } from "../api/users.ts"
 
 
 function ProfileCard({ to, children, imageUrl, description }: { to: string, children: React.ReactNode, imageUrl: string, description: string}) {
@@ -19,9 +21,11 @@ function ProfileCard({ to, children, imageUrl, description }: { to: string, chil
 }
 
 export default function Profile() {
-  const [likes, setLikes] = useState(67);
+  const { username } = useParams<{ username: string }>();
+  const profileName = username ?? "User Not Found"
+  const [likes, setLikes] = useState(0);
   const [liked, setLiked] = useState(false);
-  const [following, setFollowing] = useState(false);
+  const [isAdding, setFriends] = useState(false);
   const [img, setImg] = useState("/samplepfp.jpg");
   return (
     <div className={styles.container}>
@@ -35,8 +39,7 @@ export default function Profile() {
             </div> 
             
             <div className={styles.headerInfo}>
-              <h1 className={styles.songTitle}>User Name</h1>
-              <p className={styles.subText}>@username</p>
+              <h1 className={styles.songTitle}>{profileName}</h1>
               <div className={styles.headerBar}>
                 <div className={styles.headerStat}>
                   <div>14</div>
@@ -44,11 +47,7 @@ export default function Profile() {
                 </div>
                 <div className={styles.headerStat}>
                   <div>67</div>
-                  <div>followers</div>
-                </div>
-                <div className={styles.headerStat}>
-                  <div>67</div>
-                  <div>following</div>
+                  <div>friends</div>
                 </div>
                 <div className={styles.headerStat}>
                   <div>7</div>
@@ -62,7 +61,7 @@ export default function Profile() {
               among us
             </div>
             <div className={styles.profileButtons}>
-              <Button onClick={() => setFollowing(!following)} active={following}>{following ? "Following" : "+ Follow"}</Button>
+              <Button onClick={() => {const nextState = !isAdding; setFriends(!isAdding); handleFriendReq(profileName, nextState)}} active={isAdding}>{isAdding ? "Request Sent!" : "+ Add Friend"}</Button>
               <ActionBar likes={likes} comments={67} liked={liked} />
             </div>
           </div>
@@ -83,7 +82,21 @@ export default function Profile() {
             </div>
             <hr />
             <div className={styles.reviews}>
-              {new Array(3).fill(0).map((_, i) => (<ReviewItem key={i} to="/reviews/testid" name="Song Name" artist="Artist" rating={3} description="“At DevSoc, there are good programmers… and then there’s Andy…”" />))}
+              {new Array(3).fill(0).map((_, i) => (
+                <ReviewItem
+                  key={i}
+                  review={{
+                    to: "/reviews/testid",
+                    songId: "test",
+                    rating: 3,
+                    body: "At DevSoc, there are good programmers…",
+                    likeCount: 0,
+                    createdAt: Date.now(),
+                    updatedAt: Date.now(),
+                    user: { displayName: "Song Name", username: "artist" }
+                  }}
+                />
+              ))}
             </div>
           </div>
           </div>

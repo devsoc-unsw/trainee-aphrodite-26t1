@@ -1,0 +1,40 @@
+.container {
+    width: 90%;
+    height: 80px;
+    background-color: rgb(33, 33, 33);
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    display: flex;
+    color: rgb(255, 255, 255);
+    align-items: center;
+    font-weight: 500;
+}
+
+.buttonContainer {
+    margin-left: auto;
+    display: flex;
+    gap: 10px;
+    margin-right: 20px;
+}
+
+.button {
+    outline: none;
+    background-color: rgb(110, 110, 110);
+    border: none;
+    border-radius: 5px;
+    height: 50px;
+    width: 100%;
+    font-size: 15px;
+    padding: 10px;
+    transition: background-color ease 250ms
+}
+
+.button.decline:hover {
+    background-color: red
+}
+
+
+.button.accept:hover {
+    background-color: green
+}

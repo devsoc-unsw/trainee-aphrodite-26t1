@@ -1,7 +1,6 @@
 import { ReviewModal } from "../components/reviewModal/reviewModal";
 import { Sidebar } from "../components/sidebar/sidebar";
-
-import styles from "./review.module.css"
+import styles from "./review.module.css";
 import { useEffect, useRef, useState } from "react";
 import type { Track } from "../spotify.types";
 import { getSong } from "../api/songs";
@@ -9,7 +8,6 @@ import DustEffect from "../components/DustEffect";
 
 function extractSpotifyId(url: string) {
   const match = url.match(/track\/([a-zA-Z0-9]+)/);
-  console.log("extracted ID:", match?.[1]);
   return match ? match[1] : null;
 }
 
@@ -18,6 +16,7 @@ const ReviewPage = () => {
   const [status, setStatus] = useState("idle");
   const [song, setSong] = useState<Track | null>(null);
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [error, setError] = useState("");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
@@ -40,8 +39,29 @@ const ReviewPage = () => {
     }, 500);
   }, [url]);
 
-  return (
+  const submitReview = (text: string, rating: number) => {
+    setError("");
+    if (!text || text.trim() === "") { setError("Review text may not be empty"); return; }
+    if (!rating || rating === 0) { setError("Rating may not be 0"); return; }
 
+    fetch(`http://localhost:3000/api/reviews/${song?.id}`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ text, rating })
+    })
+      .then(res => res.json().then(data => ({ res, data })))
+      .then(({ res, data }) => {
+        if (!res.ok) throw new Error(data.error || "Failed to submit review");
+        setReviewModalOpen(false);
+        setUrl("");
+      })
+      .catch(err => setError(err.message));
+  };
+
+  return (
     <div className={styles.container}>
       <DustEffect />
       <Sidebar accountName="account name" />
@@ -66,15 +86,16 @@ const ReviewPage = () => {
       </main>
       {reviewModalOpen && song && (
         <ReviewModal
-          song={song}
-          onClose={() => {
-            setReviewModalOpen(false);
-            setUrl("");
-          }}
+          songName={song.name}
+          artistName={song.artists[0]?.name ?? "Unknown Artist"}
+          img={song.album.images[0]?.url ?? "/spotify.svg"}
+          onClose={() => { setReviewModalOpen(false); setUrl(""); }}
+          onSubmit={submitReview}
+          error={error}
         />
       )}
     </div>
   );
-}
+};
 
 export { ReviewPage };
