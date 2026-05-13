@@ -1,4 +1,5 @@
 import { MongoClient, Collection, Db, ObjectId } from "mongodb";
+import { Review, Song, User } from "../types/api.types.js";
 
 const uri = process.env.MONGO_URI;
 
@@ -22,9 +23,8 @@ export interface User {
 
 // Collections
 export let usersCollection: Collection<User>;
-
-//TODO: Define interface for songs 
-export let songsCollection: Collection;
+export let songsCollection: Collection<Song>;
+export let reviewsCollection: Collection<Review>;
 
 export async function connectToDatabase() {
   try {
@@ -40,8 +40,9 @@ export async function connectToDatabase() {
     console.log(`Successfully connected to database: ${db.databaseName}`);
 
     // Initialise collections
-    usersCollection = db.collection("users");
-    songsCollection = db.collection("songs");
+    usersCollection = db.collection<User>("users");
+    songsCollection = db.collection<Song>("songs");
+    reviewsCollection = db.collection<Review>("reviews");
 
   } catch (error) {
     console.error("Error found when connecting to MongoDB: ", error);

@@ -1,8 +1,22 @@
 import styles from "./button.module.css"
 
-export function Button({ children, onClick, active }: { children: React.ReactNode, onClick?: React.MouseEventHandler<HTMLButtonElement>, active?: boolean }) {
+type ButtonStyle = "default" | "accent" | "outline";
+
+interface ButtonProps {
+  children: React.ReactNode,
+  onClick?: React.MouseEventHandler<HTMLButtonElement>,
+  active?: boolean,
+  buttonStyle?: ButtonStyle
+}
+
+export function Button({ children, onClick, active, buttonStyle }: ButtonProps) {
   return (
-    <button onClick={onClick ? onClick : undefined} className={`${styles.button} ${active ? styles.active : null}`}>{children}</button>
+    <button onClick={onClick ? onClick : undefined} className={
+      `${styles.button} ${active ? styles.active : null} ${buttonStyle === "accent" ?
+        styles.buttonAccent : buttonStyle === "outline" ?
+        styles.buttonOutline : ""
+      }`
+    }>{children}</button>
   )
 }
 export function LinkButton({ children, href, newTab }: { children: React.ReactNode, href: string, newTab?: boolean }) {

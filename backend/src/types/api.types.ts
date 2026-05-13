@@ -1,3 +1,4 @@
+import { ObjectId } from "mongodb";
 import { Tag } from "./musicbrainz.types.js";
 import { SimplifiedAlbum, SimplifiedArtist } from "./spotify.types.js";
 
@@ -26,4 +27,42 @@ export interface Song {
   lastFetchedSpotify: number;
   lastFetchedMusicbrainz?: number;
   createdAt: number;
+}
+
+export interface User {
+  email: string;
+  googleId?: string;
+  password?: string;
+  username: string;
+}
+
+export interface DisplayUser {
+  displayName: string,
+  username: string
+}
+
+/**
+ * Represents a review for a song
+ */
+export interface Review {
+  /**
+   * The spotify id of the song
+   */
+  songId: string;
+  userId: ObjectId;
+  rating: number;
+  body: string;
+  likeCount: number;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export interface DisplayReview {
+  songId: string;
+  rating: number;
+  body: string;
+  likeCount: number;
+  createdAt: number;
+  updatedAt: number;
+  user: DisplayUser;
 }
