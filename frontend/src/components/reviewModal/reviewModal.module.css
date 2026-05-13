@@ -9,7 +9,7 @@
 }
 
 .modal {
-  background: #383838;
+  background: #1E1E1E;
   border-radius: 12px;
   padding: 2rem;
   width: 100%;
@@ -56,34 +56,48 @@
   gap: 10px;
 }
 
-.like {
-  display: flex;
-  flex-direction: column;
-  align-items: left;
-  gap: 10px;
-}
-
 .label {
   font-size: 0.9rem;
   color: #555;
   align-self:flex-start;
 }
+.artistName {
+  font-size: 0.9rem;
+  color: #555;
+  align-self:flex-start;
+  margin-top: 0.2rem;
+  margin-bottom: 1rem;
+}
 
 .textarea {
   width: 100%;
-  border: 1px solid #ddd;
+  background-color: #2a2a2a;
+  border: 1px solid #3a3a3a;
   border-radius: 8px;
   padding: 0.75rem;
+  font-family: "Inter", sans-serif;
   font-size: 0.95rem;
+  color: #fff;
   resize: vertical;
   box-sizing: border-box;
+  outline: none;
   margin-bottom: 20px;
+  min-height: 5rem;
 }
 
+.textarea::placeholder {
+  color: #666;
+}
+
+.textarea:focus {
+  border-color: #555;
+}
 .error {
-  color: #c0392b;
+  color: #e74e3d;
   font-size: 0.875rem;
+  font-weight: 500;
   margin: 0;
+  text-align: right;
 }
 
 .modalFooter {
@@ -127,4 +141,7 @@
   flex-direction: row;
   gap: 50px;
   justify-content: flex-end
+}
+.modalName {
+  margin: 0;
 }

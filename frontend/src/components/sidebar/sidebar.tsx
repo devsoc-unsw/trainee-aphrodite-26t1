@@ -1,6 +1,5 @@
 import { useState } from "react";
 import styles from "./sidebar.module.css";
-import { Miniplayer } from "../miniplayer/miniplayer";
 import { NavLink } from "react-router";
 
 export interface SidebarTab {
@@ -11,8 +10,8 @@ const tabs: SidebarTab[] = [
   { label: "Home", to: "/home" },
   { label: "Friends", to: "/friends" },
   { label: "Explore", to: "/explore" },
-  { label: "Jam", to: "/jam" },
   { label: "Notifications", to: "/notif" },
+  { label: "Review", to: "/review" },
 ]
 
 export function Sidebar({ accountName }: { accountName: string }) {
@@ -40,7 +39,6 @@ export function Sidebar({ accountName }: { accountName: string }) {
           </svg>
         </button>
       </div>
-      {isSidebarExpanded ? <Miniplayer /> : null}
     </div>
   )
 }

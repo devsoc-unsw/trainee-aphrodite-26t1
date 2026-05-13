@@ -82,7 +82,21 @@ export default function Profile() {
             </div>
             <hr />
             <div className={styles.reviews}>
-              {new Array(3).fill(0).map((_, i) => (<ReviewItem key={i} to="/reviews/testid" name="Song Name" artist="Artist" rating={3} description="“At DevSoc, there are good programmers… and then there’s Andy…”" />))}
+              {new Array(3).fill(0).map((_, i) => (
+                <ReviewItem
+                  key={i}
+                  review={{
+                    to: "/reviews/testid",
+                    songId: "test",
+                    rating: 3,
+                    body: "At DevSoc, there are good programmers…",
+                    likeCount: 0,
+                    createdAt: Date.now(),
+                    updatedAt: Date.now(),
+                    user: { displayName: "Song Name", username: "artist" }
+                  }}
+                />
+              ))}
             </div>
           </div>
           </div>

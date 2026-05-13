@@ -6,6 +6,7 @@ import { getRecording } from "../lib/musicbrainz.js";
 import { fetchSongById, fetchSongsByIds, updateSong, upsertSong } from "../database/songs.js";
 
 export async function getSong(id: string) {
+  console.log("reached getSong in backend");
   const song = await fetchSongById(id);
   if (song) {
     return song;

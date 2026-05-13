@@ -5,11 +5,8 @@ import styles from "./friends.module.css"
 import SearchBar from "../components/searchbar/SearchBar";
 import { Link } from "react-router";
 import { findUsers, getFriends } from "../api/users.ts"
+import type { DisplayUser } from "../../../backend/src/types/api.types";
 
-interface DisplayUser {
-  displayName: string,
-  username: string
-}
 
 export default function FriendsPage() {
   const [searchResults, setSearchResults] = useState<DisplayUser[]>([]);

@@ -23,7 +23,7 @@ export default function App() {
         <Route path="/search" element={<ProtectedRoute><SearchPage /></ProtectedRoute>} />
         <Route path="/notif" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
         <Route path="/users/:username" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
-        <Route path="/reviews/:reviewId" element={<ProtectedRoute><ReviewPage /></ProtectedRoute>}/>
+        <Route path="/review" element={<ProtectedRoute><ReviewPage /></ProtectedRoute>}/>
         <Route path="/songs/:songId" element={<ProtectedRoute><SongPage /></ProtectedRoute>} />
       </Routes>
     </>

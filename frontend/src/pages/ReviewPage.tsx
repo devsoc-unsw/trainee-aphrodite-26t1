@@ -1,86 +1,101 @@
-
+import { ReviewModal } from "../components/reviewModal/reviewModal";
 import { Sidebar } from "../components/sidebar/sidebar";
-import { RatingStars } from "../components/ratingStars/ratingStars";
-import { ProfilePicture } from "../components/ProfilePicture/ProfilePicture";
-import { Comment } from "../components/comment/comment";
+import styles from "./review.module.css";
+import { useEffect, useRef, useState } from "react";
+import type { Track } from "../spotify.types";
+import { getSong } from "../api/songs";
+import DustEffect from "../components/DustEffect";
 
-import styles from "./review.module.css"
-import { useState } from "react";
-import { ActionBar } from "../components/actionbar/ActionBar";
-import { Button } from "../components/button/Button";
-
-const ReviewPage = () => {
-  const [rating, setRating] = useState(3);
-  return (
-    <div className={styles.container}>
-      <Sidebar accountName="account name" />
-
-      <main className={styles.main}>
-        {/* Search Bar */}
-        <div className={styles.searchContainer}>
-          <input
-            type="text"
-            className={styles.searchInput}
-            placeholder="Search for a song..."
-          />
-        </div>
-
-        <div className={styles.content}>
-          {/* Header */}
-          <section>
-            <div className={styles.header}>
-              <img src="/spotify.svg" className={styles.headerImg} alt="Spotify" />
-              <div className={styles.headerInfo}>
-                <h1 className={styles.songTitle}>Song name</h1>
-                <p className={styles.subText}>Artist</p>
-                <p className={styles.subText}>Genre</p>
-                <div className={styles.headerBar}>
-                  <ProfilePicture src="/samplepfp.jpg" />
-                  <p className={styles.username}>Username (Reviewer)</p>
-                  <RatingStars rating={rating} setRating={setRating} interactable={false} />
-                  <ActionBar likes={69} comments={67} />
-                </div>
-              </div>
-            </div>
-          </section>
-
-          {/* Review */}
-          <section>
-            <div className={styles.reviewBody}>
-              A heartfelt ballad about falling in love at the DevSoc Training Program. Listen along as code becomes a love language for Andy and Zitian at UNSW.
-            </div>
-          </section>
-
-          {/* Comments */}
-          <section>
-            <h1>Comments</h1>
-            <hr className="border-t border-gray-200" />
-            {/* Input box - placeholder for now*/}
-
-            <div className={styles.comment}>
-              <ProfilePicture src="/samplepfp.jpg" />
-              <input
-                type="text"
-                className={styles.commentInput}
-                placeholder="Add a comment"
-              />
-            </div>
-            <Button>Comment</Button>
-            {/* <button className={styles.commentButton}>Comment</button> */}
-            <Comment />
-            <Comment />
-            <Comment />
-            <Comment />
-          </section>
-        </div>
-
-
-
-
-      </main>
-    </div>
-  )
+function extractSpotifyId(url: string) {
+  const match = url.match(/track\/([a-zA-Z0-9]+)/);
+  return match ? match[1] : null;
 }
 
+const ReviewPage = () => {
+  const [url, setUrl] = useState("");
+  const [status, setStatus] = useState("idle");
+  const [song, setSong] = useState<Track | null>(null);
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [error, setError] = useState("");
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (!url.trim()) { setStatus("idle"); setSong(null); return; }
+
+    const id = extractSpotifyId(url);
+    if (!id) { setStatus("invalid"); setSong(null); return; }
+
+    setStatus("loading");
+    clearTimeout(debounceRef.current!);
+    debounceRef.current = setTimeout(async () => {
+      try {
+        const data = await getSong(id);
+        setSong(data);
+        setStatus("valid");
+        setReviewModalOpen(true);
+      } catch {
+        setStatus("invalid");
+      }
+    }, 500);
+  }, [url]);
+
+  const submitReview = (text: string, rating: number) => {
+    setError("");
+    if (!text || text.trim() === "") { setError("Review text may not be empty"); return; }
+    if (!rating || rating === 0) { setError("Rating may not be 0"); return; }
+
+    fetch(`http://localhost:3000/api/reviews/${song?.id}`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ text, rating })
+    })
+      .then(res => res.json().then(data => ({ res, data })))
+      .then(({ res, data }) => {
+        if (!res.ok) throw new Error(data.error || "Failed to submit review");
+        setReviewModalOpen(false);
+        setUrl("");
+      })
+      .catch(err => setError(err.message));
+  };
+
+  return (
+    <div className={styles.container}>
+      <DustEffect />
+      <Sidebar accountName="account name" />
+      <main className={styles.main}>
+        <h1 className={styles.title}>What song would you like<br />to review <em>today?</em></h1>
+        <p className={styles.subtitle}>paste a spotify link to get started</p>
+        <div className={styles["input-wrap"]}>
+          <input
+            className={styles["link-input"]}
+            type="text"
+            placeholder="https://open.spotify.com/track/..."
+            value={url}
+            onChange={e => setUrl(e.target.value)}
+            spellCheck={false}
+          />
+        </div>
+        <p className={styles.hint}>
+          {status === "loading" && "Fetching song..."}
+          {status === "invalid" && "Invalid Spotify track link"}
+          {status === "idle" && "Only Spotify track links are supported right now"}
+        </p>
+      </main>
+      {reviewModalOpen && song && (
+        <ReviewModal
+          songName={song.name}
+          artistName={song.artists[0]?.name ?? "Unknown Artist"}
+          img={song.album.images[0]?.url ?? "/spotify.svg"}
+          onClose={() => { setReviewModalOpen(false); setUrl(""); }}
+          onSubmit={submitReview}
+          error={error}
+        />
+      )}
+    </div>
+  );
+};
 
 export { ReviewPage };
