@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ActionBar } from "../components/actionbar/ActionBar";
 import { Button } from "../components/button/Button";
 import { Sidebar } from "../components/sidebar/sidebar"
@@ -6,8 +6,9 @@ import styles from "./profile.module.css"
 import { ReviewItem } from "../components/reviewitem/ReviewItem";
 import { Link } from "react-router";
 import { useParams } from "react-router-dom";
-import { handleFriendReq } from "../api/users.ts"
-
+import { getCurrUser, getFriends, handleFriendReq, getFavSongs, getFavArtist, getListeningAge} from "../api/users.ts";
+import { SpotifyLogin } from "../components/spotifyLogin/spotifyLogin.tsx";
+import type { SpotifyTrack, Artist } from "../../../backend/src/types/api.types";
 
 function ProfileCard({ to, children, imageUrl, description }: { to: string, children: React.ReactNode, imageUrl: string, description: string}) {
   return (
@@ -20,17 +21,49 @@ function ProfileCard({ to, children, imageUrl, description }: { to: string, chil
   )
 }
 
+
 export default function Profile() {
   const { username } = useParams<{ username: string }>();
   const profileName = username ?? "User Not Found"
+  const [isLoading, setIsLoading] = useState(true);
+  const [isOwnUser, setIsOwnUser] = useState(false);
   const [likes, setLikes] = useState(0);
   const [liked, setLiked] = useState(false);
   const [isAdding, setFriends] = useState(false);
+  const [isFriend, setIsFriend ] = useState(false);
   const [img, setImg] = useState("/samplepfp.jpg");
+  const [topTracks, setTopTracks] = useState<SpotifyTrack[]>([]);
+  const [topArtist, setTopArtist] = useState<Artist[]>([]);
+  const [age, setAge] = useState("");
+  const [artistOfAge, setAgeArtist] = useState<Artist | null>(null);
+
+  useEffect(() => {
+    async function checkUser() {
+      const user = await getCurrUser()
+      const friends = await getFriends();
+      const tracks = await getFavSongs(username!);
+      const artist = await getFavArtist(username!);
+      const { artistInfo, avgYear } = await getListeningAge(username!);
+      setTopArtist(artist.items)
+      setTopTracks(tracks.items)
+      setAgeArtist(artistInfo)
+      setAge(avgYear)
+      for (const friend of friends) {
+        if (friend.username === username) {
+          setIsFriend(true);
+        }
+      }
+      setIsOwnUser(user === username)
+      setIsLoading(false)
+    }
+    checkUser();
+  }, []);
+
   return (
     <div className={styles.container}>
       <Sidebar accountName="account name" />
       <main className={styles.main}>
+        {isOwnUser ? <SpotifyLogin></SpotifyLogin> : null}
         <div className={styles.header} style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/samplebanner.png")`}}>
           <div className={styles.profileRow}>
             <div className={styles.avatarWrapper}>
@@ -61,16 +94,16 @@ export default function Profile() {
               among us
             </div>
             <div className={styles.profileButtons}>
-              <Button onClick={() => {const nextState = !isAdding; setFriends(!isAdding); handleFriendReq(profileName, nextState)}} active={isAdding}>{isAdding ? "Request Sent!" : "+ Add Friend"}</Button>
+              {isOwnUser || isFriend || isLoading ? null : <Button onClick={() => {const nextState = !isAdding; setFriends(!isAdding); handleFriendReq(profileName, nextState)}} active={isAdding}>{isAdding ? "Request Sent!" : "+ Add Friend"}</Button>}
               <ActionBar likes={likes} comments={67} liked={liked} />
             </div>
           </div>
         </div>
         <div className={styles.body}>
           <div className={styles.cards}>
-            <ProfileCard to="/explore" imageUrl="/spotify.svg" description="hello"><span style={{ color: "#FF7272"}}>Favourite</span> song this week</ProfileCard>
-            <ProfileCard to="/explore" imageUrl="/spotify.svg" description="hello"><span style={{ color: "#DCFF15" }}>Top</span> artist this month</ProfileCard>
-            <ProfileCard to="/explore" imageUrl="/spotify.svg" description="hello"><span style={{ color: "#AF99FF"}}>Minutes</span> listened this week</ProfileCard>
+            <ProfileCard to={"/songs/" + topTracks[0]?.id} imageUrl={topTracks[0]?.album?.images?.[0]?.url} description={topTracks[0]?.name}><span style={{ color: "#FF7272"}}>Favourite</span> song this month</ProfileCard>
+            <ProfileCard to="/explore" imageUrl={topArtist[0]?.images?.[0]?.url} description={topArtist[0]?.name}><span style={{ color: "#DCFF15" }}>Top</span> artist this month</ProfileCard>
+            <ProfileCard to="/explore" imageUrl={artistOfAge?.images?.[0].url ?? ""} description={age}>Listening <span style={{ color: "#AF99FF"}}>Age</span></ProfileCard>
           </div>
           <div>
             <div className={styles.sectionHeader}>
@@ -100,8 +133,6 @@ export default function Profile() {
             </div>
           </div>
           </div>
-
-
       </main>
     </div>
   )

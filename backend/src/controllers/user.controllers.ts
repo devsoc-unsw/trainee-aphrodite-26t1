@@ -65,6 +65,52 @@ export async function getUser(req: Request, res: Response) {
   }
 }
 
+export async function getCurrUser(req: Request, res: Response) {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+        return res.status(401).json({ message: "No token provided" });
+    }
+    const decoded = verifyToken(token);
+    const recipient = decoded.id
+    const user = await userService.getUser(recipient);
+    if (!user) {
+        return res.status(400).json({ message: "User not found" });
+    }
+    res.json(user);
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+}
+
+export async function getFavSongs(req: Request, res: Response) {
+  try {
+    const tracks = await userService.getFavSongs(req.params.username as string);
+    res.json(tracks);
+  } catch (err: any) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
+export async function getFavArtist(req: Request, res: Response) {
+  try {
+    const tracks = await userService.getFavArtist(req.params.username as string);
+    res.json(tracks);
+  } catch (err: any) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
+export async function getListeningAge(req: Request, res: Response) {
+  try {
+    const tracks = await userService.getListeningAge(req.params.username as string);
+    res.json(tracks);
+  } catch (err: any) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
+
 export async function addFriend(req: Request, res: Response) {
   try {
     const { senderId, accepted  } = req.body;

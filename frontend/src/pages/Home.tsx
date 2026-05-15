@@ -6,7 +6,7 @@ import { LargeCard } from "../components/largecard/largecard";
 import { SongItem } from "../components/songitem/songitem";
 import { Link, useNavigate } from "react-router";
 import SearchBar from "../components/searchbar/SearchBar";
-
+import { MyProfile } from "../components/myprofile/myprofile";
 
 export default function Home() {
   const [topSongs, setTopSongs] = useState<Song[]>([]);
@@ -41,6 +41,7 @@ export default function Home() {
       <Sidebar accountName="account name" />
       <main className={styles.main}>
         <SearchBar placeholder="Search for a song or user..." onSubmit={onSubmit} />
+        <MyProfile></MyProfile>
         <section>
           <h2 className={styles.sectionTitle}>Recommended Songs</h2>
           <div className={styles.recommendedGrid}>

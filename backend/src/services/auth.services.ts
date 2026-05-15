@@ -2,8 +2,8 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import { usersCollection } from "../lib/connect.js";
 import { ErrorMap } from "../constants/errors.js";
-import { WithId } from "mongodb";
 import { User } from "../types/api.types.js";
+import { ObjectId } from "mongodb";
 
 const JWT_KEY = process.env.JWT_KEY!;
 
@@ -192,4 +192,41 @@ export async function handleGoogleCallback(code: string) {
   );
 
   return { token };
+}
+
+export async function handleSpotifyCallback(code: string, userId: string) {
+  console.log("reached handleSpotifyCallback in auth.services.ts");
+
+  const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Authorization": "Basic " + Buffer.from(
+        `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`
+      ).toString("base64")
+    },
+    body: new URLSearchParams({
+      code,
+      redirect_uri: "http://127.0.0.1:3000/api/users/auth/spotify/callback",
+      grant_type: "authorization_code",
+    }),
+  });
+
+  const tokens = await tokenRes.json();
+  console.log("tokens:", tokens);
+
+  if (!tokens.access_token) {
+    throw new Error("Failed to get Spotify access token");
+  }
+
+  // Store the tokens on the user so you can call Spotify API later
+  await usersCollection.updateOne(
+    { _id: new ObjectId(userId) },
+    { $set: {
+      spotifyAccessToken: tokens.access_token,
+      spotifyRefreshToken: tokens.refresh_token,
+    }}
+  );
+
+  return { success: true };
 }

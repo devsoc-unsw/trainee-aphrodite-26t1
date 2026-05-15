@@ -40,6 +40,35 @@ export async function getUsername(id: string) {
   return res.json();
 }
 
+export async function getCurrUser() {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${BASE_URL}/getCurrUser`, {
+    method: "POST",
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+     },
+    body: JSON.stringify({})
+  });
+  console.log(res);
+  return res.json();
+}
+
+export async function getFavSongs(username: string) {
+  const res = await fetch(`${BASE_URL}/${username}/top-tracks`);
+  return res.json();
+}
+
+export async function getFavArtist(username: string) {
+  const res = await fetch(`${BASE_URL}/${username}/top-artist`);
+  return res.json();
+}
+
+export async function getListeningAge(username: string) {
+  const res = await fetch(`${BASE_URL}/${username}/listening-age`);
+  return res.json();
+}
+
 // isAdding is a boolean here to differentiate sending a friend req or removing a friend req
 export async function handleFriendReq(recipient: string, isAdding: boolean) {
   const token = localStorage.getItem("token");

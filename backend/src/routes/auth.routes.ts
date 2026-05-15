@@ -1,9 +1,9 @@
-import express, { Router } from "express";
+import express from "express";
 import * as authController from "../controllers/auth.controllers.js"
 import { authMiddleware } from "../middleware/middleware.js";
 
 
-const router: Router = express.Router();
+const router = express.Router();
 
 router.get("/", authMiddleware, authController.getUsers);
 
@@ -16,5 +16,9 @@ router.post("/auth/login", authController.login);
 router.get("/auth/google", authController.googleAuth);
 
 router.get("/auth/google/callback", authController.googleAuthCallback);
+
+router.get("/auth/spotify", authController.spotifyAuth);
+
+router.get("/auth/spotify/callback", authController.spotifyAuthCallback);
 
 export default router;
