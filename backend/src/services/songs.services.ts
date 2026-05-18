@@ -4,9 +4,10 @@ import { Track } from "../types/spotify.types.js";
 import PQueue from "p-queue";
 import { getRecording } from "../lib/musicbrainz.js";
 import { fetchSongById, fetchSongsByIds, updateSong, upsertSong } from "../database/songs.js";
+import { usersCollection, songsCollection, reviewsCollection } from "../lib/connect.js";
+import { ObjectId } from "mongodb";
 
 export async function getSong(id: string) {
-  console.log("reached getSong in backend");
   const song = await fetchSongById(id);
   if (song) {
     return song;
@@ -33,7 +34,8 @@ export async function searchSong(query: string) {
   });
 
   // update database and update with musicbrainz data lazily
-  Promise.allSettled(newSongs.map(async song => handleNewSong(song))).catch(e => console.error('Background save error:', e));
+  // dont save every song from search results
+  // Promise.allSettled(newSongs.map(async song => handleNewSong(song))).catch(e => console.error('Background save error:', e));
 
   return songs;
 }
@@ -102,3 +104,71 @@ export function scheduleMusicbrainz(id: string, isrc: string) {
   });
 }
 
+export async function toggleLikeSong(userId: string, songId: string) {
+  const userObjId = new ObjectId(userId);
+  const user = await usersCollection.findOne({ _id: userObjId });
+  if (!user) throw new Error("User not found");
+
+  const likedSongs = user.likedSongs || [];
+
+  if (likedSongs.includes(songId)) {
+    await usersCollection.updateOne(
+      { _id: userObjId },
+      { $pull: { likedSongs: songId } as any }
+    );
+    await songsCollection.updateOne(
+      { id: songId },
+      { $inc: { likeCount: -1 } }
+    );
+    return false;
+  }
+  else {
+    await usersCollection.updateOne(
+      { _id: userObjId },
+      { $push: { likedSongs: songId } as any }
+    );
+    await songsCollection.updateOne(
+      { id: songId },
+      { $inc: { likeCount: 1 } }
+    );
+    return true;
+  }
+}
+
+export async function getRecommendedSongs(limit: number = 10) {
+  const songs = await songsCollection
+    .find({ reviewCount: { $gt: 0 } })
+    .sort({ reviewCount: -1, averageRating: -1 })
+    .limit(limit)
+    .toArray();
+  return songs;
+}
+
+export async function getRecentlyRatedSongs(limit: number = 5) {
+  // Aggregate to find the latest reviews, grouping by songId so we get unique songs
+  const recentReviews = await reviewsCollection.aggregate([
+    { $sort: { createdAt: -1 } },
+    {
+      $group: {
+        _id: "$songId",
+        createdAt: { $first: "$createdAt" }
+      }
+    },
+    { $sort: { createdAt: -1 } },
+    { $limit: limit }
+  ]).toArray();
+
+  if (recentReviews.length === 0) {
+    return [];
+  }
+
+  const songIds = recentReviews.map(r => r._id as string);
+
+  // Fetch the songs
+  const songs = await songsCollection.find({ id: { $in: songIds } }).toArray();
+
+  // Sort the songs to match the order of recentReviews
+  const sortedSongs = recentReviews.map(review => songs.find(s => s.id === review._id)).filter(Boolean);
+
+  return sortedSongs;
+}

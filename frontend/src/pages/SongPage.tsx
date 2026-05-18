@@ -30,7 +30,10 @@ export default function SongPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetch("http://localhost:3000/api/songs/" + songId)
+    const token = localStorage.getItem("token");
+    const headers = token ? { "Authorization": `Bearer ${token}` } : {};
+
+    fetch("http://localhost:3000/api/songs/" + songId, { headers })
       .then(res => res.json())
       .then((song: Song) => {
         if (song) {
@@ -41,23 +44,23 @@ export default function SongPage() {
           setCommentNo(song.reviewCount);
           setRating(Math.round(song.averageRating));
           setAverageRating(song.averageRating);
+          setLiked(!!song.liked);
         }
       })
       .catch(console.error);
-    fetch("http://localhost:3000/api/reviews/" + songId + "?sort=popular&limit=3")
+    fetch("http://localhost:3000/api/reviews/" + songId + "?sort=popular&limit=3", { headers })
       .then(res => res.json())
       .then((reviews: DisplayReview[]) => {
         setPopularReviews(reviews);
       })
       .catch(console.error);
-    fetch("http://localhost:3000/api/reviews/" + songId + "?sort=recent&limit=3")
+    fetch("http://localhost:3000/api/reviews/" + songId + "?sort=recent&limit=3", { headers })
       .then(res => res.json())
       .then((reviews: DisplayReview[]) => {
         setRecentReviews(reviews);
       })
       .catch(console.error);
     
-    const token = localStorage.getItem("token");
     if (token) {
       fetch("http://localhost:3000/api/reviews/" + songId + "/me", {
         headers: { "Authorization": `Bearer ${token}` }
@@ -77,14 +80,31 @@ export default function SongPage() {
   }, [liked]);
 
   const like = () => {
-    if (liked) {
-      setLikes(likes - 1);
-      setLiked(false);
-    }
-    else {
-      setLikes(likes + 1);
-      setLiked(true);
-    }
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    const previousLiked = liked;
+    const previousLikes = likes;
+
+    setLiked(!previousLiked);
+    setLikes(previousLiked ? previousLikes - 1 : previousLikes + 1);
+
+    fetch("http://localhost:3000/api/songs/" + songId + "/like", {
+      method: "POST",
+      headers: { "Authorization": `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        setLiked(data.liked);
+        if (data.liked !== !previousLiked) {
+           setLikes(data.liked ? previousLikes + 1 : previousLikes - 1);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        setLiked(previousLiked);
+        setLikes(previousLikes);
+      });
   }
 
   const submitReview = (text: string, rating: number) => {
@@ -116,15 +136,16 @@ export default function SongPage() {
         }
         console.log("Success:", data);
         setReviewModalOpen(false);
-        fetch("http://localhost:3000/api/reviews/" + songId + "?sort=popular&limit=3")
+        const headers = { "Authorization": `Bearer ${localStorage.getItem("token")}` };
+        fetch("http://localhost:3000/api/reviews/" + songId + "?sort=popular&limit=3", { headers })
           .then(res => res.json())
           .then(setPopularReviews)
           .catch(console.error);
-        fetch("http://localhost:3000/api/reviews/" + songId + "?sort=recent&limit=3")
+        fetch("http://localhost:3000/api/reviews/" + songId + "?sort=recent&limit=3", { headers })
           .then(res => res.json())
           .then(setRecentReviews)
           .catch(console.error);
-        fetch("http://localhost:3000/api/songs/" + songId)
+        fetch("http://localhost:3000/api/songs/" + songId, { headers })
           .then(res => res.json())
           .then((track: Song) => {
             if (track) {
@@ -157,11 +178,12 @@ export default function SongPage() {
       .then(res => {
         if (res.ok) {
           setMyReview(null);
-          fetch("http://localhost:3000/api/reviews/" + songId + "?sort=popular&limit=3")
+          const headers = { "Authorization": `Bearer ${localStorage.getItem("token")}` };
+          fetch("http://localhost:3000/api/reviews/" + songId + "?sort=popular&limit=3", { headers })
             .then(res => res.json()).then(setPopularReviews).catch(console.error);
-          fetch("http://localhost:3000/api/reviews/" + songId + "?sort=recent&limit=3")
+          fetch("http://localhost:3000/api/reviews/" + songId + "?sort=recent&limit=3", { headers })
             .then(res => res.json()).then(setRecentReviews).catch(console.error);
-          fetch("http://localhost:3000/api/songs/" + songId)
+          fetch("http://localhost:3000/api/songs/" + songId, { headers })
             .then(res => res.json())
             .then((track: Song) => {
               if (track) {

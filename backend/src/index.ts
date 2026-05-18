@@ -6,6 +6,7 @@ import authRoutes from "./routes/auth.routes.js";
 import songsRoutes from "./routes/songs.routes.js";
 import indexRoutes from "./routes/index.routes.js";
 import userRoutes from "./routes/user.routes.js"
+import reviewsRoutes from "./routes/review.routes.js"
 const app = express();
 const PORT = process.env.PORT ? process.env.PORT : 3000;
 
@@ -36,7 +37,8 @@ async function startServer() {
     });
     app.use("/api/users", authRoutes);
     app.use("/api/users", userRoutes);
-    app.use("/api", songsRoutes);
+    app.use("/api/reviews", reviewsRoutes);
+    app.use("/api/songs", songsRoutes);
     app.use("/api", indexRoutes);
 
     app.listen(PORT, () => {

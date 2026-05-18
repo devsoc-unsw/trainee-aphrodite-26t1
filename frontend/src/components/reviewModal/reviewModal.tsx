@@ -31,7 +31,6 @@ export function ReviewModal({ songName, artistName, img, onClose, onSubmit, erro
         <div className={styles.modalBody}>
           <img src={img} className={styles.songImg} alt="Spotify" />
           <div>
-            <h1>Song Name</h1>
             <h1 className={styles.modalName}>{songName}</h1>
             <p className={styles.artistName}>{artistName}</p>
             <textarea
