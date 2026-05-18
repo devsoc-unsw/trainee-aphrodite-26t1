@@ -10,7 +10,7 @@ import SearchPage from './pages/SearchPage.tsx'
 import GoogleCallback from './pages/GoogleCallback.tsx'
 import ProtectedRoute from "./components/protected/ProtectedRoute.tsx";
 import NotificationsPage from './pages/NotificationsPage.tsx'
-
+import SettingPage from './pages/SettingPage.tsx'
 export default function App() {
   return (
     <>
@@ -25,6 +25,7 @@ export default function App() {
         <Route path="/users/:username" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
         <Route path="/review" element={<ProtectedRoute><ReviewPage /></ProtectedRoute>}/>
         <Route path="/songs/:songId" element={<ProtectedRoute><SongPage /></ProtectedRoute>} />
+        <Route path="/settings" element={<ProtectedRoute><SettingPage/></ProtectedRoute>} />
       </Routes>
     </>
   )

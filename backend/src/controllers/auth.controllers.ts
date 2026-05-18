@@ -90,7 +90,7 @@ export async function spotifyAuthCallback(req: Request, res: Response) {
       return res.status(404).json({ message: "User not found" });
     }
     await authService.handleSpotifyCallback(code, userId);
-    res.redirect(`http://localhost:5173/users/${username}`);
+    res.redirect(`http://localhost:5173/settings`);
   } catch (err) {
     console.error(err);
     res.status(500).send("Error - Google Auth");

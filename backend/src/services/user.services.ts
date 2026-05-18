@@ -127,7 +127,7 @@ export async function getUser(user: string) {
 
 export async function getFavSongs(username: string) {
     const user = await usersCollection.findOne( {username: username })
-    if (!user?.spotifyAccessToken) throw new Error("No Spotify token found");
+    if (!user?.spotifyAccessToken) return null;
 
     let res = await fetch("https://api.spotify.com/v1/me/top/tracks?time_range=short_term&limit=1", {
         headers: { "Authorization": `Bearer ${user.spotifyAccessToken}` }
@@ -158,7 +158,7 @@ export async function getFavSongs(username: string) {
 
 export async function getFavArtist(username: string) {
     const user = await usersCollection.findOne( {username: username })
-    if (!user?.spotifyAccessToken) throw new Error("No Spotify token found");
+    if (!user?.spotifyAccessToken) return null;
 
     let res = await fetch("https://api.spotify.com/v1/me/top/artists?time_range=short_term&limit=1", {
         headers: { "Authorization": `Bearer ${user.spotifyAccessToken}` }
@@ -190,7 +190,7 @@ export async function getFavArtist(username: string) {
 
 export async function getListeningAge(username: string) {
     const user = await usersCollection.findOne( {username: username })
-    if (!user?.spotifyAccessToken) throw new Error("No Spotify token found");
+    if (!user?.spotifyAccessToken) return null;
 
     let res = await fetch("https://api.spotify.com/v1/me/top/tracks?limit=50", {
         headers: { "Authorization": `Bearer ${user.spotifyAccessToken}` }
@@ -234,4 +234,47 @@ export async function getListeningAge(username: string) {
   const artistData = await artistRes.json()
   const artistInfo = artistData.artists.items[0];
   return { artistInfo, avgYear };
+}
+
+export async function makePrivate(user: string, update: boolean) {
+
+    const result = await usersCollection.updateOne(
+        { _id: new ObjectId(user) },
+        { $set: {
+            isPrivate: update
+        }}
+    )
+    return result
+
+}
+
+export async function isPrivate(name: string) {
+
+    const result = await usersCollection.findOne(
+        {username: name }
+    )
+    if (!result) {
+        throw new Error("User not found")
+    }
+    return result.isPrivate ?? false;
+}
+
+export async function updateBanner(user: string, file: string) {
+    const result = await usersCollection.updateOne(
+        { _id: new ObjectId(user) },
+        { $set: {
+            bannerPic: file
+        }}
+    )
+}
+
+export async function fetchBanner(name: string) {
+
+    const result = await usersCollection.findOne(
+        {username: name }
+    )
+    if (!result) {
+        throw new Error("User not found")
+    }
+    return result.bannerPic ?? null;
 }

@@ -6,8 +6,7 @@ import styles from "./profile.module.css"
 import { ReviewItem } from "../components/reviewitem/ReviewItem";
 import { Link } from "react-router";
 import { useParams } from "react-router-dom";
-import { getCurrUser, getFriends, handleFriendReq, getFavSongs, getFavArtist, getListeningAge} from "../api/users.ts";
-import { SpotifyLogin } from "../components/spotifyLogin/spotifyLogin.tsx";
+import { getCurrUser, getFriends, handleFriendReq, getFavSongs, getFavArtist, getListeningAge, isPrivate, fetchBanner} from "../api/users.ts";
 import type { SpotifyTrack, Artist } from "../../../backend/src/types/api.types";
 
 function ProfileCard({ to, children, imageUrl, description }: { to: string, children: React.ReactNode, imageUrl: string, description: string}) {
@@ -36,24 +35,32 @@ export default function Profile() {
   const [topArtist, setTopArtist] = useState<Artist[]>([]);
   const [age, setAge] = useState("");
   const [artistOfAge, setAgeArtist] = useState<Artist | null>(null);
-
+  const [profilePrivate, setPrivate] = useState(true);
+  const [banner, setBanner] = useState("");
   useEffect(() => {
     async function checkUser() {
       const user = await getCurrUser()
-      const friends = await getFriends();
-      const tracks = await getFavSongs(username!);
-      const artist = await getFavArtist(username!);
-      const { artistInfo, avgYear } = await getListeningAge(username!);
-      setTopArtist(artist.items)
-      setTopTracks(tracks.items)
-      setAgeArtist(artistInfo)
-      setAge(avgYear)
-      for (const friend of friends) {
-        if (friend.username === username) {
-          setIsFriend(true);
+      const isPriv = await isPrivate(username!);
+      const banner = await fetchBanner(username!);
+      setIsOwnUser(user === username)
+      setPrivate(isPriv)
+      setBanner(banner)
+      if (!isPriv) {
+      
+        const friends = await getFriends();
+        const tracks = await getFavSongs(username!);
+        const artist = await getFavArtist(username!);
+        const { artistInfo, avgYear } = await getListeningAge(username!);
+        setTopArtist(artist.items)
+        setTopTracks(tracks.items)
+        setAgeArtist(artistInfo)
+        setAge(avgYear)
+        for (const friend of friends) {
+          if (friend.username === username) {
+            setIsFriend(true);
+          }
         }
       }
-      setIsOwnUser(user === username)
       setIsLoading(false)
     }
     checkUser();
@@ -63,8 +70,7 @@ export default function Profile() {
     <div className={styles.container}>
       <Sidebar accountName="account name" />
       <main className={styles.main}>
-        {isOwnUser ? <SpotifyLogin></SpotifyLogin> : null}
-        <div className={styles.header} style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("/samplebanner.png")`}}>
+        <div className={styles.header} style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${banner})`}}>
           <div className={styles.profileRow}>
             <div className={styles.avatarWrapper}>
               <img src={img} className={styles.avatarImg} alt="Spotify" />
@@ -99,12 +105,12 @@ export default function Profile() {
             </div>
           </div>
         </div>
-        <div className={styles.body}>
-          <div className={styles.cards}>
+        {(!profilePrivate || isFriend || isOwnUser) ? <div className={styles.body}>
+          {(topTracks.length !== 0) && <div className={styles.cards}>
             <ProfileCard to={"/songs/" + topTracks[0]?.id} imageUrl={topTracks[0]?.album?.images?.[0]?.url} description={topTracks[0]?.name}><span style={{ color: "#FF7272"}}>Favourite</span> song this month</ProfileCard>
             <ProfileCard to="/explore" imageUrl={topArtist[0]?.images?.[0]?.url} description={topArtist[0]?.name}><span style={{ color: "#DCFF15" }}>Top</span> artist this month</ProfileCard>
             <ProfileCard to="/explore" imageUrl={artistOfAge?.images?.[0].url ?? ""} description={age}>Listening <span style={{ color: "#AF99FF"}}>Age</span></ProfileCard>
-          </div>
+          </div>}
           <div>
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>Reviews</h2>
@@ -132,7 +138,7 @@ export default function Profile() {
               ))}
             </div>
           </div>
-          </div>
+        </div> : <div className={styles.private}>User has privated their account</div>}
       </main>
     </div>
   )

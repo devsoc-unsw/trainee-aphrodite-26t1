@@ -43,12 +43,11 @@ export async function getUsername(id: string) {
 export async function getCurrUser() {
   const token = localStorage.getItem("token");
   const res = await fetch(`${BASE_URL}/getCurrUser`, {
-    method: "POST",
+    method: "GET",
     headers: { 
       "Content-Type": "application/json",
       "Authorization": `Bearer ${token}`
-     },
-    body: JSON.stringify({})
+     }
   });
   console.log(res);
   return res.json();
@@ -102,12 +101,11 @@ export async function addFriend( senderId: string, accepted: boolean ) {
 export async function getNotifications() {
   const token = localStorage.getItem("token");
   const res = await fetch(`${BASE_URL}/getNotifs`, {
-    method: "POST",
+    method: "GET",
     headers: { 
       "Content-Type": "application/json",
       "Authorization": `Bearer ${token}`
-      },
-    body: JSON.stringify({})
+      }
   });
   console.log(res);
   return res.json();
@@ -131,5 +129,55 @@ export async function login(email: string, password: string) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password })
   });
+  return res.json();
+}
+
+export async function makePrivate(update: boolean) {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${BASE_URL}/makePrivate`, {
+    method: "POST",
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+      },
+    body: JSON.stringify({ update })
+  });
+  console.log(res);
+  return res.json();
+}
+
+export async function isPrivate(username: string) {
+  const res = await fetch(`${BASE_URL}/${username}/isPrivate`, {
+    method: "GET",
+    headers: { 
+      "Content-Type": "application/json"
+      }
+  });
+  console.log(res);
+  return res.json();
+}
+
+export async function updateBanner(file: string) {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${BASE_URL}/updateBanner`, {
+    method: "POST",
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+      },
+    body: JSON.stringify({ file })
+  });
+  console.log(res);
+  return res.json();
+}
+
+export async function fetchBanner(username: string) {
+    const res = await fetch(`${BASE_URL}/${username}/fetchBanner`, {
+    method: "GET",
+    headers: { 
+      "Content-Type": "application/json"
+      }
+  });
+  console.log(res);
   return res.json();
 }

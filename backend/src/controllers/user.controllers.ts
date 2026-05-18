@@ -141,3 +141,53 @@ export async function getNotifs(req: Request, res: Response) {
     res.status(400).json({ message: err.message });
   }
 }
+
+export async function makePrivate(req: Request, res: Response) {
+  try {
+    const { update } = req.body;
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+        return res.status(401).json({ message: "No token provided" });
+    }
+    const decoded = verifyToken(token);
+    const user = decoded.id
+    const result = await userService.makePrivate(user, update);
+    res.json(result);
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+}
+
+export async function isPrivate(req: Request, res: Response) {
+  try {
+    const result = await userService.isPrivate(req.params.username as string);
+    res.json(result);
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+}
+
+export async function updateBanner(req: Request, res: Response) {
+  try {
+    const { file } = req.body;
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+        return res.status(401).json({ message: "No token provided" });
+    }
+    const decoded = verifyToken(token);
+    const user = decoded.id
+    const result = await userService.updateBanner(user, file);
+    res.json(result);
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+}
+
+export async function fetchBanner(req: Request, res: Response) {
+  try {
+    const result = await userService.fetchBanner(req.params.username as string);
+    res.json(result);
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+}

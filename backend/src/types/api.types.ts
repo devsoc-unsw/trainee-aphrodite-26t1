@@ -61,6 +61,8 @@ export interface User {
   requests: { senderId: string; date: Date }[];
   spotifyAccessToken?: string;
   spotifyRefreshToken?: string;
+  isPrivate?: boolean;
+  bannerPic?: string;
 }
 
 export interface DisplayUser {
