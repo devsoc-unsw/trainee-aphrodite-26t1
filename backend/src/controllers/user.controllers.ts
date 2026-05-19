@@ -35,6 +35,20 @@ export async function getFriends(req: Request, res: Response) {
   }
 }
 
+export async function getFriendCount(req: Request, res: Response) {
+  try {
+    const user = req.params.username
+
+    if (!user) {
+        return res.status(401).json({ message: "No user specified" });
+    }
+    const users = await userService.getFriendCount(user as string);
+    res.json(users);
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+}
+
 export async function friendReq(req: Request, res: Response) {
   try {
     const { recipient, isAdding } = req.body;

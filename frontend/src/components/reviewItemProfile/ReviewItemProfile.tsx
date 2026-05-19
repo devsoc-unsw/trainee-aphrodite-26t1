@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { RatingStars } from "../ratingStars/ratingStars";
-import styles from "./reviewitem.module.css";
+import styles from "./ReviewItemProfile.module.css";
 import { LikeHeart } from "../likeHeart/likeHeart";
 import type { DisplayReview } from "../../../../backend/src/types/api.types";
-
+import { getSong } from "../../api/songs";
 interface ReviewItemInfo {
   review: DisplayReview;
   onDelete?: () => void;
@@ -11,10 +11,20 @@ interface ReviewItemInfo {
 
 const CHAR_LIMIT = 200;
 
-export function ReviewItem({ review, onDelete }: ReviewItemInfo) {
+export function ReviewItemProfile({ review, onDelete }: ReviewItemInfo) {
   const [expanded, setExpanded] = useState(false);
   const [liked, setLiked] = useState(!!review.liked);
   const [likeCount, setLikeCount] = useState(review.likeCount);
+  const [songName, setSongName] = useState("");
+  const [songPic, setSongPic] = useState("");
+  useEffect(() => {
+    const getSongName = async() => {
+        const song = await getSong(review.songId);
+        setSongName(song.name)
+        setSongPic(song.album.images[0]?.url ?? "/spotify.svg")
+    }
+    getSongName();
+  }, [])
 
   const toggleLike = () => {
     const token = localStorage.getItem("token");
@@ -50,10 +60,10 @@ export function ReviewItem({ review, onDelete }: ReviewItemInfo) {
   return (
     <div className={styles.container}>
       <div className={styles.info}>
-        <div className={styles.profile}></div>
+        <img className={styles.profile} src={songPic}></img>
         <div className={styles.body}>
           <div className={styles.commentHeader}>
-            <div className={styles.title}>Review by {review.user.username}</div>
+            <div className={styles.title}>{songName}</div>
             <RatingStars rating={review.rating} size={14} />
           </div>
           {review.body ? <div className={styles.description}>

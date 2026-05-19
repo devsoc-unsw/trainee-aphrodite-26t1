@@ -3,11 +3,12 @@ import { ActionBar } from "../components/actionbar/ActionBar";
 import { Button } from "../components/button/Button";
 import { Sidebar } from "../components/sidebar/sidebar"
 import styles from "./profile.module.css"
-import { ReviewItem } from "../components/reviewitem/ReviewItem";
+import { ReviewItemProfile } from "../components/reviewItemProfile/ReviewItemProfile.tsx";
 import { Link, useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
-import { getCurrUser, getFriends, handleFriendReq, getFavSongs, getFavArtist, getListeningAge, isPrivate, fetchBanner, fetchAvatar} from "../api/users.ts";
+import { getCurrUser, getFriends, handleFriendReq, getFavSongs, getFavArtist, getListeningAge, isPrivate, fetchBanner, fetchAvatar, fetchDescription, getFriendCount} from "../api/users.ts";
 import type { SpotifyTrack, Artist } from "../../../backend/src/types/api.types";
+import type { DisplayReview } from "../../../backend/src/types/api.types";
 
 function ProfileCard({ to, children, imageUrl, description }: { to: string, children: React.ReactNode, imageUrl: string, description: string}) {
   return (
@@ -22,6 +23,7 @@ function ProfileCard({ to, children, imageUrl, description }: { to: string, chil
 
 
 export default function Profile() {
+  const token = localStorage.getItem("token");
   const { username } = useParams<{ username: string }>();
   const profileName = username ?? "User Not Found"
   const [isLoading, setIsLoading] = useState(true);
@@ -30,6 +32,7 @@ export default function Profile() {
   const [liked, setLiked] = useState(false);
   const [isAdding, setFriends] = useState(false);
   const [isFriend, setIsFriend ] = useState(false);
+  const [friendCount, setFriendCount] = useState(0);
   const [topTracks, setTopTracks] = useState<SpotifyTrack[]>([]);
   const [topArtist, setTopArtist] = useState<Artist[]>([]);
   const [age, setAge] = useState("");
@@ -37,22 +40,43 @@ export default function Profile() {
   const [profilePrivate, setPrivate] = useState(true);
   const [banner, setBanner] = useState("");
   const [avatar, setAvatar] = useState("/samplepfp.jpg");
-  const navigate = useNavigate()
+  const [reviews, setReviews] = useState<DisplayReview[]>([]);
+  const [sortMode, setSortMode] = useState<"top" | "new">("top");
+  const [bio, setBio] = useState("");
+  const totalLikes = reviews.reduce((sum, r) => sum + r.likeCount, 0);
+  const totalComments = reviews.length;
+  const navigate = useNavigate();
+
+  const sortedReviews = [...reviews].sort((a, b) => {
+    if (sortMode === "top") return b.likeCount - a.likeCount;
+    return b.createdAt - a.createdAt;
+  });
+
   useEffect(() => {
     async function checkUser() {
       const user = await getCurrUser()
       const isPriv = await isPrivate(username!);
       const banner = await fetchBanner(username!);
       const avatar = await fetchAvatar(username!);
+      const bio = await fetchDescription(username!);
+      const count = await getFriendCount(username!);
+      setBio(bio);
       setIsOwnUser(user === username)
       setPrivate(isPriv)
       setBanner(banner)
       setAvatar(avatar)
+      setFriendCount(count)
       if (!isPriv) {
         const friends = await getFriends();
         const tracks = await getFavSongs(username!);
         const artist = await getFavArtist(username!);
         const listeningAge = await getListeningAge(username!);
+        const reviewsRes = await fetch(`http://localhost:3000/api/reviews/me`, {
+          method: "GET",
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        const reviews = await reviewsRes.json();
+        setReviews(reviews);
         if (tracks) {
           const { artistInfo, avgYear } = listeningAge;
           setAgeArtist(artistInfo)
@@ -90,11 +114,11 @@ export default function Profile() {
               <h1 className={styles.songTitle}>{profileName}</h1>
               <div className={styles.headerBar}>
                 <div className={styles.headerStat}>
-                  <div>14</div>
+                  <div>{totalComments}</div>
                   <div>reviews</div>
                 </div>
                 <div className={styles.headerStat}>
-                  <div>67</div>
+                  <div>{friendCount}</div>
                   <div>friends</div>
                 </div>
                 <div className={styles.headerStat}>
@@ -107,11 +131,11 @@ export default function Profile() {
           <div className={styles.lowerProfileContainer}>
             <div className={`${styles.profileRow} ${styles.grow}`}>
               <div>
-                among us
+                {bio}
               </div>
               <div className={styles.profileButtons}>
                 {(isOwnUser || isFriend || isLoading) ? null : <Button onClick={() => {const nextState = !isAdding; setFriends(!isAdding); handleFriendReq(profileName, nextState)}} active={isAdding}>{isAdding ? "Request Sent!" : "+ Add Friend"}</Button>}
-                <ActionBar likes={likes} comments={67} liked={liked} />
+                <ActionBar likes={totalLikes} comments={67} liked={liked} />
               </div>
             </div>
             {isOwnUser && <button className={styles.profileSettings} onClick={() => handleSettings()}>Edit profile</button>}
@@ -127,27 +151,13 @@ export default function Profile() {
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>Reviews</h2>
               <div className={styles.buttons}>
-                <Button>Top</Button>
-                <Button>New</Button>
+                <Button active={sortMode === "top"} onClick={() => setSortMode("top")}>Top</Button>
+                <Button active={sortMode === "new"} onClick={() => setSortMode("new")}>New</Button>
               </div>
             </div>
             <hr />
             <div className={styles.reviews}>
-              {new Array(3).fill(0).map((_, i) => (
-                <ReviewItem
-                  key={i}
-                  review={{
-                    to: "/reviews/testid",
-                    songId: "test",
-                    rating: 3,
-                    body: "At DevSoc, there are good programmers…",
-                    likeCount: 0,
-                    createdAt: Date.now(),
-                    updatedAt: Date.now(),
-                    user: { displayName: "Song Name", username: "artist" }
-                  }}
-                />
-              ))}
+              {sortedReviews.map((review) => <ReviewItemProfile key={review.id} review={review} />)}
             </div>
           </div>
         </div> : <div className={styles.private}>User has privated their account</div>}

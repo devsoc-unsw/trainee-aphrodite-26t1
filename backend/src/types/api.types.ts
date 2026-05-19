@@ -27,6 +27,7 @@ export interface Song {
   lastFetchedSpotify: number;
   lastFetchedMusicbrainz?: number;
   createdAt: number;
+  liked?: boolean;
 }
 
 export interface SpotifyTrack {
@@ -65,6 +66,8 @@ export interface User {
   bannerPic?: string;
   profilePic?: string;
   description?: string;
+  likedSongs?: string[];
+  likedReviews?: ObjectId[];
 }
 
 export interface DisplayUser {
@@ -89,6 +92,7 @@ export interface Review {
 }
 
 export interface DisplayReview {
+  id: string;
   to: string;
   songId: string;
   rating: number;
@@ -97,4 +101,5 @@ export interface DisplayReview {
   createdAt: number;
   updatedAt: number;
   user: DisplayUser;
+  liked?: boolean;
 }

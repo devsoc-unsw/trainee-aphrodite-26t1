@@ -3,13 +3,20 @@ import { Sidebar } from "../components/sidebar/sidebar"
 import { SpotifyLogin } from "../components/spotifyLogin/spotifyLogin"
 import { ToggleButton } from "../components/toggle/toggleButton"
 import { useState, useEffect, useRef } from "react"
-import { isPrivate, getCurrUser, updateBanner, updateAvatar } from "../api/users"
+import { isPrivate, getCurrUser, updateBanner, updateAvatar, updateDescription, fetchDescription } from "../api/users"
 
-//////////////// TODO:::::: ADD PREVIEW FOR AVATAR AND BANNER
+
 export default function SettingPage() {
     const [privateProfile, setPrivate] = useState(false)
     const [isLoading, setIsLoading] = useState(true);
+    const [bio, setBio] = useState("");
     const imgInput = useRef<HTMLInputElement>(null);
+    const [popup, setPopup] = useState(false);
+
+    const showPopup = () => {
+        setPopup(true);
+        setTimeout(() => setPopup(false), 2000);
+    };
 
     const toBase64 = (file: File): Promise<string> => {
         return new Promise((resolve, reject) => {
@@ -20,12 +27,17 @@ export default function SettingPage() {
         });
     };
 
+    const handleBio = async () => {
+        updateDescription(bio)
+        showPopup();
+    }
 
     const handleBannerImg = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
             const rawFile = await toBase64(file)
             updateBanner(rawFile)
+            showPopup();
         }
     };
 
@@ -34,6 +46,7 @@ export default function SettingPage() {
         if (file) {
             const rawFile = await toBase64(file)
             updateAvatar(rawFile)
+            showPopup();
         }
     };
 
@@ -41,6 +54,8 @@ export default function SettingPage() {
         const getPrivate = async () => {
             const username = await getCurrUser()
             const result = await isPrivate(username);
+            const bio = await fetchDescription(username!);
+            setBio(bio)
             setPrivate(result)
             setIsLoading(false)
         }
@@ -50,6 +65,7 @@ export default function SettingPage() {
     return (
     <div className={styles.container}>
       <Sidebar accountName="account name" />
+      <div className={`${styles.updated} ${popup ? "" : styles.hide}`}>Updated!</div>
       <div className={styles.main}>
         <div className={styles.title}>Settings</div>
         {!isLoading && <div className={styles.options}>
@@ -68,6 +84,19 @@ export default function SettingPage() {
                         <span style={{ color: "#ffffffff", marginRight: "20px"  }}>Private Profile:</span> Your profile will only be visible to your friends.
                     </div>    
                     <ToggleButton initial={privateProfile} setting="private"></ToggleButton>
+                </div>
+                <div className={styles.itemWrapper}>
+                    <div className={styles.description}>
+                        <span style={{ color: "#ffffffff", marginRight: "20px"  }}>About me:</span> Customise your biography
+                    </div>    
+                    <textarea
+                        placeholder="Customise your biography"
+                        value={bio}
+                        maxLength={300}
+                        onChange={(e) => setBio(e.target.value)}
+                        onBlur={handleBio}
+                        className={styles.textInput}
+                    />
                 </div>
                 <div className={styles.itemWrapper}>
                     <div className={styles.description}>

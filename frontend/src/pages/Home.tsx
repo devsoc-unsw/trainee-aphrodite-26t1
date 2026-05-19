@@ -9,7 +9,8 @@ import SearchBar from "../components/searchbar/SearchBar";
 import { MyProfile } from "../components/myprofile/myprofile";
 
 export default function Home() {
-  const [topSongs, setTopSongs] = useState<Song[]>([]);
+  const [recommendedSongs, setRecommendedSongs] = useState<Song[]>([]);
+  const [recentSongs, setRecentSongs] = useState<Song[]>([]);
   
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -18,6 +19,16 @@ export default function Home() {
       localStorage.setItem("token", token);
       navigate("/home", { replace: true });
     }
+
+    fetch("http://localhost:3000/api/songs?sort=recommended&limit=10")
+      .then(res => res.json())
+      .then(setRecommendedSongs)
+      .catch(console.error);
+
+    fetch("http://localhost:3000/api/songs?sort=recent&limit=5")
+      .then(res => res.json())
+      .then(setRecentSongs)
+      .catch(console.error);
   }, []);
 
   const navigate = useNavigate();
@@ -26,16 +37,6 @@ export default function Home() {
     navigate("/search?" + new URLSearchParams({ q: query }).toString());
   }
 
-  useEffect(() => {
-    fetch("http://localhost:3000/api/recommended")
-      .then(res => res.json())
-      .then((data: { tracks: Song[] }) => {
-        if (data.tracks) {
-          setTopSongs(data.tracks);
-        }
-      })
-      .catch(console.error);
-  }, []);
   return (
     <div className={styles.container}>
       <Sidebar accountName="account name" />
@@ -47,9 +48,9 @@ export default function Home() {
         <section>
           <h2 className={styles.sectionTitle}>Recommended Songs</h2>
           <div className={styles.recommendedGrid}>
-            {topSongs.length > 0 ? topSongs.map((track, i) => (
+            {recommendedSongs.length > 0 ? recommendedSongs.map((track, i) => (
               <Link key={track.id || i} to={"/songs/" + track.id} className={styles.songLink}>
-                <LargeCard title={track.name} imageUrl={track.album?.images?.[0]?.url} imageType="square" artist={track.artists[0].name} />
+                <LargeCard title={track.name} imageUrl={track.album?.images?.[0]?.url} imageType="square" artist={track.artists?.[0]?.name} />
               </Link>
               
             )) : Array(10).fill(0).map((_, i) => (
@@ -59,11 +60,11 @@ export default function Home() {
         </section>
 
         <section>
-          <h2 className={styles.sectionTitle}>Recent Ratings</h2>
+          <h2 className={styles.sectionTitle}>Recently Rated</h2>
           <div className={styles.ratingsList}>
-            {topSongs.length > 0 ? Array(5).fill(0).map((_, i) => (
-              <Link key={i} to={"/songs/" + topSongs[i + 23].id} className={styles.songLink}>
-                <SongItem name={topSongs[i + 23].name} artist={topSongs[i + 23].artists[0].name} imageUrl={topSongs[i + 23].album?.images?.[0]?.url} rating={5} />
+            {recentSongs.length > 0 ? recentSongs.map((track, i) => (
+              <Link key={track.id || i} to={"/songs/" + track.id} className={styles.songLink}>
+                <SongItem name={track.name} artist={track.artists?.[0]?.name} imageUrl={track.album?.images?.[0]?.url} rating={Math.round(track.averageRating || 5)} />
               </Link>
             )) : Array(5).fill(0).map((_, i) => (<SongItem key={i} name="Loading..." artist="" rating={5}/>))}
           </div>

@@ -30,6 +30,18 @@ export async function getFriends() {
   return res.json();
 }
 
+export async function getFriendCount(username: string) {
+  const res = await fetch(`${BASE_URL}/${username}/friendCount`, {
+    method: "GET",
+    headers: { 
+      "Content-Type": "application/json"
+      }
+  });
+  console.log(res);
+  return res.json();
+}
+
+
 export async function getUsername(id: string) {
   const res = await fetch(`${BASE_URL}/getUser`, {
     method: "POST",

@@ -57,6 +57,14 @@
     align-items: center;
 }
 
+.textInput {
+    height: 100px;
+    padding: 5px;
+    resize: none;
+    vertical-align: top;
+    overflow-y: auto;
+}
+
 .description {
     height: 70px;
     font-size: 0.7em;
@@ -82,4 +90,24 @@
 
 .addButton:hover {
     background-color: rgb(115, 113, 113);
+}
+
+.updated {
+    position: fixed;
+    bottom: 10%;
+    left: calc(47% + 125px);
+    background-color: rgb(255, 255, 255);
+    height:50px;
+    width: 100px;
+    color: black;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50px;
+    opacity: 1;
+    transition: opacity ease 250ms;
+}
+
+.updated.hide {
+    opacity: 0;
 }

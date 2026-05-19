@@ -79,6 +79,8 @@ if (passwordCheck !== true) throw new Error(passwordCheck as string);
     password: hashedPassword,  
     friends: [],
     requests: [],
+    likedSongs: [],
+    likedReviews: [],
   };
 
   const result = await usersCollection.insertOne(user);
@@ -174,6 +176,8 @@ export async function handleGoogleCallback(code: string) {
       googleId: googleUser.sub,
       friends: [],
       requests: [],
+      likedSongs: [],
+      likedReviews: [],
     });
     user = {
       _id: result.insertedId,
@@ -182,6 +186,8 @@ export async function handleGoogleCallback(code: string) {
       googleId: googleUser.sub,
       friends: [],
       requests: [],
+      likedSongs: [],
+      likedReviews: [],
     };
   }
 

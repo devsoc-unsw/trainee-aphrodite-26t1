@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { DisplayReview } from "../types/api.types.js";
-import { reviewsCollection } from "../lib/connect.js";
+import { reviewsCollection, usersCollection } from "../lib/connect.js";
 import { getSong } from "./songs.services.js";
 import { updateSong } from "../database/songs.js";
 
@@ -33,6 +33,7 @@ export async function getPopularReviews(id: string, limit: number, offset: numbe
         likeCount: 1,
         createdAt: 1,
         updatedAt: 1,
+        id: { $toString: "$_id" },
         user: { username: "$user.username" }
       }
     }
@@ -70,7 +71,8 @@ export async function getRecentReviews(id: string, limit: number, offset: number
         likeCount: 1,
         createdAt: 1,
         updatedAt: 1,
-        user: {username: "$user.username"}
+        id: { $toString: "$_id" },
+        user: { username: "$user.username" }
       }
     }
   ]).toArray() as DisplayReview[];
@@ -85,6 +87,35 @@ export async function getRecentReviews(id: string, limit: number, offset: number
 export async function getUserReview(songId: string, user: ObjectId) {
   const review = reviewsCollection.findOne({ songId: songId, userId: user });
   return review;
+}
+
+export async function getAllOwnedReviews(user: ObjectId) {
+  const results: DisplayReview[] = await reviewsCollection.aggregate([
+    { $match: { userId: new ObjectId( user )} },
+    { $sort: { likeCount: -1, createdAt: -1 } },
+    {
+      $lookup: {
+        from: "users",
+        localField: "userId",
+        foreignField: "_id",
+        as: "user"
+      }
+    },
+    { $unwind: "$user" },
+    {
+      $project: {
+        songId: 1,
+        rating: 1,
+        body: 1,
+        likeCount: 1,
+        createdAt: 1,
+        updatedAt: 1,
+        id: { $toString: "$_id" },
+        user: { username: "$user.username" }
+      }
+    }
+  ]).toArray() as DisplayReview[];
+  return results;
 }
 
 export async function addReview(songId: string, user: ObjectId, text: string, rating: number) {
@@ -102,7 +133,7 @@ export async function addReview(songId: string, user: ObjectId, text: string, ra
   }
 
   const now = Date.now();
-  
+
   await reviewsCollection.insertOne({
     songId,
     userId: user,
@@ -143,6 +174,7 @@ export async function getDisplayUserReview(songId: string, user: ObjectId) {
         likeCount: 1,
         createdAt: 1,
         updatedAt: 1,
+        id: { $toString: "$_id" },
         user: { username: "$user.username" }
       }
     }
@@ -160,12 +192,44 @@ export async function deleteReview(songId: string, user: ObjectId) {
 
   const song = await getSong(songId);
   const newReviewCount = Math.max(0, song.reviewCount - 1);
-  const newAverageRating = newReviewCount === 0 
-    ? 0 
+  const newAverageRating = newReviewCount === 0
+    ? 0
     : ((song.averageRating * song.reviewCount) - existingReview.rating) / newReviewCount;
 
   await updateSong(songId, {
     reviewCount: newReviewCount,
     averageRating: newAverageRating
   });
+}
+
+export async function toggleLikeReview(userId: string, reviewId: string) {
+  const userObjId = new ObjectId(userId);
+  const reviewObjId = new ObjectId(reviewId);
+  const user = await usersCollection.findOne({ _id: userObjId });
+  if (!user) throw new Error("User not found");
+
+  const likedReviews = user.likedReviews || [];
+
+  if (likedReviews.some(id => id.toString() === reviewId)) {
+    await usersCollection.updateOne(
+      { _id: userObjId },
+      { $pull: { likedReviews: reviewObjId } as any }
+    );
+    await reviewsCollection.updateOne(
+      { _id: reviewObjId },
+      { $inc: { likeCount: -1 } }
+    );
+    return false;
+  }
+  else {
+    await usersCollection.updateOne(
+      { _id: userObjId },
+      { $push: { likedReviews: reviewObjId } as any }
+    );
+    await reviewsCollection.updateOne(
+      { _id: reviewObjId },
+      { $inc: { likeCount: 1 } }
+    );
+    return true;
+  }
 }

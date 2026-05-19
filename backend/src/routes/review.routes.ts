@@ -1,5 +1,14 @@
-import express from "express";
-import * as reviewController from "../controllers/review.controllers.js"
-// import { authMiddleware } from "../middleware/middleware.js";
+import { Router } from "express"
+import { authMiddleware, optionalAuthMiddleware } from "../middleware/middleware.js";
+import * as reviewsController from "../controllers/review.controllers.js"
 
-const router = express.Router();
+const router: Router = Router();
+
+router.get("/me", authMiddleware, reviewsController.getAllOwnedReviews);
+router.get("/:songId", optionalAuthMiddleware, reviewsController.getReviews);
+router.post("/:songId", authMiddleware, reviewsController.postReview);
+router.get("/:songId/me", authMiddleware, reviewsController.getOwnReview);
+router.delete("/:songId", authMiddleware, reviewsController.deleteReviewEndpoint);
+router.post("/review/:reviewId/like", authMiddleware, reviewsController.toggleLike);
+
+export default router;

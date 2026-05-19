@@ -54,6 +54,17 @@ export async function getFriends( self: string  ) {
     return friends.filter(Boolean);
 }
 
+export async function getFriendCount( user: string  ) {
+    const result = await usersCollection.findOne({
+        username: user
+    })
+    if (!result) {
+        throw new Error("User not found")
+    }
+
+    return result.friends.length;
+}
+
 export async function friendReq( recipient: string, senderId: string, isAdding: boolean) {
     const update = isAdding
     ? { $push: { requests: { senderId: senderId, date: new Date() } } }
@@ -119,7 +130,6 @@ export async function getNotifs( user: string ) {
 export async function getUser(user: string) {
 
     const result = await usersCollection.findOne({ _id: new ObjectId(user) })
-    console.log(result)
     return result?.username
 
 }

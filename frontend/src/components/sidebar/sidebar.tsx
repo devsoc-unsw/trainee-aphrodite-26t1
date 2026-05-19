@@ -33,7 +33,7 @@ export function Sidebar({ accountName }: { accountName: string }) {
               });
           }
           fetchNotifications();
-          const interval = setInterval(fetchNotifications, 5000);
+          const interval = setInterval(fetchNotifications, 10000);
           return () => clearInterval(interval);
       }, []);
 
