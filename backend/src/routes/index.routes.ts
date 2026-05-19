@@ -1,11 +1,10 @@
 import { Router } from "express"
-import { getAccessToken, getTrack, searchTracks } from "../lib/spotify.js";
+import { getAccessToken } from "../lib/spotify.js";
 import * as Spotify from "../types/spotify.types.js";
 import { getSong, searchSong } from "../services/songs.services.js";
-import { getPopularReviews, getRecentReviews, addReview, deleteReview, getDisplayUserReview } from "../services/reviews.services.js";
-import { ObjectId } from "mongodb";
-import { DisplayReview, Review } from "../types/api.types.js";
 import { authMiddleware } from "../middleware/middleware.js";
+
+import * as reviewsController from "../controllers/review.controllers.js"
 
 const router: Router = Router();
 
@@ -17,51 +16,6 @@ router.get('/songs/:songId', async (req, res) => {
   catch (err) {
     const message = err instanceof Error ? err.message : 'Unknown error';
     res.status(500).json({ error: message });
-  }
-});
-
-router.get("/reviews/:songId", async (req, res) => {
-  const offset = parseInt(req.query.offset as string) || 0;
-  const limit = parseInt(req.query.limit as string) || 10;
-  const sort = req.query.sort;
-  let results: DisplayReview[] = [];
-  if (sort === "recent") {
-    results = await getRecentReviews(req.params.songId, limit, offset);
-  }
-  else {
-    results = await getPopularReviews(req.params.songId, limit, offset);
-  }
-  res.json(results);
-});
-
-router.post("/reviews/:songId", authMiddleware, async (req, res) => {
-  try {
-    const { text, rating } = req.body;
-    const userId = new ObjectId((req as any).user._id || (req as any).user.id);
-    await addReview(req.params.songId, userId, text, rating);
-    res.json({ result: "success" });
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
-  }
-});
-
-router.get("/reviews/:songId/me", authMiddleware, async (req, res) => {
-  try {
-    const userId = new ObjectId((req as any).user._id || (req as any).user.id);
-    const review = await getDisplayUserReview(req.params.songId, userId);
-    res.json(review || null);
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
-  }
-});
-
-router.delete("/reviews/:songId", authMiddleware, async (req, res) => {
-  try {
-    const userId = new ObjectId((req as any).user._id || (req as any).user.id);
-    await deleteReview(req.params.songId, userId);
-    res.json({ result: "success" });
-  } catch (err: any) {
-    res.status(400).json({ error: err.message });
   }
 });
 

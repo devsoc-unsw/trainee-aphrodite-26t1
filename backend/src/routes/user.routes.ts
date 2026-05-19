@@ -1,6 +1,6 @@
-import express from "express";
+import express, { Router } from "express";
 import * as userController from "../controllers/user.controllers.js"
-const router = express.Router();
+const router: Router = express.Router();
 
 console.log("user routes loaded");
 // Finds a user by username

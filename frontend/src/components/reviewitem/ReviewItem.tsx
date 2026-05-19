@@ -13,7 +13,34 @@ const CHAR_LIMIT = 200;
 
 export function ReviewItem({ review, onDelete }: ReviewItemInfo) {
   const [expanded, setExpanded] = useState(false);
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(!!review.liked);
+  const [likeCount, setLikeCount] = useState(review.likeCount);
+
+  const toggleLike = () => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    
+    const previousLiked = liked;
+    setLiked(!previousLiked);
+    setLikeCount(prev => previousLiked ? prev - 1 : prev + 1);
+
+    fetch(`http://localhost:3000/api/reviews/review/${review.id}/like`, {
+      method: "POST",
+      headers: { "Authorization": `Bearer ${token}` }
+    })
+      .then(res => res.json())
+      .then(data => {
+        setLiked(data.liked);
+        if (data.liked !== !previousLiked) {
+          setLikeCount(prev => data.liked ? prev + 1 : prev - 1);
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        setLiked(previousLiked);
+        setLikeCount(prev => previousLiked ? prev + 1 : prev - 1);
+      });
+  };
 
   const isLong = review.body && review.body.length > CHAR_LIMIT;
   const displayText = isLong && !expanded
@@ -41,8 +68,8 @@ export function ReviewItem({ review, onDelete }: ReviewItemInfo) {
             )}
           </div> : null}
           <div className={styles.interactions}>
-            <LikeHeart liked={liked} setLiked={setLiked} interactable={true}/>
-            <div className={styles.likeText}>{review.likeCount}</div>
+            <LikeHeart liked={liked} setLiked={toggleLike as any} interactable={true}/>
+            <div className={styles.likeText}>{likeCount}</div>
             {onDelete && (
               <button className={styles.seeMoreBtn} onClick={onDelete} style={{ marginLeft: "auto", color: "var(--red-500)" }}>
                 Delete
