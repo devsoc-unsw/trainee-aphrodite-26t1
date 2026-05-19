@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { DisplayReview } from "../types/api.types.js";
 import { addReview, deleteReview, getDisplayUserReview, getPopularReviews, getRecentReviews, toggleLikeReview } from "../services/reviews.services.js";
+import * as reviewService from "../services/reviews.services.js";
 import { ObjectId } from "mongodb";
 import { usersCollection } from "../lib/connect.js";
 
@@ -50,6 +51,19 @@ export async function getOwnReview(req: Request, res: Response) {
   try {
     const userId = new ObjectId((req as any).user._id || (req as any).user.id);
     const review = await getDisplayUserReview(req.params.songId as string, userId);
+    res.json(review || null);
+  } catch (err: any) {
+    res.status(400).json({ error: err.message });
+  }
+}
+
+export async function getAllOwnedReviews(req: Request, res: Response) {
+  try {
+    console.log("HIHIHIHIHI")
+    const userId = (req as any).user._id instanceof ObjectId 
+  ? (req as any).user._id 
+  : new ObjectId((req as any).user._id || (req as any).user.id);
+    const review = await reviewService.getAllOwnedReviews(userId);
     res.json(review || null);
   } catch (err: any) {
     res.status(400).json({ error: err.message });

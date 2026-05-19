@@ -15,6 +15,16 @@
   max-width: 100%;
   overflow-x: hidden;
 }
+
+.private {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  font-size: 1.5em;
+  font-weight: 500;
+}
 .header {
   display: flex;
   flex-direction: column;
@@ -42,6 +52,7 @@
   width: 100%;
   height: 100%;
   border-radius: 50%;
+  object-fit: cover;
 }
 .avatarBadge {
   background-color: #b2ff5b;
@@ -95,6 +106,29 @@
   gap: 24px;
   align-items: center;
   justify-content: end;
+}
+
+.lowerProfileContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+
+.profileSettings {
+  border: none;
+  width: 20%;
+  height: 40px;
+  border-radius: 50px;
+  text-decoration: none;
+  background-color: black;
+  transition: background-color ease 250ms;
+  border: 1px white solid;
+}
+
+.profileSettings:hover {
+  background-color: rgb(37, 37, 37);
+
 }
 
 .buttons {

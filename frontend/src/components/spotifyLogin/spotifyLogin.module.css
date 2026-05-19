@@ -1,0 +1,29 @@
+.loginButton {
+    height: 50px;
+    width: 51.5px;
+    background-color: rgb(255, 255, 255);
+    border-radius: 50px;
+    text-decoration: none;
+    color: black;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    padding-right: 15px;
+    padding-left: 2px;
+    transition: opacity ease 250ms;
+    border: none;
+    overflow: hidden;
+    filter: grayscale(30%);
+    font-weight: 580;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.loginButton:hover {
+    opacity: 0.8;
+}
+
+.spotify {
+    height: 100%;
+    border-radius: 50%;
+}

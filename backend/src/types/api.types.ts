@@ -30,6 +30,29 @@ export interface Song {
   liked?: boolean;
 }
 
+export interface SpotifyTrack {
+  id: string;
+  name: string;
+  duration_ms: number;
+  explicit: boolean;
+  disc_number: number;
+  track_number: number;
+  preview_url?: string;
+  album: SimplifiedAlbum;
+  artists: SimplifiedArtist[];
+  external_urls: ExternalUrls;
+}
+
+export interface Artist {
+      external_urls: ExternalUrls;
+      href: string;
+      id: string;
+      images: { url: string; height: number; width: number }[];
+      name: string;
+      type: string;
+      uri: string;
+}
+
 export interface User {
   email: string;
   googleId?: string;
@@ -37,6 +60,12 @@ export interface User {
   username: string;
   friends: string[];
   requests: { senderId: string; date: Date }[];
+  spotifyAccessToken?: string;
+  spotifyRefreshToken?: string;
+  isPrivate?: boolean;
+  bannerPic?: string;
+  profilePic?: string;
+  description?: string;
   likedSongs?: string[];
   likedReviews?: ObjectId[];
 }

@@ -15,6 +15,13 @@
   overflow-y: auto;
 }
 
+.topBar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
 .ratingsList {
   display: flex;
   flex-direction: column;

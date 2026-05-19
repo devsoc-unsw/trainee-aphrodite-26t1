@@ -40,15 +40,24 @@ export default function NotificationsPage() {
             <Sidebar accountName="account name" />
             <main className={styles.main}>
                 <section>
-                    <div className={styles.mainTitle}>This month</div>
-                    <div className="notifs">
-                       {notifications.map((notification, i) => (
-                            <NotificationItem key={i} notification={notification} />
-                        ))}
+                    <div className={styles.titleSection}>
+                        <div className={styles.mainTitle}>Notifications</div>
                     </div>
+                    {notifications.length === 0 ? (
+                        <>
+                            <img className={styles.starImg} src="star.png" />
+                            <div className={styles.noNotifs}>Nothing new for now!</div>
+                        </>
+                        ) : (
+                        <div className={styles.notifs}>
+                            {notifications.map((notification, i) => (
+                            <NotificationItem key={i} notification={notification} />
+                            ))}
+                        </div>
+                        )
+                    }
                 </section>
             </main>
         </div>
     )
-     
 }

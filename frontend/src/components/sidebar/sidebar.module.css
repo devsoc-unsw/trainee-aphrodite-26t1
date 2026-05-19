@@ -67,6 +67,15 @@
   border-radius: 50%;
   background-color: #a0a0a0;
   flex-shrink: 0;
+  font-size: 0.8em;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.navIcon.notif {
+  background-color: #ff2424;
 }
 .navItem.active .navIcon {
   background-color: #ffffff;

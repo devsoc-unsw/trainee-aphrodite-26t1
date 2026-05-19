@@ -1,0 +1,53 @@
+.container {
+    display: flex;
+    flex-direction: row-reverse;
+    position: relative;
+    width: 100px;
+    height: 200px;
+}
+
+.profileButton {
+    height: 50px;
+    width: 50px;
+    border-radius: 50%;
+    overflow: hidden;
+    padding: 0;
+    cursor: pointer;
+    border: white 1px solid;
+}
+
+
+.img {
+    height: 100%;
+    width: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    display: block;
+}
+
+.dropdown {
+    position: absolute;
+    right: 0;
+    top: 60px;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+}
+
+.dropdown button {
+    padding: 12px 20px;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.dropdown button:hover {
+    background-color: #2e2e2e;
+}

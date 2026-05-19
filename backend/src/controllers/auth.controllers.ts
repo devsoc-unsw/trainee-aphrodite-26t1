@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import * as authService from "../services/auth.services.js";
+import * as userService from "../services/user.services.js";
+import { verifyToken } from "../lib/jwt.js";
 
 export async function register(req: Request, res: Response) {
   try {
@@ -53,6 +55,42 @@ export async function googleAuthCallback(req: Request, res: Response) {
     const { token } = await authService.handleGoogleCallback(code);
 
     res.redirect(`http://localhost:5173/callback?token=${token}`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Error - Google Auth");
+  }
+}
+
+export async function spotifyAuth(req: Request, res: Response) {
+  console.log("reached spotifyAuth in auth.controller.ts")
+  try {
+    const userToken = req.query.token as string;
+    if (!userToken) return res.status(401).json({ message: "No token provided in spotifyAuth" });
+    const client_id = process.env.SPOTIFY_CLIENT_ID;
+    const redirect_uri = "http://127.0.0.1:3000/api/users/auth/spotify/callback";
+    const scope = "user-top-read user-read-recently-played";
+    const authUrl = `https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=code&redirect_uri=${redirect_uri}&scope=${encodeURIComponent(scope)}&state=${userToken}`;
+    res.redirect(authUrl);
+  } catch(error) {
+    res.status(500).send("Error - Spotify Auth");
+  }
+}
+
+export async function spotifyAuthCallback(req: Request, res: Response) {
+  try {
+    const code = req.query.code as string;
+    const userToken = req.query.state as string; 
+    if (!userToken) {
+        return res.status(401).json({ message: "No token provided in authcallback" });
+    }
+    const decoded = verifyToken(userToken);
+    const userId = decoded.id
+    const username = await userService.getUser(userId)
+    if (!username) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    await authService.handleSpotifyCallback(code, userId);
+    res.redirect(`http://localhost:5173/settings`);
   } catch (err) {
     console.error(err);
     res.status(500).send("Error - Google Auth");
