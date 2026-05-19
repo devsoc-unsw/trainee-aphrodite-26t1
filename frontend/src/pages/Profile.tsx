@@ -4,9 +4,9 @@ import { Button } from "../components/button/Button";
 import { Sidebar } from "../components/sidebar/sidebar"
 import styles from "./profile.module.css"
 import { ReviewItem } from "../components/reviewitem/ReviewItem";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
-import { getCurrUser, getFriends, handleFriendReq, getFavSongs, getFavArtist, getListeningAge, isPrivate, fetchBanner} from "../api/users.ts";
+import { getCurrUser, getFriends, handleFriendReq, getFavSongs, getFavArtist, getListeningAge, isPrivate, fetchBanner, fetchAvatar} from "../api/users.ts";
 import type { SpotifyTrack, Artist } from "../../../backend/src/types/api.types";
 
 function ProfileCard({ to, children, imageUrl, description }: { to: string, children: React.ReactNode, imageUrl: string, description: string}) {
@@ -30,31 +30,36 @@ export default function Profile() {
   const [liked, setLiked] = useState(false);
   const [isAdding, setFriends] = useState(false);
   const [isFriend, setIsFriend ] = useState(false);
-  const [img, setImg] = useState("/samplepfp.jpg");
   const [topTracks, setTopTracks] = useState<SpotifyTrack[]>([]);
   const [topArtist, setTopArtist] = useState<Artist[]>([]);
   const [age, setAge] = useState("");
   const [artistOfAge, setAgeArtist] = useState<Artist | null>(null);
   const [profilePrivate, setPrivate] = useState(true);
   const [banner, setBanner] = useState("");
+  const [avatar, setAvatar] = useState("/samplepfp.jpg");
+  const navigate = useNavigate()
   useEffect(() => {
     async function checkUser() {
       const user = await getCurrUser()
       const isPriv = await isPrivate(username!);
       const banner = await fetchBanner(username!);
+      const avatar = await fetchAvatar(username!);
       setIsOwnUser(user === username)
       setPrivate(isPriv)
       setBanner(banner)
+      setAvatar(avatar)
       if (!isPriv) {
-      
         const friends = await getFriends();
         const tracks = await getFavSongs(username!);
         const artist = await getFavArtist(username!);
-        const { artistInfo, avgYear } = await getListeningAge(username!);
-        setTopArtist(artist.items)
-        setTopTracks(tracks.items)
-        setAgeArtist(artistInfo)
-        setAge(avgYear)
+        const listeningAge = await getListeningAge(username!);
+        if (tracks) {
+          const { artistInfo, avgYear } = listeningAge;
+          setAgeArtist(artistInfo)
+          setAge(avgYear)
+          setTopArtist(artist.items)
+          setTopTracks(tracks.items)
+        }
         for (const friend of friends) {
           if (friend.username === username) {
             setIsFriend(true);
@@ -66,6 +71,10 @@ export default function Profile() {
     checkUser();
   }, []);
 
+  const handleSettings = () => {
+    navigate(`/settings`)
+  }
+
   return (
     <div className={styles.container}>
       <Sidebar accountName="account name" />
@@ -73,7 +82,7 @@ export default function Profile() {
         <div className={styles.header} style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${banner})`}}>
           <div className={styles.profileRow}>
             <div className={styles.avatarWrapper}>
-              <img src={img} className={styles.avatarImg} alt="Spotify" />
+              <img src={avatar} className={styles.avatarImg} alt="Spotify" />
               <div className={styles.avatarBadge}></div>
             </div> 
             
@@ -95,14 +104,17 @@ export default function Profile() {
               </div>
             </div>
           </div>
-          <div className={`${styles.profileRow} ${styles.grow}`}>
-            <div>
-              among us
+          <div className={styles.lowerProfileContainer}>
+            <div className={`${styles.profileRow} ${styles.grow}`}>
+              <div>
+                among us
+              </div>
+              <div className={styles.profileButtons}>
+                {(isOwnUser || isFriend || isLoading) ? null : <Button onClick={() => {const nextState = !isAdding; setFriends(!isAdding); handleFriendReq(profileName, nextState)}} active={isAdding}>{isAdding ? "Request Sent!" : "+ Add Friend"}</Button>}
+                <ActionBar likes={likes} comments={67} liked={liked} />
+              </div>
             </div>
-            <div className={styles.profileButtons}>
-              {isOwnUser || isFriend || isLoading ? null : <Button onClick={() => {const nextState = !isAdding; setFriends(!isAdding); handleFriendReq(profileName, nextState)}} active={isAdding}>{isAdding ? "Request Sent!" : "+ Add Friend"}</Button>}
-              <ActionBar likes={likes} comments={67} liked={liked} />
-            </div>
+            {isOwnUser && <button className={styles.profileSettings} onClick={() => handleSettings()}>Edit profile</button>}
           </div>
         </div>
         {(!profilePrivate || isFriend || isOwnUser) ? <div className={styles.body}>

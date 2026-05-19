@@ -1,35 +1,30 @@
 import styles from "./myprofile.module.css"
-import { getCurrUser } from "../../api/users";
-import { useNavigate} from "react-router-dom";
-import { useState } from "react";
+import { getCurrUser, fetchAvatar } from "../../api/users";
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 export function MyProfile() {
     const navigate = useNavigate();
-    const [menu, setMenu] = useState(false);
-
+    const [avatar, setAvatar] = useState("samplepfp.jpg")
+    const [username, setUsername] = useState("")
     const handleProfileClick = async () => {
-        const user = await getCurrUser()
-        console.log(user)
-        navigate(`/users/${user}`)
-        setMenu(false)
+        navigate(`/users/${username}`)
     }
-
-    const handleSettingClick = () => {
-        navigate(`/settings`)
-        setMenu(false)
-    }
+    useEffect(() => {
+        async function getUser() {
+            const user = await getCurrUser()
+            const avatar = await fetchAvatar(user!)
+            setUsername(user)
+            setAvatar(avatar)
+        }
+        getUser();
+    }, [])
 
     return (
         <div className={styles.container}>
-            <button className={styles.profileButton} onClick={() => setMenu(prev => !prev)}>
-                <img className={styles.img} src="samplepfp.jpg"></img>
+            <button className={styles.profileButton} onClick={() => handleProfileClick()}>
+                <img className={styles.img} src={avatar}></img>
             </button>
-            {menu && (
-                <div className={styles.dropdown}>
-                    <button onClick={handleProfileClick}>My Profile</button>
-                    <button onClick={handleSettingClick}>Settings</button>
-                </div>
-            )}
         </div>
     )
 }

@@ -13,7 +13,7 @@
     overflow: hidden;
     padding: 0;
     cursor: pointer;
-    border: none;
+    border: white 1px solid;
 }
 
 
@@ -22,7 +22,7 @@
     width: 100%;
     border-radius: 50%;
     object-fit: cover;
-    display: block
+    display: block;
 }
 
 .dropdown {

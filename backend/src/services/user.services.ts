@@ -268,6 +268,26 @@ export async function updateBanner(user: string, file: string) {
     )
 }
 
+export async function updateAvatar(user: string, file: string) {
+    const result = await usersCollection.updateOne(
+        { _id: new ObjectId(user) },
+        { $set: {
+            profilePic: file
+        }}
+    )
+}
+
+export async function fetchAvatar(name: string) {
+
+    const result = await usersCollection.findOne(
+        {username: name }
+    )
+    if (!result) {
+        throw new Error("User not found")
+    }
+    return result.profilePic ?? null;
+}
+
 export async function fetchBanner(name: string) {
 
     const result = await usersCollection.findOne(
@@ -277,4 +297,24 @@ export async function fetchBanner(name: string) {
         throw new Error("User not found")
     }
     return result.bannerPic ?? null;
+}
+
+export async function updateDescription(user: string, description: string) {
+    const result = await usersCollection.updateOne(
+        { _id: new ObjectId(user) },
+        { $set: {
+            description: description
+        }}
+    )
+}
+
+export async function fetchDescription(name: string) {
+
+    const result = await usersCollection.findOne(
+        {username: name }
+    )
+    if (!result) {
+        throw new Error("User not found")
+    }
+    return result.description ?? null;
 }

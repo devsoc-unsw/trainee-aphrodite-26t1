@@ -3,8 +3,9 @@ import { Sidebar } from "../components/sidebar/sidebar"
 import { SpotifyLogin } from "../components/spotifyLogin/spotifyLogin"
 import { ToggleButton } from "../components/toggle/toggleButton"
 import { useState, useEffect, useRef } from "react"
-import { isPrivate, getCurrUser } from "../api/users"
+import { isPrivate, getCurrUser, updateBanner, updateAvatar } from "../api/users"
 
+//////////////// TODO:::::: ADD PREVIEW FOR AVATAR AND BANNER
 export default function SettingPage() {
     const [privateProfile, setPrivate] = useState(false)
     const [isLoading, setIsLoading] = useState(true);
@@ -20,11 +21,19 @@ export default function SettingPage() {
     };
 
 
-    const handleImg = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleBannerImg = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            const rawFile = toBase64(file)
-            
+            const rawFile = await toBase64(file)
+            updateBanner(rawFile)
+        }
+    };
+
+    const handleProfileImg = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            const rawFile = await toBase64(file)
+            updateAvatar(rawFile)
         }
     };
 
@@ -69,12 +78,26 @@ export default function SettingPage() {
                         accept="image/*"
                         ref={imgInput}
                         style={{ display: "none" }}
-                        onChange={handleImg}
+                        onChange={handleBannerImg}
                     />
                     <button className={styles.addButton} onClick={() => imgInput.current?.click()}>
                     Add
                     </button>
-
+                </div>
+                 <div className={styles.itemWrapper}>
+                    <div className={styles.description}>
+                        <span style={{ color: "#ffffffff", marginRight: "20px"  }}>Profile picture:</span> Customise your profile picture.
+                    </div>    
+                    <input
+                        type="file"
+                        accept="image/*"
+                        ref={imgInput}
+                        style={{ display: "none" }}
+                        onChange={handleProfileImg}
+                    />
+                    <button className={styles.addButton} onClick={() => imgInput.current?.click()}>
+                    Add
+                    </button>
                 </div>
             </div>
             <div className={styles.option}>

@@ -183,9 +183,59 @@ export async function updateBanner(req: Request, res: Response) {
   }
 }
 
+export async function updateAvatar(req: Request, res: Response) {
+  try {
+    const { file } = req.body;
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+        return res.status(401).json({ message: "No token provided" });
+    }
+    const decoded = verifyToken(token);
+    const user = decoded.id
+    const result = await userService.updateAvatar(user, file);
+    res.json(result);
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+}
+
+export async function fetchAvatar(req: Request, res: Response) {
+  try {
+    const result = await userService.fetchAvatar(req.params.username as string);
+    res.json(result);
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+}
+
 export async function fetchBanner(req: Request, res: Response) {
   try {
     const result = await userService.fetchBanner(req.params.username as string);
+    res.json(result);
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+}
+
+export async function updateDescription(req: Request, res: Response) {
+  try {
+    const { description } = req.body;
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+        return res.status(401).json({ message: "No token provided" });
+    }
+    const decoded = verifyToken(token);
+    const user = decoded.id
+    const result = await userService.updateDescription(user, description);
+    res.json(result);
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+}
+
+export async function fetchDescription(req: Request, res: Response) {
+  try {
+    const result = await userService.fetchDescription(req.params.username as string);
     res.json(result);
   } catch (err: any) {
     res.status(400).json({ message: err.message });

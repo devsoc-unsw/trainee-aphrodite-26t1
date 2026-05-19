@@ -168,11 +168,75 @@ export async function updateBanner(file: string) {
     body: JSON.stringify({ file })
   });
   console.log(res);
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(err);
+  }
   return res.json();
 }
 
+export async function updateAvatar(file: string) {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${BASE_URL}/updateAvatar`, {
+    method: "POST",
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+      },
+    body: JSON.stringify({ file })
+  });
+  console.log(res);
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(err);
+  }
+  return res.json();
+}
+
+export async function fetchAvatar(username: string) {
+    const res = await fetch(`${BASE_URL}/${username}/fetchAvatar`, {
+    method: "GET",
+    headers: { 
+      "Content-Type": "application/json"
+      }
+  });
+  console.log(res);
+  return res.json();
+}
+
+
 export async function fetchBanner(username: string) {
     const res = await fetch(`${BASE_URL}/${username}/fetchBanner`, {
+    method: "GET",
+    headers: { 
+      "Content-Type": "application/json"
+      }
+  });
+  console.log(res);
+  return res.json();
+}
+
+
+export async function updateDescription(description: string) {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${BASE_URL}/updateDescription`, {
+    method: "POST",
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+      },
+    body: JSON.stringify({ description })
+  });
+  console.log(res);
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(err);
+  }
+  return res.json();
+}
+
+export async function fetchDescription(username: string) {
+    const res = await fetch(`${BASE_URL}/${username}/fetchDescription`, {
     method: "GET",
     headers: { 
       "Content-Type": "application/json"

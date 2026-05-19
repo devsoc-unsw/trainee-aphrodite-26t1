@@ -63,6 +63,8 @@ export interface User {
   spotifyRefreshToken?: string;
   isPrivate?: boolean;
   bannerPic?: string;
+  profilePic?: string;
+  description?: string;
 }
 
 export interface DisplayUser {
