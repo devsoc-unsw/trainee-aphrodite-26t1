@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
-import { ActionBar } from "../components/actionbar/ActionBar";
 import { Button } from "../components/button/Button";
-import { Sidebar } from "../components/sidebar/sidebar"
+import { Sidebar } from "../components/sidebar/sidebar";
+import { Playlists } from "../components/playlist/playlist.tsx";
 import styles from "./profile.module.css"
 import { ReviewItemProfile } from "../components/reviewItemProfile/ReviewItemProfile.tsx";
 import { Link, useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
-import { getCurrUser, getFriends, handleFriendReq, getFavSongs, getFavArtist, getListeningAge, isPrivate, fetchBanner, fetchAvatar, fetchDescription, getFriendCount} from "../api/users.ts";
+import { getCurrUser, getFriends, handleFriendReq, getFavSongs, getFavArtist, getListeningAge, isPrivate, fetchBanner, fetchAvatar, fetchDescription, getFriendCount, fetchUserPlaylists, updateUserPlaylists, showPlaylist} from "../api/users.ts";
 import type { SpotifyTrack, Artist } from "../../../backend/src/types/api.types";
 import type { DisplayReview } from "../../../backend/src/types/api.types";
+import type { SpotifyPlaylist } from "../../../backend/src/types/spotify.types.ts";
 
 function ProfileCard({ to, children, imageUrl, description }: { to: string, children: React.ReactNode, imageUrl: string, description: string}) {
   return (
@@ -38,11 +39,13 @@ export default function Profile() {
   const [age, setAge] = useState("");
   const [artistOfAge, setAgeArtist] = useState<Artist | null>(null);
   const [profilePrivate, setPrivate] = useState(true);
+  const [playlistPrivate, hidePlaylist] = useState(true);
   const [banner, setBanner] = useState("");
   const [avatar, setAvatar] = useState("/samplepfp.jpg");
   const [reviews, setReviews] = useState<DisplayReview[]>([]);
   const [sortMode, setSortMode] = useState<"top" | "new">("top");
   const [bio, setBio] = useState("");
+  const [userPlaylists, setPlaylist] = useState<SpotifyPlaylist[]>([]);
   const totalLikes = reviews.reduce((sum, r) => sum + r.likeCount, 0);
   const totalComments = reviews.length;
   const navigate = useNavigate();
@@ -56,17 +59,19 @@ export default function Profile() {
     async function checkUser() {
       const user = await getCurrUser()
       const isPriv = await isPrivate(username!);
+      const isPlaylistPriv = await showPlaylist(username!);
       const banner = await fetchBanner(username!);
       const avatar = await fetchAvatar(username!);
       const bio = await fetchDescription(username!);
       const count = await getFriendCount(username!);
+      hidePlaylist(isPlaylistPriv);
       setBio(bio);
       setIsOwnUser(user === username)
       setPrivate(isPriv)
       setBanner(banner)
       setAvatar(avatar)
       setFriendCount(count)
-      if (!isPriv) {
+      if (!isPriv || (user === username)) {
         const friends = await getFriends();
         const tracks = await getFavSongs(username!);
         const artist = await getFavArtist(username!);
@@ -77,6 +82,12 @@ export default function Profile() {
         });
         const reviews = await reviewsRes.json();
         setReviews(reviews);
+        if (user === username) {
+          updateUserPlaylists(username!)
+        }
+        const playlists = await fetchUserPlaylists(username!);
+        if (playlists) setPlaylist(playlists);
+
         if (tracks) {
           const { artistInfo, avgYear } = listeningAge;
           setAgeArtist(artistInfo)
@@ -101,7 +112,7 @@ export default function Profile() {
 
   return (
     <div className={styles.container}>
-      <Sidebar accountName="account name" />
+      <Sidebar/>
       <main className={styles.main}>
         <div className={styles.header} style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${banner})`}}>
           <div className={styles.profileRow}>
@@ -125,6 +136,10 @@ export default function Profile() {
                   <div>7</div>
                   <div>playlists</div>
                 </div>
+                <div className={styles.headerStat}>
+                  <div>{totalLikes}</div>
+                  <div>Likes</div>
+                </div>
               </div>
             </div>
           </div>
@@ -135,7 +150,6 @@ export default function Profile() {
               </div>
               <div className={styles.profileButtons}>
                 {(isOwnUser || isFriend || isLoading) ? null : <Button onClick={() => {const nextState = !isAdding; setFriends(!isAdding); handleFriendReq(profileName, nextState)}} active={isAdding}>{isAdding ? "Request Sent!" : "+ Add Friend"}</Button>}
-                <ActionBar likes={totalLikes} comments={67} liked={liked} />
               </div>
             </div>
             {isOwnUser && <button className={styles.profileSettings} onClick={() => handleSettings()}>Edit profile</button>}
@@ -148,6 +162,10 @@ export default function Profile() {
             <ProfileCard to="/explore" imageUrl={artistOfAge?.images?.[0].url ?? ""} description={age}>Listening <span style={{ color: "#AF99FF"}}>Age</span></ProfileCard>
           </div>}
           <div>
+            {(!isLoading && !playlistPrivate) && <div className={styles.playlistSection}>
+              <h2 className={styles.sectionTitle}>{username}'s Playlists</h2>
+            </div>}
+            {(!isLoading && !playlistPrivate) &&<Playlists playlists={userPlaylists} username={username!}></Playlists>}
             <div className={styles.sectionHeader}>
               <h2 className={styles.sectionTitle}>Reviews</h2>
               <div className={styles.buttons}>

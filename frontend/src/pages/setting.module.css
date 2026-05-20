@@ -35,6 +35,12 @@
     padding-left: 8%;
 }
 
+.toggle {
+    border: none;
+    background-color: transparent;
+    border-radius: 50%;
+}
+
 .lineBreak {
     border: white 1px solid;
     opacity: 0.8;

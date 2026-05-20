@@ -80,6 +80,22 @@ export async function getListeningAge(username: string) {
   return res.json();
 }
 
+export async function updateUserPlaylists(username: string) {
+  const res = await fetch(`${BASE_URL}/${username}/playlists`);
+  return res.json();
+}
+
+export async function fetchUserPlaylists(username: string) {
+    const res = await fetch(`${BASE_URL}/${username}/fetchPlaylists`, {
+    method: "GET",
+    headers: { 
+      "Content-Type": "application/json"
+      }
+  });
+  console.log(res);
+  return res.json();
+}
+
 // isAdding is a boolean here to differentiate sending a friend req or removing a friend req
 export async function handleFriendReq(recipient: string, isAdding: boolean) {
   const token = localStorage.getItem("token");
@@ -158,8 +174,33 @@ export async function makePrivate(update: boolean) {
   return res.json();
 }
 
+export async function hidePlaylists(update: boolean) {
+  const token = localStorage.getItem("token");
+  const res = await fetch(`${BASE_URL}/hidePlaylists`, {
+    method: "POST",
+    headers: { 
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+      },
+    body: JSON.stringify({ update })
+  });
+  console.log(res);
+  return res.json();
+}
+
 export async function isPrivate(username: string) {
   const res = await fetch(`${BASE_URL}/${username}/isPrivate`, {
+    method: "GET",
+    headers: { 
+      "Content-Type": "application/json"
+      }
+  });
+  console.log(res);
+  return res.json();
+}
+
+export async function showPlaylist(username: string) {
+  const res = await fetch(`${BASE_URL}/${username}/showPlaylist`, {
     method: "GET",
     headers: { 
       "Content-Type": "application/json"

@@ -27,7 +27,8 @@ export default function SongPage() {
   const [recentReviews, setRecentReviews] = useState<DisplayReview[]>([]);
   const [popularReviews, setPopularReviews] = useState<DisplayReview[]>([]);
   const [myReview, setMyReview] = useState<DisplayReview | null>(null);
-  const [error, setError] = useState("");
+  const [genre, setGenre] = useState<string[]>([]);
+  const [error, setError] = useState<string[]>([]);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -45,6 +46,9 @@ export default function SongPage() {
           setRating(Math.round(song.averageRating));
           setAverageRating(song.averageRating);
           setLiked(!!song.liked);
+          setGenre(song.genres ?? [])
+          song.artists
+          console.log("Genres:",song.genres)
         }
       })
       .catch(console.error);
@@ -199,14 +203,14 @@ export default function SongPage() {
 
   return (
     <div className={styles.container}>
-      <Sidebar accountName="account name" />
+      <Sidebar/>
       <main className={styles.main}>
         <div className={styles.header}>
           <img src={img} className={styles.headerImg} alt="Spotify" />
           <div className={styles.headerInfo}>
             <h1 className={styles.songTitle}>{songName}</h1>
             <p className={styles.subText}>{artistName}</p>
-            <p className={styles.subText}>Genre</p>
+            <p className={styles.subText}>{genre.map((g, i) => <span key={i}>{g}</span>)}</p>
             <div className={styles.headerBar}>
               <div className={styles.buttons}>
                 <Button onClick={() => setReviewModalOpen(true)}>+ Write a review</Button>

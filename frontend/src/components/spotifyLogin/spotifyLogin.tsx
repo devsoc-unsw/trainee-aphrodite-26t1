@@ -9,7 +9,6 @@ export function SpotifyLogin() {
   return (
     <button className={styles.loginButton} onClick={handleClick}>
       <img src='/spotify.svg' className={styles.spotify} />
-      Link Spotify Account
     </button>
   );
 }

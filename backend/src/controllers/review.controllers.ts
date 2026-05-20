@@ -59,7 +59,6 @@ export async function getOwnReview(req: Request, res: Response) {
 
 export async function getAllOwnedReviews(req: Request, res: Response) {
   try {
-    console.log("HIHIHIHIHI")
     const userId = (req as any).user._id instanceof ObjectId 
   ? (req as any).user._id 
   : new ObjectId((req as any).user._id || (req as any).user.id);

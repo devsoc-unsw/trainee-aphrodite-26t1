@@ -1,6 +1,6 @@
 .loginButton {
-    height: 50px;
-    width: 51.5px;
+    height: 40px;
+    width: 73px;
     background-color: rgb(255, 255, 255);
     border-radius: 50px;
     text-decoration: none;
@@ -8,11 +8,10 @@
     display: flex;
     align-items: center;
     gap: 2px;
-    padding-right: 15px;
-    padding-left: 2px;
+    padding-right: 0px;
+    padding-left: 17px;
     transition: opacity ease 250ms;
     border: none;
-    overflow: hidden;
     filter: grayscale(30%);
     font-weight: 580;
     white-space: nowrap;

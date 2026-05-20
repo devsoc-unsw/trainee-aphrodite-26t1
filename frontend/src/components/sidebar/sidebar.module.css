@@ -7,6 +7,7 @@
   flex-shrink: 0;
   border-right: 1px solid #222;
   padding: 32px 0;
+  transition: width ease 350ms;
 }
 
 .sidebarExpanded {
@@ -19,10 +20,15 @@
 
 .sidebarHeader {
   text-align: center; 
+  padding-bottom: 20px;
+  border-bottom: 1px solid #222;
+  margin-bottom: 8px;
 }
+
 .sidebarCollapsed .sidebarHeader {
   display: none;
 }
+
 .logo {
   font-size: 28px;
   font-weight: bold;
@@ -61,24 +67,24 @@
   background-color: #282828;
   color: #ffffff;
 }
-.navIcon {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background-color: #a0a0a0;
-  flex-shrink: 0;
-  font-size: 0.8em;
-  color: white;
+
+.tabBar {
   display: flex;
   align-items: center;
-  justify-content: center;
 }
+
 
 .navIcon.notif {
   background-color: #ff2424;
 }
-.navItem.active .navIcon {
-  background-color: #ffffff;
+.navItem.active {
+  color: #ffffff;
+  border-left: 3px solid #27b91d;
+  background: rgba(255,255,255,0.05);
+}
+
+.navItem {
+  border-left: 3px solid transparent;
 }
 .navLabel {
   margin-left: 16px;
@@ -89,10 +95,16 @@
   display: none;
 }
 
-.collapseContainer {
-  padding: 16px 24px;
+.profile {
   display: flex;
-  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px;
+  border-top: 1px solid #222;
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  background: transparent;
 }
 .iconButton {
   background: none;

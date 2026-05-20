@@ -3,7 +3,7 @@ import { Sidebar } from "../components/sidebar/sidebar"
 import { SpotifyLogin } from "../components/spotifyLogin/spotifyLogin"
 import { ToggleButton } from "../components/toggle/toggleButton"
 import { useState, useEffect, useRef } from "react"
-import { isPrivate, getCurrUser, updateBanner, updateAvatar, updateDescription, fetchDescription } from "../api/users"
+import { isPrivate, getCurrUser, updateBanner, updateAvatar, updateDescription, fetchDescription, showPlaylist } from "../api/users"
 
 
 export default function SettingPage() {
@@ -12,7 +12,7 @@ export default function SettingPage() {
     const [bio, setBio] = useState("");
     const imgInput = useRef<HTMLInputElement>(null);
     const [popup, setPopup] = useState(false);
-
+    const [playlistShow, setPlaylist] = useState(false)
     const showPopup = () => {
         setPopup(true);
         setTimeout(() => setPopup(false), 2000);
@@ -53,18 +53,21 @@ export default function SettingPage() {
     useEffect (() => {
         const getPrivate = async () => {
             const username = await getCurrUser()
-            const result = await isPrivate(username);
+            const result = await isPrivate(username!);
             const bio = await fetchDescription(username!);
+            const playlist = await showPlaylist(username!);
+            console.log(playlist)
             setBio(bio)
             setPrivate(result)
             setIsLoading(false)
+            setPlaylist(playlist)
         }
         getPrivate()
     }, []);
 
     return (
     <div className={styles.container}>
-      <Sidebar accountName="account name" />
+      <Sidebar/>
       <div className={`${styles.updated} ${popup ? "" : styles.hide}`}>Updated!</div>
       <div className={styles.main}>
         <div className={styles.title}>Settings</div>
@@ -83,20 +86,13 @@ export default function SettingPage() {
                     <div className={styles.description}>
                         <span style={{ color: "#ffffffff", marginRight: "20px"  }}>Private Profile:</span> Your profile will only be visible to your friends.
                     </div>    
-                    <ToggleButton initial={privateProfile} setting="private"></ToggleButton>
+                    <button className={styles.toggle} onClick={showPopup}><ToggleButton initial={privateProfile} setting="private"></ToggleButton></button>
                 </div>
                 <div className={styles.itemWrapper}>
                     <div className={styles.description}>
-                        <span style={{ color: "#ffffffff", marginRight: "20px"  }}>About me:</span> Customise your biography
+                        <span style={{ color: "#ffffffff", marginRight: "20px"  }}>Hide Playlists:</span> Your playlists will not be displayed.
                     </div>    
-                    <textarea
-                        placeholder="Customise your biography"
-                        value={bio}
-                        maxLength={300}
-                        onChange={(e) => setBio(e.target.value)}
-                        onBlur={handleBio}
-                        className={styles.textInput}
-                    />
+                    <button className={styles.toggle} onClick={showPopup}><ToggleButton initial={playlistShow} setting="hidePlaylist"></ToggleButton></button>
                 </div>
                 <div className={styles.itemWrapper}>
                     <div className={styles.description}>
@@ -127,6 +123,19 @@ export default function SettingPage() {
                     <button className={styles.addButton} onClick={() => imgInput.current?.click()}>
                     Add
                     </button>
+                </div>
+                <div className={styles.itemWrapper}>
+                    <div className={styles.description}>
+                        <span style={{ color: "#ffffffff", marginRight: "20px"  }}>About me:</span> Customise your biography
+                    </div>    
+                    <textarea
+                        placeholder="Customise your biography"
+                        value={bio}
+                        maxLength={300}
+                        onChange={(e) => setBio(e.target.value)}
+                        onBlur={handleBio}
+                        className={styles.textInput}
+                    />
                 </div>
             </div>
             <div className={styles.option}>
