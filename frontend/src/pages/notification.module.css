@@ -39,13 +39,13 @@
     font-size: 30px;
     font-weight: 500;
     margin-bottom: 30px;
-    
     position: absolute;
     transform: translate(-50%, -50%);
     left: 50%;
 }
 
 .notifs {
+    padding-top: 30px;
     display: flex;
     flex-direction: column;
 }

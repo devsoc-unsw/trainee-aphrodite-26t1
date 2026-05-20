@@ -43,7 +43,7 @@ export function Sidebar() {
     }
     fetchNotifications();
     fetchName();
-    const interval = setInterval(fetchNotifications, 10000);
+    const interval = setInterval(fetchNotifications, 60000);
     return () => clearInterval(interval);
   }, []);
 

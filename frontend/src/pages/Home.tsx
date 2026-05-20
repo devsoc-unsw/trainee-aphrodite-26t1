@@ -6,7 +6,7 @@ import { LargeCard } from "../components/largecard/largecard";
 import { SongItem } from "../components/songitem/songitem";
 import { Link, useNavigate } from "react-router";
 import SearchBar from "../components/searchbar/SearchBar";
-
+import DustEffect from "../components/DustEffect";
 
 export default function Home() {
   const [recommendedSongs, setRecommendedSongs] = useState<Song[]>([]);
@@ -40,6 +40,7 @@ export default function Home() {
   return (
     <div className={styles.container}>
       <Sidebar/>
+      <DustEffect />
       <main className={styles.main}>
         <SearchBar placeholder="Search for a song or user..." onSubmit={onSubmit} />
         <section>

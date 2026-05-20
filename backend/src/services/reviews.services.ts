@@ -89,10 +89,20 @@ export async function getUserReview(songId: string, user: ObjectId) {
   return review;
 }
 
-export async function getAllOwnedReviews(user: ObjectId) {
-  const results: DisplayReview[] = await reviewsCollection.aggregate([
-    { $match: { userId: new ObjectId( user )} },
-    { $sort: { likeCount: -1, createdAt: -1 } },
+export async function getAllOwnedReviews(userId: ObjectId) {
+  return reviewsCollection.aggregate([
+    {
+      $match: { userId }
+    },
+    {
+      $sort: {
+        likeCount: -1,
+        createdAt: -1
+      }
+    },
+    {
+      $limit: 50
+    },
     {
       $lookup: {
         from: "users",
@@ -101,7 +111,9 @@ export async function getAllOwnedReviews(user: ObjectId) {
         as: "user"
       }
     },
-    { $unwind: "$user" },
+    {
+      $unwind: "$user"
+    },
     {
       $project: {
         songId: 1,
@@ -111,11 +123,12 @@ export async function getAllOwnedReviews(user: ObjectId) {
         createdAt: 1,
         updatedAt: 1,
         id: { $toString: "$_id" },
-        user: { username: "$user.username" }
+        user: {
+          username: "$user.username"
+        }
       }
     }
-  ]).toArray() as DisplayReview[];
-  return results;
+  ]).toArray();
 }
 
 export async function addReview(songId: string, user: ObjectId, text: string, rating: number) {

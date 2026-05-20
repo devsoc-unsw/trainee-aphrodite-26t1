@@ -5,6 +5,7 @@ import { SongItem } from "../components/songitem/songitem";
 import { Link, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import type { Song } from "../../../backend/src/types/api.types";
+import DustEffect from "../components/DustEffect";
 
 export default function ExplorePage() {
   const [recommendedSongs, setRecommendedSongs] = useState<Song[]>([]);
@@ -38,7 +39,7 @@ export default function ExplorePage() {
   return (
     <div className={styles.container}>
       <Sidebar/>
-
+      <DustEffect />
       <main className={styles.main}>
         <SearchBar placeholder="Search for a song or user..." onSubmit={onSubmit} />
 

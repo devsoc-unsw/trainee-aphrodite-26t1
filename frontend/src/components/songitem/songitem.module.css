@@ -12,6 +12,7 @@
   color: white;
   text-decoration: none;
   border-bottom: 1px solid #222;
+  z-index: 1;
 }
 .container:hover {
   background-color: #0e0d0d;

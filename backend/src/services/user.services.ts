@@ -301,8 +301,7 @@ export async function updateUserPlaylists(username: string) {
         { username },
         { $set: { playlists: data.items } }
     );
-    console.log(await res.json())
-    return res.json();
+    return data.items
 }
 
 export async function fetchUserPlaylists(name: string) {
@@ -405,6 +404,7 @@ export async function updateBanner(user: string, file: string) {
             bannerPic: file
         }}
     )
+    return result;
 }
 
 export async function updateAvatar(user: string, file: string) {
@@ -414,6 +414,7 @@ export async function updateAvatar(user: string, file: string) {
             profilePic: file
         }}
     )
+    return result;
 }
 
 export async function fetchAvatar(name: string) {

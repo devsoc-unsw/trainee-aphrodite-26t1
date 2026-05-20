@@ -65,6 +65,7 @@
   margin-top: 0.75rem;
   gap: 1rem;
   flex-wrap: wrap; 
+  padding-bottom: 50px;
 }
 
 .buttons {

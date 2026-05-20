@@ -72,11 +72,6 @@ export interface User {
   hidePlaylists?: boolean;
 }
 
-export interface DisplayUser {
-  displayName: string,
-  username: string
-}
-
 /**
  * Represents a review for a song
  */
@@ -102,6 +97,6 @@ export interface DisplayReview {
   likeCount: number;
   createdAt: number;
   updatedAt: number;
-  user: DisplayUser;
+  user: User;
   liked?: boolean;
 }

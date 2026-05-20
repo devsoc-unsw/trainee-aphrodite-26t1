@@ -9,6 +9,7 @@
   border-right: 1px solid #222;
   padding: 32px 0;
   transition: width ease 350ms;
+  z-index: 1;
 }
 
 .sidebarExpanded {
@@ -80,8 +81,10 @@
 .tabBar {
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 20px;
+  font-size: 14px; 
 }
-
 
 .navIcon.notif {
   background-color: #ff2424;
