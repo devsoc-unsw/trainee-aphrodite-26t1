@@ -12,6 +12,7 @@ export default function Home() {
   const [recommendedSongs, setRecommendedSongs] = useState<Song[]>([]);
   const [recentSongs, setRecentSongs] = useState<Song[]>([]);
   
+  const navigate = useNavigate();
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
@@ -20,18 +21,17 @@ export default function Home() {
       navigate("/home", { replace: true });
     }
 
-    fetch("http://localhost:3000/api/songs?sort=recommended&limit=10")
+    fetch(import.meta.env.VITE_BACKEND_URL + "/api/songs?sort=recommended&limit=10")
       .then(res => res.json())
       .then(setRecommendedSongs)
       .catch(console.error);
 
-    fetch("http://localhost:3000/api/songs?sort=recent&limit=5")
+    fetch(import.meta.env.VITE_BACKEND_URL + "/api/songs?sort=recent&limit=5")
       .then(res => res.json())
       .then(setRecentSongs)
       .catch(console.error);
   }, []);
-
-  const navigate = useNavigate();
+  
   const onSubmit = (query: string) => {
     if (!query) return;
     navigate("/search?" + new URLSearchParams({ q: query }).toString());

@@ -11,6 +11,7 @@ import { ReviewItem } from "../components/reviewitem/ReviewItem";
 import type { DisplayReview, Song } from "../../../backend/src/types/api.types";
 import { ReviewModal } from "../components/reviewModal/reviewModal";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 export default function SongPage() {
   const params = useParams();
@@ -28,13 +29,14 @@ export default function SongPage() {
   const [popularReviews, setPopularReviews] = useState<DisplayReview[]>([]);
   const [myReview, setMyReview] = useState<DisplayReview | null>(null);
   const [genre, setGenre] = useState<string[]>([]);
-  const [error, setError] = useState<string[]>([]);
+  const [error, setError] = useState<string>("");
+  
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    const headers = token ? { "Authorization": `Bearer ${token}` } : {};
-
-    fetch("http://localhost:3000/api/songs/" + songId, { headers })
+    fetch(BACKEND_URL + "/api/songs/" + songId, token ? {
+      headers: { "Authorization": `Bearer ${token}` }
+    } : undefined)
       .then(res => res.json())
       .then((song: Song) => {
         if (song) {
@@ -47,18 +49,21 @@ export default function SongPage() {
           setAverageRating(song.averageRating);
           setLiked(!!song.liked);
           setGenre(song.genres ?? [])
-          song.artists
           console.log("Genres:",song.genres)
         }
       })
       .catch(console.error);
-    fetch("http://localhost:3000/api/reviews/" + songId + "?sort=popular&limit=3", { headers })
+    fetch(BACKEND_URL + "/api/reviews/" + songId + "?sort=popular&limit=3", token ? {
+      headers: { "Authorization": `Bearer ${token}` }
+    } : undefined)
       .then(res => res.json())
       .then((reviews: DisplayReview[]) => {
         setPopularReviews(reviews);
       })
       .catch(console.error);
-    fetch("http://localhost:3000/api/reviews/" + songId + "?sort=recent&limit=3", { headers })
+    fetch(BACKEND_URL + "/api/reviews/" + songId + "?sort=recent&limit=3", token ? {
+      headers: { "Authorization": `Bearer ${token}` }
+    } : undefined)
       .then(res => res.json())
       .then((reviews: DisplayReview[]) => {
         setRecentReviews(reviews);
@@ -66,7 +71,7 @@ export default function SongPage() {
       .catch(console.error);
     
     if (token) {
-      fetch("http://localhost:3000/api/reviews/" + songId + "/me", {
+      fetch(BACKEND_URL + "/api/reviews/" + songId + "/me", {
         headers: { "Authorization": `Bearer ${token}` }
       })
         .then(res => res.json())
@@ -93,7 +98,7 @@ export default function SongPage() {
     setLiked(!previousLiked);
     setLikes(previousLiked ? previousLikes - 1 : previousLikes + 1);
 
-    fetch("http://localhost:3000/api/songs/" + songId + "/like", {
+    fetch(BACKEND_URL + "/api/songs/" + songId + "/like", {
       method: "POST",
       headers: { "Authorization": `Bearer ${token}` }
     })
@@ -122,7 +127,7 @@ export default function SongPage() {
       return;
     }
 
-    fetch("http://localhost:3000/api/reviews/" + songId, {
+    fetch(BACKEND_URL + "/api/reviews/" + songId, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${localStorage.getItem("token")}`,
@@ -141,15 +146,15 @@ export default function SongPage() {
         console.log("Success:", data);
         setReviewModalOpen(false);
         const headers = { "Authorization": `Bearer ${localStorage.getItem("token")}` };
-        fetch("http://localhost:3000/api/reviews/" + songId + "?sort=popular&limit=3", { headers })
+        fetch(BACKEND_URL + "/api/reviews/" + songId + "?sort=popular&limit=3", { headers })
           .then(res => res.json())
           .then(setPopularReviews)
           .catch(console.error);
-        fetch("http://localhost:3000/api/reviews/" + songId + "?sort=recent&limit=3", { headers })
+        fetch(BACKEND_URL + "/api/reviews/" + songId + "?sort=recent&limit=3", { headers })
           .then(res => res.json())
           .then(setRecentReviews)
           .catch(console.error);
-        fetch("http://localhost:3000/api/songs/" + songId, { headers })
+        fetch(BACKEND_URL + "/api/songs/" + songId, { headers })
           .then(res => res.json())
           .then((track: Song) => {
             if (track) {
@@ -159,7 +164,7 @@ export default function SongPage() {
             }
           })
           .catch(console.error);
-        fetch("http://localhost:3000/api/reviews/" + songId + "/me", {
+        fetch(BACKEND_URL + "/api/reviews/" + songId + "/me", {
           headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
         })
           .then(res => res.json())
@@ -175,7 +180,7 @@ export default function SongPage() {
   }
 
   const deleteMyReview = () => {
-    fetch("http://localhost:3000/api/reviews/" + songId, {
+    fetch(BACKEND_URL + "/api/reviews/" + songId, {
       method: "DELETE",
       headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
     })
@@ -183,11 +188,11 @@ export default function SongPage() {
         if (res.ok) {
           setMyReview(null);
           const headers = { "Authorization": `Bearer ${localStorage.getItem("token")}` };
-          fetch("http://localhost:3000/api/reviews/" + songId + "?sort=popular&limit=3", { headers })
+          fetch(BACKEND_URL + "/api/reviews/" + songId + "?sort=popular&limit=3", { headers })
             .then(res => res.json()).then(setPopularReviews).catch(console.error);
-          fetch("http://localhost:3000/api/reviews/" + songId + "?sort=recent&limit=3", { headers })
+          fetch(BACKEND_URL + "/api/reviews/" + songId + "?sort=recent&limit=3", { headers })
             .then(res => res.json()).then(setRecentReviews).catch(console.error);
-          fetch("http://localhost:3000/api/songs/" + songId, { headers })
+          fetch(BACKEND_URL + "/api/songs/" + songId, { headers })
             .then(res => res.json())
             .then((track: Song) => {
               if (track) {

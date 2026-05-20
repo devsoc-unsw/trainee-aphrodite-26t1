@@ -1,8 +1,8 @@
-import express, { Request, Response } from "express";
+import express, { Request, Response, Router } from "express";
 import multer from "multer";
 import cloudinary from "../lib/cloudinary.js";
 
-const router = express.Router();
+const router: Router = express.Router();
 const storage = multer.memoryStorage();
 const upload = multer({ 
   storage,

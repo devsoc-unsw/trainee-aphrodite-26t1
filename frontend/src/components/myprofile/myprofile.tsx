@@ -1,6 +1,6 @@
 import styles from "./myprofile.module.css"
 import { getCurrUser, fetchAvatar } from "../../api/users";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router"
 import { useState, useEffect } from "react";
 
 export function MyProfile() {

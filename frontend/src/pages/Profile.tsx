@@ -5,7 +5,7 @@ import { Playlists } from "../components/playlist/playlist.tsx";
 import styles from "./profile.module.css"
 import { ReviewItemProfile } from "../components/reviewItemProfile/ReviewItemProfile.tsx";
 import { Link, useNavigate } from "react-router";
-import { useParams } from "react-router-dom";
+import { useParams } from "react-router";
 import { getCurrUser, getFriends, handleFriendReq, getFavSongs, getFavArtist, getListeningAge, isPrivate, fetchBanner, fetchAvatar, fetchDescription, getFriendCount, fetchUserPlaylists, updateUserPlaylists, showPlaylist} from "../api/users.ts";
 import type { SpotifyTrack, Artist } from "../../../backend/src/types/api.types";
 import type { DisplayReview } from "../../../backend/src/types/api.types";

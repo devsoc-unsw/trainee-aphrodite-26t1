@@ -1,6 +1,6 @@
 import type { Track } from "../spotify.types";
 import type { Artist } from "../../../backend/src/types/api.types";
-const BASE_URL = "http://localhost:3000/api";
+const BASE_URL = import.meta.env.VITE_BACKEND_URL + "/api";
 
 export async function getSong(id: string): Promise<Track> {
   console.log("attempting to conneect to backend")
