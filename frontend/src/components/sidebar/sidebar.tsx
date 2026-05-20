@@ -4,6 +4,8 @@ import { NavLink } from "react-router";
 import { getCurrUser, getNotifications } from "../../api/users";
 import { Home, Users, Compass, Bell, Star } from "lucide-react";
 import { MyProfile } from "../myprofile/myprofile";
+import SideBars from "../audiobars/SideBars.tsx";
+
 export interface SidebarTab {
   label: string,
   to: string,
@@ -47,6 +49,7 @@ export function Sidebar() {
 
   return (
     <div onMouseEnter={() => setIsSidebarExpanded(true)} onMouseLeave={() => setIsSidebarExpanded(false)} className={`${styles.sidebar} ${isSidebarExpanded ? styles.sidebarExpanded : styles.sidebarCollapsed}`}>
+      <SideBars></SideBars>
       <div className={styles.sidebarHeader}>
         <h1 className={styles.logo}>startune</h1>
         <div className={styles.accountName}></div>

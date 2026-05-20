@@ -31,7 +31,6 @@ export default function FriendsPage() {
   return (
     <div className={styles.container}>
       <Sidebar/>
-
       <main className={styles.main}>
         <SearchBar placeholder="Search for a friend..." onSubmit={onSubmit}/>
         <section>

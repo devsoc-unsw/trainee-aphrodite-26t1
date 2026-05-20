@@ -1,5 +1,4 @@
 .card {
-  background-color: #383838;
   border-radius: 25px;
   padding: 20px;
   padding-top: 25px;
@@ -9,13 +8,21 @@
   flex-direction: column;
   align-items: center;
   cursor: pointer;
+  border: none;
+  background: #1a1a1a;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  border-radius: 12px;
+  overflow: hidden;
+  
 }
 .card:hover {
-  background-color: #444;
+  background-color: #1d1d1d;
 }
 .image {
-  width: 150px;
-  height: 150px;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: 8px 8px 0 0;
   background-color: #a0a0a0;
   margin-bottom: 16px;
 }
@@ -26,13 +33,20 @@
   border-radius: 50%;
 }
 .info {
+  width: 100%;
+  min-width: 0; 
   text-align: center;
+  padding: 0 8px; 
 }
 .title {
   font-size: 18px;
-  font-weight: 700;
+  font-weight: 500;
   text-align: center;
   color: #fff;
+  white-space: nowrap;
+  overflow: hidden; 
+  text-overflow: ellipsis;
+  display: block;
 }
 .artist {
   font-size: 16px;

@@ -1,7 +1,7 @@
 .container {
   display: flex;
   align-items: center;
-  background-color: #383838;
+  background-color: #151515;
   border-radius: 22px;
   padding: 12px;
   padding-right: 24px;
@@ -11,9 +11,10 @@
   flex-wrap: wrap;
   color: white;
   text-decoration: none;
+  border-bottom: 1px solid #222;
 }
 .container:hover {
-  background-color: #444;
+  background-color: #0e0d0d;
 }
 .image {
   width: 50px;

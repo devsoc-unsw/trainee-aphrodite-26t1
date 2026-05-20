@@ -41,9 +41,7 @@ export default function Home() {
     <div className={styles.container}>
       <Sidebar/>
       <main className={styles.main}>
-        <div className={styles.topBar}>
-          <SearchBar placeholder="Search for a song or user..." onSubmit={onSubmit} />
-        </div>
+        <SearchBar placeholder="Search for a song or user..." onSubmit={onSubmit} />
         <section>
           <h2 className={styles.sectionTitle}>Recommended Songs</h2>
           <div className={styles.recommendedGrid}>
