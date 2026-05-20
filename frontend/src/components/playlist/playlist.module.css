@@ -1,0 +1,194 @@
+.container {
+  padding-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+  color:white;
+}
+ 
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+ 
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 8px;
+  transition: background 0.2s ease;
+}
+ 
+.card:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+ 
+.card.active {
+  background: rgba(255, 255, 255, 0.1);
+  outline: 1px solid rgba(255, 255, 255, 0.2);
+}
+ 
+.cover {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  background-color: #2a2a2a;
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+ 
+.placeholder {
+  font-size: 2rem;
+  color: #555;
+}
+ 
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+ 
+.name {
+  font-size: 0.85em;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+ 
+.meta {
+  font-size: 0.72em;
+  color: #888;
+}
+ 
+.trackPanel {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 12px;
+  padding: 20px;
+}
+ 
+.trackHeader {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+}
+ 
+.trackCover {
+  width: 80px;
+  height: 80px;
+  border-radius: 6px;
+  background-color: #2a2a2a;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+ 
+.trackTitle {
+  font-size: 1.1em;
+  font-weight: 700;
+  color: #fff;
+}
+ 
+.trackDesc {
+  font-size: 0.78em;
+  color: #888;
+  margin-top: 4px;
+  max-width: 400px;
+}
+ 
+.spotifyLink {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.75em;
+  color: #1DB954;
+  text-decoration: none;
+}
+ 
+.spotifyLink:hover {
+  text-decoration: underline;
+}
+ 
+.trackList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 400px;
+  overflow-y: auto;
+
+}
+ 
+.track {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+  width: 96%;
+}
+ 
+.track:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+ 
+.trackNum {
+  width: 20px;
+  text-align: right;
+  font-size: 0.78em;
+  color: #666;
+  flex-shrink: 0;
+}
+ 
+.trackImg {
+  width: 36px;
+  height: 36px;
+  border-radius: 4px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+ 
+.trackInfo {
+  flex: 1;
+  min-width: 0;
+}
+ 
+.trackName {
+  font-size: 0.85em;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+ 
+.trackArtist {
+  font-size: 0.75em;
+  color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+ 
+.trackDuration {
+  font-size: 0.75em;
+  color: #666;
+  flex-shrink: 0;
+}
+ 
+.loading,
+.empty {
+  font-size: 0.85em;
+  color: #666;
+  padding: 12px 0;
+}
+ 

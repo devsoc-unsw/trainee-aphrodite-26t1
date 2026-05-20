@@ -64,7 +64,7 @@ const ReviewPage = () => {
   return (
     <div className={styles.container}>
       <DustEffect />
-      <Sidebar accountName="account name" />
+      <Sidebar/>
       <main className={styles.main}>
         <h1 className={styles.title}>What song would you like<br />to review <em>today?</em></h1>
         <p className={styles.subtitle}>paste a spotify link to get started</p>

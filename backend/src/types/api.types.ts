@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 import { Tag } from "./musicbrainz.types.js";
-import { SimplifiedAlbum, SimplifiedArtist } from "./spotify.types.js";
+import { SimplifiedAlbum, SimplifiedArtist, SpotifyPlaylist } from "./spotify.types.js";
 
 export interface ExternalUrls {
   spotify: string;
@@ -68,6 +68,8 @@ export interface User {
   description?: string;
   likedSongs?: string[];
   likedReviews?: ObjectId[];
+  playlists?: SpotifyPlaylist[];
+  hidePlaylists?: boolean;
 }
 
 export interface DisplayUser {

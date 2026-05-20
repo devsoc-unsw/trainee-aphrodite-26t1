@@ -37,7 +37,7 @@ export default function NotificationsPage() {
 
     return (
         <div className={styles.container}>
-            <Sidebar accountName="account name" />
+            <Sidebar/>
             <main className={styles.main}>
                 <section>
                     <div className={styles.titleSection}>

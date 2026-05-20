@@ -246,12 +246,129 @@ export async function getListeningAge(username: string) {
   return { artistInfo, avgYear };
 }
 
+
+export async function updateUserPlaylists(username: string) {
+    const user = await usersCollection.findOne( {username: username })
+    if (!user?.spotifyAccessToken) return null;
+
+    const profileRes = await fetch("https://api.spotify.com/v1/me", {
+        headers: { "Authorization": `Bearer ${user.spotifyAccessToken}` }
+    });
+    
+    if (profileRes.status === 401 || profileRes.status === 403) {
+        const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Authorization": "Basic " + Buffer.from(
+                `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`
+                ).toString("base64")
+            },
+            body: new URLSearchParams({
+                grant_type: "refresh_token",
+                refresh_token: user.spotifyRefreshToken!,
+            })
+            });
+        const tokens = await tokenRes.json();
+        await usersCollection.updateOne({ username }, { $set: { spotifyAccessToken: tokens.access_token } });
+
+
+        const profileRes = await fetch("https://api.spotify.com/v1/me", {
+            headers: { "Authorization": `Bearer ${tokens.access_token}` }
+        });
+        const profile = await profileRes.json();
+        let res = await fetch(`https://api.spotify.com/v1/me/playlists`, {
+            headers: { "Authorization": `Bearer ${tokens.access_token}` }
+        });
+        const data = await res.json();
+
+        await usersCollection.updateOne(
+            { username },
+            { $set: { playlists: data.items } }
+        );
+
+        return res.json();
+    }
+
+    const profile = await profileRes.json();
+    let res = await fetch(`https://api.spotify.com/v1/me/playlists?limit=8`, {
+        headers: { "Authorization": `Bearer ${user.spotifyAccessToken}` }
+    });
+
+    const data = await res.json();
+
+    await usersCollection.updateOne(
+        { username },
+        { $set: { playlists: data.items } }
+    );
+    console.log(await res.json())
+    return res.json();
+}
+
+export async function fetchUserPlaylists(name: string) {
+
+    const result = await usersCollection.findOne(
+        {username: name }
+    )
+    if (!result) {
+        throw new Error("User not found")
+    }
+    return result.playlists ?? null;
+}
+
+export async function fetchPlaylistTracks(name: string, playlistId: string) {
+    const result = await usersCollection.findOne({ username: name });
+    if (!result) throw new Error("User not found");
+
+    let token = result.spotifyAccessToken;
+
+    const testRes = await fetch("https://api.spotify.com/v1/me", {
+        headers: { "Authorization": `Bearer ${token}` }
+    });
+
+    if (testRes.status === 401 || testRes.status === 403) {
+        const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Authorization": "Basic " + Buffer.from(
+                    `${process.env.SPOTIFY_CLIENT_ID}:${process.env.SPOTIFY_CLIENT_SECRET}`
+                ).toString("base64")
+            },
+            body: new URLSearchParams({
+                grant_type: "refresh_token",
+                refresh_token: result.spotifyRefreshToken!,
+            })
+        });
+        const tokens = await tokenRes.json();
+        token = tokens.access_token;
+        await usersCollection.updateOne({ username: name }, { $set: { spotifyAccessToken: token } });
+    }
+
+    const res = await fetch(`https://api.spotify.com/v1/playlists/${playlistId}/items`, {
+        headers: { "Authorization": `Bearer ${token}` }
+    });
+
+    return res.json();
+}
+
 export async function makePrivate(user: string, update: boolean) {
 
     const result = await usersCollection.updateOne(
         { _id: new ObjectId(user) },
         { $set: {
             isPrivate: update
+        }}
+    )
+    return result
+}
+
+export async function hidePlaylists(user: string, update: boolean) {
+
+    const result = await usersCollection.updateOne(
+        { _id: new ObjectId(user) },
+        { $set: {
+            hidePlaylists: update
         }}
     )
     return result
@@ -268,6 +385,18 @@ export async function isPrivate(name: string) {
     }
     return result.isPrivate ?? false;
 }
+
+export async function showPlaylist(name: string) {
+
+    const result = await usersCollection.findOne(
+        {username: name }
+    )
+    if (!result) {
+        throw new Error("User not found")
+    }
+    return result.hidePlaylists ?? false;
+}
+
 
 export async function updateBanner(user: string, file: string) {
     const result = await usersCollection.updateOne(

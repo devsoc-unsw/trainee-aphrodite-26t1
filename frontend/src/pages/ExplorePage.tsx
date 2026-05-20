@@ -37,7 +37,7 @@ export default function ExplorePage() {
 
   return (
     <div className={styles.container}>
-      <Sidebar accountName="account name" />
+      <Sidebar/>
 
       <main className={styles.main}>
         <SearchBar placeholder="Search for a song or user..." onSubmit={onSubmit} />

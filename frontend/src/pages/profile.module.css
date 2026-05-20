@@ -203,3 +203,26 @@ hr {
   align-items: center;
   justify-content: center;
 }
+
+.playlistSection {
+  border-bottom: 2px white solid;
+  padding-top: 35px;
+  padding-bottom: 15px;
+}
+
+.main::-webkit-scrollbar {
+  width: 4px;
+}
+
+.main::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.main::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+}
+
+.main::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}

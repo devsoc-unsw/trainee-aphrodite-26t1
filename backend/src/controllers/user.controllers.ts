@@ -124,6 +124,34 @@ export async function getListeningAge(req: Request, res: Response) {
   }
 }
 
+export async function updateUserPlaylists(req: Request, res: Response) {
+  try {
+    const tracks = await userService.updateUserPlaylists(req.params.username as string);
+    res.json(tracks);
+  } catch (err: any) {
+    res.status(500).json({ message: err.message });
+  }
+}
+
+
+export async function fetchUserPlaylists(req: Request, res: Response) {
+  try {
+    const result = await userService.fetchUserPlaylists(req.params.username as string);
+    res.json(result);
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+}
+
+export async function fetchPlaylistTracks(req: Request, res: Response) {
+  try {
+    const result = await userService.fetchPlaylistTracks(req.params.username as string, req.params.playlistId as string);
+    res.json(result);
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+}
+
 
 export async function addFriend(req: Request, res: Response) {
   try {
@@ -172,9 +200,35 @@ export async function makePrivate(req: Request, res: Response) {
   }
 }
 
+
+export async function hidePlaylists(req: Request, res: Response) {
+  try {
+    const { update } = req.body;
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+        return res.status(401).json({ message: "No token provided" });
+    }
+    const decoded = verifyToken(token);
+    const user = decoded.id
+    const result = await userService.hidePlaylists(user, update);
+    res.json(result);
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+}
+
 export async function isPrivate(req: Request, res: Response) {
   try {
     const result = await userService.isPrivate(req.params.username as string);
+    res.json(result);
+  } catch (err: any) {
+    res.status(400).json({ message: err.message });
+  }
+}
+
+export async function showPlaylist(req: Request, res: Response) {
+  try {
+    const result = await userService.showPlaylist(req.params.username as string);
     res.json(result);
   } catch (err: any) {
     res.status(400).json({ message: err.message });

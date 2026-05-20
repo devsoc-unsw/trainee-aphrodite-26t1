@@ -68,8 +68,8 @@ export async function spotifyAuth(req: Request, res: Response) {
     if (!userToken) return res.status(401).json({ message: "No token provided in spotifyAuth" });
     const client_id = process.env.SPOTIFY_CLIENT_ID;
     const redirect_uri = "http://127.0.0.1:3000/api/users/auth/spotify/callback";
-    const scope = "user-top-read user-read-recently-played";
-    const authUrl = `https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=code&redirect_uri=${redirect_uri}&scope=${encodeURIComponent(scope)}&state=${userToken}`;
+    const scope = "user-top-read user-read-recently-played playlist-read-private playlist-read-collaborative";
+    const authUrl = `https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=code&redirect_uri=${redirect_uri}&scope=${encodeURIComponent(scope)}&show_dialog=true&state=${userToken}`;
     res.redirect(authUrl);
   } catch(error) {
     res.status(500).send("Error - Spotify Auth");

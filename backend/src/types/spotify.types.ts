@@ -106,3 +106,14 @@ export interface Playlist {
   images: Image[];
   items: ResultItems<PlaylistTrack>
 }
+
+export interface SpotifyPlaylist {
+  id: string;
+  name: string;
+  description: string;
+  public: boolean;
+  images: { url: string; height: number; width: number }[];
+  external_urls: ExternalUrls;
+  uri: string;
+  collaborative: boolean;
+}
