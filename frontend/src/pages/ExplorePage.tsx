@@ -25,12 +25,12 @@ export default function ExplorePage() {
       navigate("/home", { replace: true });
     }
 
-    fetch("http://localhost:3000/api/songs?sort=recommended&limit=10")
+    fetch(import.meta.env.VITE_BACKEND_URL + "/api/songs?sort=recommended&limit=10")
       .then(res => res.json())
       .then(setRecommendedSongs)
       .catch(console.error);
 
-    fetch("http://localhost:3000/api/songs?sort=recent&limit=5")
+    fetch(import.meta.env.VITE_BACKEND_URL + "/api/songs?sort=recent&limit=5")
       .then(res => res.json())
       .then(setRecentSongs)
       .catch(console.error);

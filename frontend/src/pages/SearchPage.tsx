@@ -14,6 +14,7 @@ function isSearchType(type: string | null): type is SearchType {
   return (type === "all" || type === "users" || type === "songs");
 }
 
+
 export default function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const queryParam = searchParams.get("q");
@@ -34,7 +35,7 @@ export default function SearchPage() {
     }
     // fetch song search
     if (type !== "users") {
-      fetch("http://localhost:3000/api/search/?q=" + query)
+      fetch(import.meta.env.VITE_BACKEND_URL + "/api/search/?q=" + query)
         .then(res => res.json())
         .then((data: {tracks: Song[]}) => {
           if (data?.tracks?.length > 0) {

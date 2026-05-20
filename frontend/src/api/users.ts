@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:3000/api/users";
+const BASE_URL = import.meta.env.VITE_BACKEND_URL + "/api/users";
 
 export async function findUsers(username: string) {
   const token = localStorage.getItem("token");
