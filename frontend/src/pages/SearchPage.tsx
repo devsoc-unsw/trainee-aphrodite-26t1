@@ -7,6 +7,7 @@ import { LargeCard } from "../components/largecard/largecard";
 import { Link, useSearchParams } from "react-router";
 import { Button } from "../components/button/Button";
 import type { User, Song } from "../../../backend/src/types/api.types";
+import { findUsers } from "../api/users";
 
 type SearchType = "all" | "users" | "songs";
 function isSearchType(type: string | null): type is SearchType {
@@ -22,7 +23,7 @@ export default function SearchPage() {
   const [userResults, setUserResults] = useState<User[]>([]);
   const [type, setType] = useState<SearchType>(isSearchType(typeParam) ? (typeParam || "all") : "all");
 
-  const onSubmit = (query: string) => {
+  const onSubmit = async (query: string) => {
     const url = new URLSearchParams(searchParams);
     url.set("q", query);
     setSearchParams(url);
@@ -44,7 +45,9 @@ export default function SearchPage() {
     }
     // fetch user search
     if (type !== "songs") {
-      setUserResults(Array(4).fill({ displayName: query, username: "@username" }));
+      const data = await findUsers(query)
+      console.log(data)
+      setUserResults(data);
     }
     
   }
@@ -87,9 +90,11 @@ export default function SearchPage() {
         <div className={styles.users} style={{ display: (type !== "songs" && userResults.length > 0) ? "flex" : "none" }}>
           {userResults.map((user, i) => (
             <Link key={i} className={styles.link} to={"/users/" + user.username}>
-              <LargeCard imageType="circle" title={user.username} artist={user.username} />
+              <LargeCard imageType="circle" imageUrl={user.profilePic ?? "samplepfp.png"} title={user.username}/>
             </Link>
           ))}
+
+          
         </div>
       </main>
     </div>

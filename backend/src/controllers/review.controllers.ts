@@ -59,13 +59,19 @@ export async function getOwnReview(req: Request, res: Response) {
 
 export async function getAllOwnedReviews(req: Request, res: Response) {
   try {
-    const userId = (req as any).user._id instanceof ObjectId 
-  ? (req as any).user._id 
-  : new ObjectId((req as any).user._id || (req as any).user.id);
-    const review = await reviewService.getAllOwnedReviews(userId);
-    res.json(review || null);
+    const username = req.params.username;
+
+    const user = await usersCollection.findOne({ username });
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const reviews = await reviewService.getAllOwnedReviews(user._id);
+
+    res.json(reviews);
   } catch (err: any) {
-    res.status(400).json({ error: err.message });
+    res.status(500).json({ error: err.message });
   }
 }
 

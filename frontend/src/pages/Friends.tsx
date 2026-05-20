@@ -41,12 +41,12 @@ export default function FriendsPage() {
           <div className={styles.users}>
             {searchResults.length > 0 ? searchResults.map((user, i) => (
               <Link key={i} className={styles.link} to={"/users/" + user.username}>
-                <LargeCard imageUrl={user.profilePic} imageType="circle" title={user.username}/>
+                <LargeCard imageUrl={user.profilePic ?? "samplepfp.png"} imageType="circle" title={user.username}/>
               </Link>
               
             )) : friends.map((user, i) => (
               <Link key={i} className={styles.link} to={"/users/" + user.username}>
-                <LargeCard imageUrl={user.profilePic} imageType="circle" title={user.username}/>
+                <LargeCard imageUrl={user.profilePic ?? "samplepfp.png"} imageType="circle" title={user.username}/>
               </Link>
               
             ))}

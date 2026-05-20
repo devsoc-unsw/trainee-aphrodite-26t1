@@ -81,8 +81,10 @@
 .tabBar {
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 20px;
+  font-size: 14px; 
 }
-
 
 .navIcon.notif {
   background-color: #ff2424;

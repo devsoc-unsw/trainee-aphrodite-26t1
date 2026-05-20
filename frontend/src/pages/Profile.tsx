@@ -41,7 +41,7 @@ export default function Profile() {
   const [profilePrivate, setPrivate] = useState(true);
   const [playlistPrivate, hidePlaylist] = useState(true);
   const [banner, setBanner] = useState("");
-  const [avatar, setAvatar] = useState("/samplepfp.jpg");
+  const [avatar, setAvatar] = useState("samplepfp.png");
   const [reviews, setReviews] = useState<DisplayReview[]>([]);
   const [sortMode, setSortMode] = useState<"top" | "new">("top");
   const [bio, setBio] = useState("");
@@ -57,29 +57,35 @@ export default function Profile() {
 
   useEffect(() => {
     async function checkUser() {
-      const user = await getCurrUser()
-      const isPriv = await isPrivate(username!);
-      const isPlaylistPriv = await showPlaylist(username!);
-      const banner = await fetchBanner(username!);
-      const avatar = await fetchAvatar(username!);
-      const bio = await fetchDescription(username!);
-      const count = await getFriendCount(username!);
+      const [user, isPriv, banner, avatar, bio, count, isPlaylistPriv] = await Promise.all([
+        getCurrUser(),
+        isPrivate(username!),
+        fetchBanner(username!),
+        fetchAvatar(username!),
+        fetchDescription(username!),
+        getFriendCount(username!),
+        showPlaylist(username!)
+      ]);
       hidePlaylist(isPlaylistPriv);
       setBio(bio);
       setIsOwnUser(user === username)
       setPrivate(isPriv)
       setBanner(banner)
-      setAvatar(avatar)
+      if (avatar) {
+        setAvatar(avatar)
+      }
       setFriendCount(count)
       if (!isPriv || (user === username)) {
-        const friends = await getFriends();
-        const tracks = await getFavSongs(username!);
-        const artist = await getFavArtist(username!);
-        const listeningAge = await getListeningAge(username!);
-        const reviewsRes = await fetch(`http://localhost:3000/api/reviews/me`, {
-          method: "GET",
-          headers: { "Authorization": `Bearer ${token}` }
-        });
+        const [friends, tracks, artist, listeningAge, reviewsRes] = await Promise.all([
+          getFriends(),
+          getFavSongs(username!),
+          getFavArtist(username!),
+          getListeningAge(username!),
+          fetch(`http://localhost:3000/api/reviews/user/${username!}`, {
+            method: "GET",
+            headers: { "Authorization": `Bearer ${token}` }
+          })
+        ]);
         const reviews = await reviewsRes.json();
         setReviews(reviews);
         if (user === username) {
@@ -133,7 +139,7 @@ export default function Profile() {
                   <div>friends</div>
                 </div>
                 <div className={styles.headerStat}>
-                  <div>7</div>
+                  <div>{userPlaylists.length}</div>
                   <div>playlists</div>
                 </div>
                 <div className={styles.headerStat}>

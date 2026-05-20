@@ -7,6 +7,7 @@ import songsRoutes from "./routes/songs.routes.js";
 import indexRoutes from "./routes/index.routes.js";
 import userRoutes from "./routes/user.routes.js"
 import reviewsRoutes from "./routes/review.routes.js"
+import uploadRouter from "./routes/uploadRouter.js";
 const app = express();
 const PORT = process.env.PORT ? process.env.PORT : 3000;
 
@@ -35,6 +36,8 @@ async function startServer() {
       console.log("➡️ REQUEST:", req.method, req.url);
       next();
     });
+
+    app.use("/api", uploadRouter);
     app.use("/api/users", authRoutes);
     app.use("/api/users", userRoutes);
     app.use("/api/reviews", reviewsRoutes);

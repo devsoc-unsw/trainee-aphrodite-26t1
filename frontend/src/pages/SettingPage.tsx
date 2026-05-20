@@ -3,7 +3,7 @@ import { Sidebar } from "../components/sidebar/sidebar"
 import { SpotifyLogin } from "../components/spotifyLogin/spotifyLogin"
 import { ToggleButton } from "../components/toggle/toggleButton"
 import { useState, useEffect, useRef } from "react"
-import { isPrivate, getCurrUser, updateBanner, updateAvatar, updateDescription, fetchDescription, showPlaylist } from "../api/users"
+import { isPrivate, getCurrUser, updateBanner, updateAvatar, updateDescription, fetchDescription, showPlaylist, uploadImage} from "../api/users"
 
 
 export default function SettingPage() {
@@ -11,6 +11,7 @@ export default function SettingPage() {
     const [isLoading, setIsLoading] = useState(true);
     const [bio, setBio] = useState("");
     const imgInput = useRef<HTMLInputElement>(null);
+    const bannerInput = useRef<HTMLInputElement>(null);
     const [popup, setPopup] = useState(false);
     const [playlistShow, setPlaylist] = useState(false)
     const showPopup = () => {
@@ -18,14 +19,7 @@ export default function SettingPage() {
         setTimeout(() => setPopup(false), 2000);
     };
 
-    const toBase64 = (file: File): Promise<string> => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = () => resolve(reader.result as string);
-            reader.onerror = reject;
-            reader.readAsDataURL(file);
-        });
-    };
+
 
     const handleBio = async () => {
         updateDescription(bio)
@@ -35,18 +29,26 @@ export default function SettingPage() {
     const handleBannerImg = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            const rawFile = await toBase64(file)
-            updateBanner(rawFile)
+            try {
+            const url = await uploadImage(file, "banner");
+            await updateBanner(url);
             showPopup();
+            } catch (err) {
+                console.error("Banner upload failed", err);
+            }
         }
     };
 
     const handleProfileImg = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            const rawFile = await toBase64(file)
-            updateAvatar(rawFile)
+            try {
+            const url = await uploadImage(file, "avatar");
+            await updateAvatar(url);
             showPopup();
+            } catch (err) {
+                console.error("Avatar upload failed", err);
+            }
         }
     };
 
@@ -101,11 +103,11 @@ export default function SettingPage() {
                     <input
                         type="file"
                         accept="image/*"
-                        ref={imgInput}
+                        ref={bannerInput}
                         style={{ display: "none" }}
                         onChange={handleBannerImg}
                     />
-                    <button className={styles.addButton} onClick={() => imgInput.current?.click()}>
+                    <button className={styles.addButton} onClick={() => bannerInput.current?.click()}>
                     Add
                     </button>
                 </div>

@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { RatingStars } from "../ratingStars/ratingStars";
 import styles from "./reviewitem.module.css";
 import { LikeHeart } from "../likeHeart/likeHeart";
 import type { DisplayReview } from "../../../../backend/src/types/api.types";
+import { fetchAvatar, getUsername } from "../../api/users";
 
 interface ReviewItemInfo {
   review: DisplayReview;
@@ -15,7 +16,7 @@ export function ReviewItem({ review, onDelete }: ReviewItemInfo) {
   const [expanded, setExpanded] = useState(false);
   const [liked, setLiked] = useState(!!review.liked);
   const [likeCount, setLikeCount] = useState(review.likeCount);
-
+  const [avatar, setAvatar] = useState("/samplepfp.png");
   const toggleLike = () => {
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -42,6 +43,14 @@ export function ReviewItem({ review, onDelete }: ReviewItemInfo) {
       });
   };
 
+  useEffect(() => {
+    const init = async () => {
+      const profilepic = await fetchAvatar(review.user.username)
+      setAvatar(profilepic)
+    }
+    init()
+  },[])
+
   const isLong = review.body && review.body.length > CHAR_LIMIT;
   const displayText = isLong && !expanded
     ? review.body.slice(0, CHAR_LIMIT) + "…"
@@ -50,7 +59,7 @@ export function ReviewItem({ review, onDelete }: ReviewItemInfo) {
   return (
     <div className={styles.container}>
       <div className={styles.info}>
-        <div className={styles.profile}></div>
+        <img className={styles.profile} src={avatar}></img>
         <div className={styles.body}>
           <div className={styles.commentHeader}>
             <div className={styles.title}>Review by {review.user.username}</div>

@@ -81,10 +81,14 @@ export async function getListeningAge(username: string) {
 }
 
 export async function updateUserPlaylists(username: string) {
-  const res = await fetch(`${BASE_URL}/${username}/playlists`);
+  const res = await fetch(`${BASE_URL}/${username}/playlists`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  });
   return res.json();
 }
-
 export async function fetchUserPlaylists(username: string) {
     const res = await fetch(`${BASE_URL}/${username}/fetchPlaylists`, {
     method: "GET",
@@ -297,4 +301,18 @@ export async function fetchDescription(username: string) {
   });
   console.log(res);
   return res.json();
+}
+
+export async function uploadImage(file: File, type: "avatar" | "banner"): Promise<string> {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await fetch(`${BASE_URL.replace("/users", "")}/upload?type=${type}`, {
+    method: "POST",
+    body: formData,
+  });
+
+  if (!res.ok) throw new Error("Image upload failed");
+  const data = await res.json();
+  return data.url;
 }

@@ -226,9 +226,6 @@ export default function SongPage() {
             </div>
           </div>
         </div>
-        <div className={styles.reviewBody}>
-          A heartfelt ballad about falling in love at the DevSoc Training Program. Listen along as code becomes a love language for Andy and Zitian at UNSW.
-        </div>
 
         <div className={styles.sectionHeader} style={{ display: popularReviews.length === 0 && recentReviews.length === 0 ? "initial" : "none" }}>
           <h2 className={styles.sectionTitle}>No Reviews Yet!</h2>
