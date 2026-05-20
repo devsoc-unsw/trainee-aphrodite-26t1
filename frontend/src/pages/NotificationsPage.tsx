@@ -3,6 +3,7 @@ import styles from "./notification.module.css"
 import { FriendRequestNotif } from "../components/notifications/notification"
 import { useState, useEffect } from "react";
 import { getNotifications } from "../api/users.ts"
+import DustEffect from "../components/DustEffect.tsx";
 
 interface userNotification {
     type: string;
@@ -38,6 +39,7 @@ export default function NotificationsPage() {
     return (
         <div className={styles.container}>
             <Sidebar/>
+            <DustEffect />
             <main className={styles.main}>
                 <section>
                     <div className={styles.titleSection}>

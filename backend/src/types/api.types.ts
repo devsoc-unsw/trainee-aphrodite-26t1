@@ -74,7 +74,8 @@ export interface User {
 
 export interface DisplayUser {
   displayName: string,
-  username: string
+  username: string,
+  bannerPic?: string;
 }
 
 /**

@@ -8,7 +8,7 @@ interface RatingStarsProps {
   size?: number;
 }
 
-const RatingStars = ({ rating, setRating, interactable, size = 24} : RatingStarsProps) => {
+const RatingStars = ({ rating, setRating, interactable, size = 20} : RatingStarsProps) => {
   const [hoverRating, setHoverRating] = useState<number|null>(rating);
   return (
     <div className={styles.ratingStars} onMouseLeave={() => setHoverRating(null)}>
