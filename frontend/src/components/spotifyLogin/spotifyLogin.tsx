@@ -3,7 +3,7 @@ import styles from "./spotifyLogin.module.css"
 export function SpotifyLogin() {
   const handleClick = () => {
     const token = localStorage.getItem("token");
-    window.location.href = `http://localhost:3000/api/users/auth/spotify?token=${token}`;
+    window.location.href = `${import.meta.env.VITE_BACKEND_URL}/api/users/auth/spotify?token=${token}`;
   };
 
   return (

@@ -21,7 +21,7 @@ export function Playlists({ playlists, username }: PlaylistsProps) {
     setSelected(playlist);
     setLoadingTracks(true);
     try {
-      const res = await fetch(`http://localhost:3000/api/users/${username}/playlists/${playlist.id}/tracks`);
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/users/${username}/playlists/${playlist.id}/tracks`);
       const data = await res.json();
       setTracks(data.items ?? []);
     } catch {

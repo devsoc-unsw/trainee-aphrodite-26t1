@@ -44,7 +44,7 @@ const ReviewPage = () => {
     if (!text || text.trim() === "") { setError("Review text may not be empty"); return; }
     if (!rating || rating === 0) { setError("Rating may not be 0"); return; }
 
-    fetch(`http://localhost:3000/api/reviews/${song?.id}`, {
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/reviews/${song?.id}`, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${localStorage.getItem("token")}`,

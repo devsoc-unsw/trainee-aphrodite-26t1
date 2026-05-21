@@ -81,7 +81,7 @@ export default function Profile() {
           getFavSongs(username!),
           getFavArtist(username!),
           getListeningAge(username!),
-          fetch(`http://localhost:3000/api/reviews/user/${username!}`, {
+          fetch(`${import.meta.env.VITE_BACKEND_URL}/api/reviews/user/${username!}`, {
             method: "GET",
             headers: { "Authorization": `Bearer ${token}` }
           })

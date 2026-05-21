@@ -213,7 +213,7 @@ export async function handleSpotifyCallback(code: string, userId: string) {
     },
     body: new URLSearchParams({
       code,
-      redirect_uri: "http://127.0.0.1:3000/api/users/auth/spotify/callback",
+      redirect_uri: process.env.BACKEND_URL + "/api/users/auth/spotify/callback",
       grant_type: "authorization_code",
     }),
   });

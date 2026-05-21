@@ -25,7 +25,7 @@ export function ReviewItem({ review, onDelete }: ReviewItemInfo) {
     setLiked(!previousLiked);
     setLikeCount(prev => previousLiked ? prev - 1 : prev + 1);
 
-    fetch(`http://localhost:3000/api/reviews/review/${review.id}/like`, {
+    fetch(`${import.meta.env.VITE_BACKEND_URL}/api/reviews/review/${review.id}/like`, {
       method: "POST",
       headers: { "Authorization": `Bearer ${token}` }
     })
