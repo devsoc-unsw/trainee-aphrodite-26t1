@@ -10,6 +10,8 @@ import { getCurrUser, getFriends, handleFriendReq, getFavSongs, getFavArtist, ge
 import type { SpotifyTrack, Artist } from "../../../backend/src/types/api.types";
 import type { DisplayReview } from "../../../backend/src/types/api.types";
 import type { SpotifyPlaylist } from "../../../backend/src/types/spotify.types.ts";
+import samplePfp from '../../public/samplepfp.png'
+
 
 function ProfileCard({ to, children, imageUrl, description }: { to: string, children: React.ReactNode, imageUrl: string, description: string}) {
   return (
@@ -41,7 +43,7 @@ export default function Profile() {
   const [profilePrivate, setPrivate] = useState(true);
   const [playlistPrivate, hidePlaylist] = useState(true);
   const [banner, setBanner] = useState("");
-  const [avatar, setAvatar] = useState("samplepfp.png");
+  const [avatar, setAvatar] = useState(samplePfp);
   const [reviews, setReviews] = useState<DisplayReview[]>([]);
   const [sortMode, setSortMode] = useState<"top" | "new">("top");
   const [bio, setBio] = useState("");
@@ -66,12 +68,14 @@ export default function Profile() {
         getFriendCount(username!),
         showPlaylist(username!)
       ]);
+      console.log("AVATAR",avatar)
       hidePlaylist(isPlaylistPriv);
       setBio(bio);
       setIsOwnUser(user === username)
       setPrivate(isPriv)
       setBanner(banner)
       if (avatar) {
+        console.log("SET")
         setAvatar(avatar)
       }
       setFriendCount(count)
@@ -123,7 +127,7 @@ export default function Profile() {
         <div className={styles.header} style={{ backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${banner})`}}>
           <div className={styles.profileRow}>
             <div className={styles.avatarWrapper}>
-              <img src={avatar} className={styles.avatarImg} alt="Spotify" />
+              {!isLoading && <img src={avatar} className={styles.avatarImg}/>}
               <div className={styles.avatarBadge}></div>
             </div> 
             

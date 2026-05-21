@@ -1,11 +1,12 @@
 import styles from "./myprofile.module.css"
 import { getCurrUser, fetchAvatar } from "../../api/users";
-import { useNavigate } from "react-router"
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
+import samplePfp from '../../../public/samplepfp.png'
 
 export function MyProfile() {
     const navigate = useNavigate();
-    const [avatar, setAvatar] = useState("samplepfp.jpg")
+    const [avatar, setAvatar] = useState(samplePfp)
     const [username, setUsername] = useState("")
     const handleProfileClick = async () => {
         navigate(`/users/${username}`)
@@ -15,7 +16,9 @@ export function MyProfile() {
             const user = await getCurrUser()
             const avatar = await fetchAvatar(user!)
             setUsername(user)
-            setAvatar(avatar)
+            if (avatar) {
+                setAvatar(avatar)
+            }
         }
         getUser();
     }, [])

@@ -4,6 +4,7 @@ import styles from "./reviewitem.module.css";
 import { LikeHeart } from "../likeHeart/likeHeart";
 import type { DisplayReview } from "../../../../backend/src/types/api.types";
 import { fetchAvatar, getUsername } from "../../api/users";
+import samplePfp from '../../../public/samplepfp.png'
 
 interface ReviewItemInfo {
   review: DisplayReview;
@@ -16,7 +17,7 @@ export function ReviewItem({ review, onDelete }: ReviewItemInfo) {
   const [expanded, setExpanded] = useState(false);
   const [liked, setLiked] = useState(!!review.liked);
   const [likeCount, setLikeCount] = useState(review.likeCount);
-  const [avatar, setAvatar] = useState("/samplepfp.png");
+  const [avatar, setAvatar] = useState(samplePfp);
   const toggleLike = () => {
     const token = localStorage.getItem("token");
     if (!token) return;
@@ -46,7 +47,9 @@ export function ReviewItem({ review, onDelete }: ReviewItemInfo) {
   useEffect(() => {
     const init = async () => {
       const profilepic = await fetchAvatar(review.user.username)
-      setAvatar(profilepic)
+      if (profilepic) {
+        setAvatar(profilepic)
+      }
     }
     init()
   },[])
