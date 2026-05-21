@@ -37,7 +37,7 @@ export async function googleAuth(req: Request, res: Response) {
 
     try {
     const client_id = process.env.GOOGLE_CLIENT_ID;
-    const redirect_uri = "http://localhost:3000/api/users/auth/google/callback"; /*May need to get rid of users here */
+    const redirect_uri = process.env.BACKEND_URL + "/api/users/auth/google/callback"; /*May need to get rid of users here */
     const scope = "openid email profile";
 
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&scope=${encodeURIComponent(scope)}&access_type=offline&prompt=consent`;
@@ -54,7 +54,7 @@ export async function googleAuthCallback(req: Request, res: Response) {
 
     const { token } = await authService.handleGoogleCallback(code);
 
-    res.redirect(`http://localhost:5173/callback?token=${token}`);
+    res.redirect(`${process.env.FRONTEND_URL}/callback?token=${token}`);
   } catch (err) {
     console.error(err);
     res.status(500).send("Error - Google Auth");
@@ -67,7 +67,7 @@ export async function spotifyAuth(req: Request, res: Response) {
     const userToken = req.query.token as string;
     if (!userToken) return res.status(401).json({ message: "No token provided in spotifyAuth" });
     const client_id = process.env.SPOTIFY_CLIENT_ID;
-    const redirect_uri = "http://127.0.0.1:3000/api/users/auth/spotify/callback";
+    const redirect_uri = process.env.BACKEND_URL + "/api/users/auth/spotify/callback";
     const scope = "user-top-read user-read-recently-played playlist-read-private playlist-read-collaborative";
     const authUrl = `https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=code&redirect_uri=${redirect_uri}&scope=${encodeURIComponent(scope)}&show_dialog=true&state=${userToken}`;
     res.redirect(authUrl);
@@ -90,7 +90,7 @@ export async function spotifyAuthCallback(req: Request, res: Response) {
       return res.status(404).json({ message: "User not found" });
     }
     await authService.handleSpotifyCallback(code, userId);
-    res.redirect(`http://localhost:5173/settings`);
+    res.redirect(`${process.env.FRONTEND_URL}/settings`);
   } catch (err) {
     console.error(err);
     res.status(500).send("Error - Google Auth");
